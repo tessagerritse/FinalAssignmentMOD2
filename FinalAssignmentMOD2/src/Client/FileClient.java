@@ -1,11 +1,16 @@
+package Client;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 
 public class FileClient {
+	
+	private static String path = "/Users/tessa.gerritse/SSHome/eclipse-workplace/FinalAssignmentMOD2_KLAD/"
+			+ "src/exampleFiles/tiny.pdf";
 
 	public static void main(String[] args) {
 		if (args.length < 2) {
@@ -20,8 +25,10 @@ public class FileClient {
 			InetAddress address = InetAddress.getByName(hostName);
 			DatagramSocket socket = new DatagramSocket();
 			
-			while (true) {
-				byte[] buffOut = new byte[25000];
+			//while (true) {				
+				InputStream inputStream = new FileInputStream(path);
+				byte[] buffOut = inputStream.readAllBytes();
+				
 				DatagramPacket request = new DatagramPacket(buffOut, buffOut.length, address, port);
 				socket.send(request);
 				
@@ -32,7 +39,7 @@ public class FileClient {
 				String answer = new String(buffIn, 0, response.getLength());
 				System.out.println(answer);
 				System.out.println();
-			}
+			//}
 		} catch (SocketException e) {
 			System.out.println("Error: " + e.getMessage());
 			e.printStackTrace();

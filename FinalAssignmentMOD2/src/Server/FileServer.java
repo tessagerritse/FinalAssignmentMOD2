@@ -1,3 +1,4 @@
+package Server;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,7 +14,6 @@ public class FileServer {
 	
 	private DatagramSocket socket;
 	private List<String> filesOnServer = new ArrayList<>();
-	private int fileNumber;
 	private String path = "/Users/tessa.gerritse/OneDrive - Nedap/Documents/University/MOD2 (MOD3 UT)/FinalAssignment/";
 	
 	public FileServer(int port) throws SocketException {
@@ -41,7 +41,7 @@ public class FileServer {
 
 	private void service() throws IOException {
 		while (true) {
-			byte[] buffIn = new byte[25000];
+			byte[] buffIn = new byte[25000];			
 			DatagramPacket request = new DatagramPacket(buffIn, buffIn.length);
 			socket.receive(request);
 			
