@@ -1,5 +1,5 @@
 package Transmission;
 
-public class Sender {
+public class FileSender {
 
 }
