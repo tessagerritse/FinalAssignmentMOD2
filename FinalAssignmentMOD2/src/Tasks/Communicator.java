@@ -1,4 +1,4 @@
-package Transmission;
+package Tasks;
 
 public class Communicator {
 
