@@ -1,5 +1,11 @@
 package Tasks;
 
-public class Uploader {
+public class Uploader implements Runnable {
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

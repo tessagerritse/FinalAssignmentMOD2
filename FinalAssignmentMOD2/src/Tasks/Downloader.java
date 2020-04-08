@@ -1,5 +1,11 @@
 package Tasks;
 
-public class Downloader {
+public class Downloader implements Runnable {
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
