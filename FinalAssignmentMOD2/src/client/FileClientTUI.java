@@ -1,8 +1,10 @@
-package Client;
+package client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+
+import exceptions.ExitProgram;
 
 /**
  * Client TUI for user input and user messages
@@ -41,12 +43,16 @@ public class FileClientTUI {
 		return answer;
 	}
 	
-	public void printCommandMenu() {
+	private void printCommandMenu() {
 		showMessage(String.format("%s", "Please use one of the following commands and fill in the name of the file you want to use: "));
 		showMessage(String.format("%-20s %s", "u file", "upload a file to the server"));
 		showMessage(String.format("%-20s %s", "d file", "download a file from the server"));
 		showMessage(String.format("%-20s %s", "m file", "remove a file from the server"));
 		showMessage(String.format("%-20s %s", "p file", "replace a file  on the server"));
 		showMessage(String.format("%-20s %s", "l", "get a list of all files on the server"));
+	}
+	
+	private void handleUserInput() throws ExitProgram {
+		
 	}
 }

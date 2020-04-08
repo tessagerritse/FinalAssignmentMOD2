@@ -1,6 +1,6 @@
-package Tasks;
+package tasks;
 
-public class Downloader implements Runnable {
+public class Communicator implements Runnable {
 
 	@Override
 	public void run() {

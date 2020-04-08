@@ -1,4 +1,4 @@
-package Transmission;
+package transmission;
 
 public class FileSender {
 

@@ -1,4 +1,4 @@
-package Tasks;
+package tasks;
 
 public class Uploader implements Runnable {
 
