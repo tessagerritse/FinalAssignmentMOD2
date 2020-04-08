@@ -42,7 +42,7 @@ public class FileClientTUI {
 	}
 	
 	public void printCommandMenu() {
-		showMessage(String.format("%s", "Possible commands: "));
+		showMessage(String.format("%s", "Please use one of the following commands and fill in the name of the file you want to use: "));
 		showMessage(String.format("%-20s %s", "u file", "upload a file to the server"));
 		showMessage(String.format("%-20s %s", "d file", "download a file from the server"));
 		showMessage(String.format("%-20s %s", "m file", "remove a file from the server"));
