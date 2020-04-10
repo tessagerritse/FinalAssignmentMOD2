@@ -1,4 +1,4 @@
-package tasks;
+package client;
 
 public class ListHandler implements Runnable {
 

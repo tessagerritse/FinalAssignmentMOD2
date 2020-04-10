@@ -76,11 +76,13 @@ public class FileClientTUI {
 		String[] parts = input.split("\\s+");
 		String command = parts[0];
 		String fileName = (parts.length > 1) ? parts[1] : "";
+		System.out.println(fileName);
 		
 		boolean validCommand = false;
 		while (!validCommand) {
 			if (validCommands.contains(command)) {
 				validCommand = true;
+				System.out.println("check");
 				client.handleRequest(command, fileName);
 			} else {
 				showMessage("That is not a valid command. Please try again.");

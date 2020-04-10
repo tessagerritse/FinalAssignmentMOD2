@@ -1,4 +1,4 @@
-package tasks;
+package client;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,24 +8,22 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import client.FileClientTUI;
 import transmission.ProtocolMessages;
 
 public class UploadHandler implements Runnable {
 
-	private String path = "/Users/tessa.gerritse/SSHome/eclipse-workplace/FinalAssignmentMOD2_KLAD/"
-			+ "src/exampleFiles/"; //TODO automatisch de path van de file bepalen
+	private String path = "/Users/tessa.gerritse/git/FinalAssignmentMOD2/FinalAssignmentMOD2/src/client"; //TODO automatisch de path van de file bepalen
 
 	FileClientTUI view;
-	DatagramSocket socket;
+	DatagramSocket clientSocket;
 	InetAddress serverAddress;
-	int port;
+	int uploadPort;
 	String fileName;
 
-	public UploadHandler(FileClientTUI view, DatagramSocket socket, InetAddress serverAddress, int port, String fileName) {
-		this.socket = socket;
+	public UploadHandler(FileClientTUI view, DatagramSocket clientSocket, InetAddress serverAddress, int uploadPort, String fileName) {
+		this.clientSocket = clientSocket;
 		this.serverAddress = serverAddress;
-		this.port = port;
+		this.uploadPort = uploadPort;
 		this.fileName = fileName;
 		this.view = view;
 	}
@@ -34,11 +32,11 @@ public class UploadHandler implements Runnable {
 	public void run() {		
 		try {			
 			InputStream inputStream = new FileInputStream(path + fileName); 
-			//TODO zorgen dat de fileName ook meegenomen wordt, zodat hij op de server dezelfde naam krijgt
 			byte[] buffOut = inputStream.readAllBytes();
 
-			DatagramPacket request = new DatagramPacket(buffOut, buffOut.length, serverAddress, port);
-			socket.send(request);
+			DatagramPacket request = new DatagramPacket(buffOut, buffOut.length, serverAddress, uploadPort);
+			clientSocket.send(request);
+			System.out.println("sent upload packet");
 
 //			byte[] buffIn = new byte[512];
 //			DatagramPacket response = new DatagramPacket(buffIn, buffIn.length);

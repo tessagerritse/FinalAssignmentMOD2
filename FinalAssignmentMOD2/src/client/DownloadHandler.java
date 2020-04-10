@@ -1,9 +1,7 @@
-package tasks;
+package client;
 
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-
-import client.FileClientTUI;
 
 public class DownloadHandler implements Runnable {
 

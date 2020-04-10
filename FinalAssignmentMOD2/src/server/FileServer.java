@@ -62,22 +62,35 @@ public class FileServer {
 		DatagramPacket connectRequest = new DatagramPacket(new byte[1], 1);
 		communicationSocket.receive(connectRequest);
 
-		Communicator communicator = new Communicator(this, communicationSocket, communicationPort, 
-				uploadPort, downloadPort, connectRequest);
+		Communicator communicator = new Communicator(this, communicationSocket, uploadPort, 
+				downloadPort, listPort, connectRequest);
 		new Thread(communicator).start();
 	}
 
 	public synchronized void handleUpload() throws IOException {
 		byte[] buffIn = new byte[25000];
+		System.out.println("The uploadPort is: " + uploadPort);
 		DatagramPacket uploadRequest = new DatagramPacket(buffIn, buffIn.length);
 		uploadSocket.receive(uploadRequest);
+		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("check3");
 
 		String fileName = "File" + filesOnServer.size();
+		System.out.println(fileName + " has just been uploaded to " + fileDirectory);
 		File file = new File(fileDirectory + fileName);
 		OutputStream outputStream = new FileOutputStream(file);
 		outputStream.write(uploadRequest.getData());
 		outputStream.close();
+		System.out.println("check4");
 		filesOnServer.add(fileName);
+		System.out.println("Name of uploaded file is: " + filesOnServer.get(0));
 	
 		//TODO: check integrity
 		

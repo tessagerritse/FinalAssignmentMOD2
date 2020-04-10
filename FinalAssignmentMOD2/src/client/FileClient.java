@@ -9,9 +9,6 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import exceptions.ExitProgram;
-import tasks.DownloadHandler;
-import tasks.ListHandler;
-import tasks.UploadHandler;
 import transmission.ProtocolMessages;
 
 public class FileClient {
@@ -70,6 +67,7 @@ public class FileClient {
 		DatagramPacket setupResponse0 = new DatagramPacket(buffer0, buffer0.length);
 		clientSocket.receive(setupResponse0);
 		uploadPort = new BigInteger(buffer0).intValue();
+		System.out.println("I get uploadPort: " + uploadPort);
 		
 		byte[] buffer1 = new byte[2];
 		DatagramPacket setupResponse1 = new DatagramPacket(buffer1, buffer1.length);
@@ -91,7 +89,7 @@ public class FileClient {
 
 	public void handleRequest(String command, String fileName) throws ExitProgram, IOException {
 		switch (command) {
-		case ProtocolMessages.UPLOAD:		
+		case ProtocolMessages.UPLOAD:
 			uploadFile(fileName);
 			break;
 		case ProtocolMessages.DOWNLOAD:
@@ -110,6 +108,8 @@ public class FileClient {
 	}
 	
 	private void uploadFile(String fileName) throws IOException {
+		System.out.println("The uploadPort is :" + uploadPort);
+
 		uploadHandler = new UploadHandler(view, clientSocket, serverAddress, uploadPort, fileName);
 		new Thread(uploadHandler).start();		
 	}
