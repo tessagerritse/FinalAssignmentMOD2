@@ -67,7 +67,6 @@ public class FileClient {
 		DatagramPacket setupResponse0 = new DatagramPacket(buffer0, buffer0.length);
 		clientSocket.receive(setupResponse0);
 		uploadPort = new BigInteger(buffer0).intValue();
-		System.out.println("I get uploadPort: " + uploadPort);
 		
 		byte[] buffer1 = new byte[2];
 		DatagramPacket setupResponse1 = new DatagramPacket(buffer1, buffer1.length);
@@ -108,8 +107,6 @@ public class FileClient {
 	}
 	
 	private void uploadFile(String fileName) throws IOException {
-		System.out.println("The uploadPort is :" + uploadPort);
-
 		uploadHandler = new UploadHandler(view, clientSocket, serverAddress, uploadPort, fileName);
 		new Thread(uploadHandler).start();		
 	}

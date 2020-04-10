@@ -42,11 +42,9 @@ public class FileServer {
 				connectClient();
 			}
 		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Socket error: " + e.getMessage());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("IO error: " + e.getMessage());
 		}
 	}
 
@@ -69,31 +67,17 @@ public class FileServer {
 
 	public synchronized void handleUpload() throws IOException {
 		byte[] buffIn = new byte[25000];
-		System.out.println("The uploadPort is: " + uploadPort);
 		DatagramPacket uploadRequest = new DatagramPacket(buffIn, buffIn.length);
-		uploadSocket.receive(uploadRequest);
+		uploadSocket.receive(uploadRequest);		
 		
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		System.out.println("check3");
-
 		String fileName = "File" + filesOnServer.size();
-		System.out.println(fileName + " has just been uploaded to " + fileDirectory);
 		File file = new File(fileDirectory + fileName);
 		OutputStream outputStream = new FileOutputStream(file);
 		outputStream.write(uploadRequest.getData());
 		outputStream.close();
-		System.out.println("check4");
+		System.out.println(fileName + " has just been uploaded and saved");
 		filesOnServer.add(fileName);
-		System.out.println("Name of uploaded file is: " + filesOnServer.get(0));
 	
-		//TODO: check integrity
-		
 //		String responseMessage = fileName + " is uploaded to the server";
 //		byte[] buffOut = responseMessage.getBytes();
 //		InetAddress clientAddress = request.getAddress();
