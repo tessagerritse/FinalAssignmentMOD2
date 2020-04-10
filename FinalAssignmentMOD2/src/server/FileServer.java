@@ -1,66 +1,93 @@
 package server;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
+import client.FileClient;
+
 public class FileServer {
-	
-	private DatagramSocket socket;
+
+	private DatagramSocket communicationSocket;
+	private DatagramSocket uploadSocket;
+	private DatagramSocket downloadSocket;
+	private DatagramSocket listSocket;
+
+	private final int communicationPort = 8888;
+	private final int uploadPort = 8008;
+	private final int downloadPort = 8080;
+	private final int listPort = 8800;
+
 	private List<String> filesOnServer = new ArrayList<>();
-	private String path = "/Users/tessa.gerritse/OneDrive - Nedap/Documents/University/MOD2 (MOD3 UT)/FinalAssignment/";
-	
-	public FileServer(int port) throws SocketException {
-		socket = new DatagramSocket(port);
-		
+	private String fileDirectory = "/Users/tessa.gerritse/OneDrive - Nedap/Documents/University/"
+			+ "MOD2 (MOD3 UT)/FinalAssignment/Files/";
+
+	public FileServer() {		
 	}
-	
+
 	public static void main(String[] args) {
-		if (args.length < 1) {
-			System.out.println("Syntax: FileServer <port>");
-			return;
-		}
-		
-		int port = Integer.parseInt(args[0]);
-		
+		(new FileServer()).start();
+	} 
+
+	private void start() {
 		try {
-			FileServer server = new FileServer(port);
-			server.service();
+			setup();
+			while (true) {
+				connectClient();
+			}
 		} catch (SocketException e) {
-			System.out.println("Socket error: " + e.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (IOException e) {
-			System.out.println("I/O error: " + e.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
-	private void service() throws IOException {
-		while (true) {
-			byte[] buffIn = new byte[25000];			
-			DatagramPacket request = new DatagramPacket(buffIn, buffIn.length);
-			socket.receive(request);
-			
-			String fileName = "File" + filesOnServer.size();
-			File file = new File(path + fileName);
-			OutputStream outputStream = new FileOutputStream(file);
-			outputStream.write(request.getData());
-			System.out.println("Writing data to file on server");
-			outputStream.close();
-			filesOnServer.add(fileName);
-			
-			String responseMessage = fileName + " is uploaded to the server";
-			byte[] buffOut = responseMessage.getBytes();
-			InetAddress clientAddress = request.getAddress();
-			int clientPort = request.getPort();
-			
-			DatagramPacket response = new DatagramPacket(buffOut, buffOut.length, clientAddress, clientPort);
-			socket.send(response);
-			
-		}
+	private void setup() throws SocketException {
+		communicationSocket = new DatagramSocket(communicationPort);
+		uploadSocket = new DatagramSocket(uploadPort);
+		downloadSocket = new DatagramSocket(downloadPort);
+		listSocket = new DatagramSocket(listPort);
+		System.out.println("Connect to portnumber " + communicationPort + " to work with this server.");
+	}
+
+	private void connectClient() throws IOException {
+		DatagramPacket connectRequest = new DatagramPacket(new byte[1], 1);
+		communicationSocket.receive(connectRequest);
+
+		Communicator communicator = new Communicator(this, communicationSocket, communicationPort, 
+				uploadPort, downloadPort, connectRequest);
+		new Thread(communicator).start();
+	}
+
+	public synchronized void handleUpload() throws IOException {
+		byte[] buffIn = new byte[25000];
+		DatagramPacket uploadRequest = new DatagramPacket(buffIn, buffIn.length);
+		uploadSocket.receive(uploadRequest);
+
+		String fileName = "File" + filesOnServer.size();
+		File file = new File(fileDirectory + fileName);
+		OutputStream outputStream = new FileOutputStream(file);
+		outputStream.write(uploadRequest.getData());
+		outputStream.close();
+		filesOnServer.add(fileName);
+	
+		//TODO: check integrity
+		
+//		String responseMessage = fileName + " is uploaded to the server";
+//		byte[] buffOut = responseMessage.getBytes();
+//		InetAddress clientAddress = request.getAddress();
+//		int clientPort = request.getPort();
+//		
+//		DatagramPacket response = new DatagramPacket(buffOut, buffOut.length, clientAddress, clientPort);
+//		socket.send(response);
+		
 	}
 }

@@ -1,6 +1,6 @@
 package tasks;
 
-public class Communicator implements Runnable {
+public class ListHandler implements Runnable {
 
 	@Override
 	public void run() {
