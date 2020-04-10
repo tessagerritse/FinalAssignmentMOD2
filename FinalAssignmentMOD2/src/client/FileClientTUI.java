@@ -63,7 +63,8 @@ public class FileClientTUI {
 
 	private void printCommandMenu() {
 		showMessage("When asked to enter a command, please use one of the following commands");
-		showMessage("For [file] fille in the name of the file you want use, including the extension \n");
+		showMessage("For [file] fill in the name of the file you want use, including the extension");
+		showMessage("The file name, including extension, may at most be 25 characters long \n");
 		showMessage(String.format("%-20s %s", "u file", "upload a [file] to the server"));
 		showMessage(String.format("%-20s %s", "d file", "download a [file] from the server"));
 		showMessage(String.format("%-20s %s", "r file", "remove a [file] from the server"));

@@ -32,7 +32,7 @@ public class Communicator implements Runnable {
 	@Override
 	public void run() {
 		try {
-			sendPortNumbers();
+			sendPortNumbersAndMaxNameLength();
 			while (true) {
 				fileServer.handleUpload();
 			}
@@ -41,21 +41,38 @@ public class Communicator implements Runnable {
 		}
 	}
 
-	private void sendPortNumbers()
+	private void sendPortNumbersAndMaxNameLength()
 			throws IOException {
-		byte[] buffer0 = BigInteger.valueOf(uploadPort).toByteArray();
-		DatagramPacket sendUploadPort0 = new DatagramPacket(buffer0, buffer0.length, clientAddress, 
-				clientPort);
-		communicationSocket.send(sendUploadPort0);
+		byte[] maxNameBytes = BigInteger.valueOf(fileServer.MAX_NAME_LENGTH).toByteArray();
+		byte[] uploadPortBytes = BigInteger.valueOf(uploadPort).toByteArray();
+		byte[] downloadPortBytes = BigInteger.valueOf(downloadPort).toByteArray();
+		byte[] listPortBytes = BigInteger.valueOf(listPort).toByteArray();		
 		
-		byte[] buffer1 = BigInteger.valueOf(downloadPort).toByteArray();
-		DatagramPacket sendUploadPort1 = new DatagramPacket(buffer1, buffer1.length, clientAddress, 
-				clientPort);
-		communicationSocket.send(sendUploadPort1);
+		byte[] buffOut = new byte[7];
+		System.arraycopy(maxNameBytes, 0, buffOut, 0, maxNameBytes.length);
+		System.arraycopy(uploadPortBytes, 0, buffOut, maxNameBytes.length, uploadPortBytes.length);
+		System.arraycopy(downloadPortBytes, 0, buffOut, maxNameBytes.length + uploadPortBytes.length, 
+				downloadPortBytes.length);
+		System.arraycopy(listPortBytes, 0, buffOut, maxNameBytes.length + uploadPortBytes.length + 
+				downloadPortBytes.length, listPortBytes.length);
 		
-		byte[] buffer2 = BigInteger.valueOf(listPort).toByteArray();
-		DatagramPacket sendUploadPort2 = new DatagramPacket(buffer2, buffer2.length, clientAddress, 
-				clientPort);
-		communicationSocket.send(sendUploadPort2);
+		DatagramPacket sendPortNumbersAndMaxNameLength = new DatagramPacket(buffOut, buffOut.length, clientAddress, clientPort);
+		communicationSocket.send(sendPortNumbersAndMaxNameLength);
+		
+		
+//		byte[] buffer0 = BigInteger.valueOf(uploadPort).toByteArray();
+//		DatagramPacket sendUploadPort0 = new DatagramPacket(buffer0, buffer0.length, clientAddress, 
+//				clientPort);
+//		communicationSocket.send(sendUploadPort0);
+//		
+//		byte[] buffer1 = BigInteger.valueOf(downloadPort).toByteArray();
+//		DatagramPacket sendUploadPort1 = new DatagramPacket(buffer1, buffer1.length, clientAddress, 
+//				clientPort);
+//		communicationSocket.send(sendUploadPort1);
+//		
+//		byte[] buffer2 = BigInteger.valueOf(listPort).toByteArray();
+//		DatagramPacket sendUploadPort2 = new DatagramPacket(buffer2, buffer2.length, clientAddress, 
+//				clientPort);
+//		communicationSocket.send(sendUploadPort2);
 	}
 }

@@ -23,6 +23,8 @@ public class FileServer {
 	private final int uploadPort = 8008;
 	private final int downloadPort = 8080;
 	private final int listPort = 8800;
+	
+	public static final int MAX_NAME_LENGTH = 25;
 
 	private List<String> filesOnServer = new ArrayList<>();
 	private String fileDirectory = "/Users/tessa.gerritse/OneDrive - Nedap/Documents/University/"
@@ -66,14 +68,22 @@ public class FileServer {
 	}
 
 	public synchronized void handleUpload() throws IOException {
-		byte[] buffIn = new byte[25000];
+		byte[] buffIn = new byte[26000];
 		DatagramPacket uploadRequest = new DatagramPacket(buffIn, buffIn.length);
 		uploadSocket.receive(uploadRequest);		
 		
-		String fileName = "File" + filesOnServer.size();
+		byte[] fileNameBytes = new byte[MAX_NAME_LENGTH];
+		System.arraycopy(buffIn, 0, fileNameBytes, 0, fileNameBytes.length);
+		String fileName = new String(fileNameBytes);
+		System.out.println("The file name is: " + fileName);
+		byte[] fileContentBytes = new byte[buffIn.length - MAX_NAME_LENGTH];
+		System.arraycopy(buffIn, fileNameBytes.length, fileContentBytes, 0, fileContentBytes.length);
+		
+		//String fileName = "File" + filesOnServer.size();
+		System.out.println(fileDirectory + fileName);
 		File file = new File(fileDirectory + fileName);
 		OutputStream outputStream = new FileOutputStream(file);
-		outputStream.write(uploadRequest.getData());
+		outputStream.write(fileContentBytes);
 		outputStream.close();
 		System.out.println(fileName + " has just been uploaded and saved");
 		filesOnServer.add(fileName);		
