@@ -129,6 +129,6 @@ public class FileClient {
 	public void quitProgram() throws ExitProgram {
 		view.showMessage("You have ordered to quit the program. Bye!");
 		clientSocket.close();
-		throw new ExitProgram("You have ordered to quit the program. Bye!");
+		throw new ExitProgram("User has ordered to quit the program. Client is closed.");
 	}
 }

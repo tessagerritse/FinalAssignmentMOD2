@@ -76,15 +76,6 @@ public class FileServer {
 		outputStream.write(uploadRequest.getData());
 		outputStream.close();
 		System.out.println(fileName + " has just been uploaded and saved");
-		filesOnServer.add(fileName);
-	
-//		String responseMessage = fileName + " is uploaded to the server";
-//		byte[] buffOut = responseMessage.getBytes();
-//		InetAddress clientAddress = request.getAddress();
-//		int clientPort = request.getPort();
-//		
-//		DatagramPacket response = new DatagramPacket(buffOut, buffOut.length, clientAddress, clientPort);
-//		socket.send(response);
-		
+		filesOnServer.add(fileName);		
 	}
 }

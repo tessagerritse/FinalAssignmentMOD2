@@ -30,21 +30,13 @@ public class UploadHandler implements Runnable {
 	@Override
 	public void run() {		
 		try {	
-			URI url = super.getClass().getResource(fileName).toURI();
-			Path filePath = Paths.get(url);
+			URI uri = super.getClass().getResource(fileName).toURI();
+			Path filePath = Paths.get(uri);
 			byte[] buffOut = Files.readAllBytes(filePath);
 
 			DatagramPacket request = new DatagramPacket(buffOut, buffOut.length, serverAddress, uploadPort);
 			clientSocket.send(request);
 			System.out.println("sent upload packet");
-
-//			byte[] buffIn = new byte[512];
-//			DatagramPacket response = new DatagramPacket(buffIn, buffIn.length);
-//			socket.receive(response);
-//
-//			String answer = new String(buffIn, 0, response.getLength());
-//			System.out.println(answer);
-//			System.out.println();
 		} catch (FileNotFoundException e) {
 			view.showMessage("File " + fileName + " could not be found.");
 		} catch (IOException e) {
