@@ -1,19 +1,18 @@
 package client;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-
-import transmission.ProtocolMessages;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class UploadHandler implements Runnable {
-
-	private String path = "/Users/tessa.gerritse/git/FinalAssignmentMOD2/FinalAssignmentMOD2/src/client"; //TODO automatisch de path van de file bepalen
-
+		
 	FileClientTUI view;
 	DatagramSocket clientSocket;
 	InetAddress serverAddress;
@@ -30,9 +29,10 @@ public class UploadHandler implements Runnable {
 
 	@Override
 	public void run() {		
-		try {			
-			InputStream inputStream = new FileInputStream(path + fileName); 
-			byte[] buffOut = inputStream.readAllBytes();
+		try {	
+			URI url = super.getClass().getResource(fileName).toURI();
+			Path filePath = Paths.get(url);
+			byte[] buffOut = Files.readAllBytes(filePath);
 
 			DatagramPacket request = new DatagramPacket(buffOut, buffOut.length, serverAddress, uploadPort);
 			clientSocket.send(request);
@@ -48,12 +48,9 @@ public class UploadHandler implements Runnable {
 		} catch (FileNotFoundException e) {
 			view.showMessage("File " + fileName + " could not be found.");
 		} catch (IOException e) {
-			view.showMessage(e.getMessage());
+			view.showMessage("IO error: " + e.getMessage());
+		} catch (URISyntaxException e) {
+			view.showMessage("Could not convert URL to URI: " + e.getMessage());
 		} 
-	}
-
-	private void getPortNumber() {
-		// TODO Auto-generated method stub
-		
 	}
 }

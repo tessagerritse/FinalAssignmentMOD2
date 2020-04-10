@@ -69,28 +69,21 @@ public class FileClientTUI {
 		showMessage(String.format("%-20s %s", "r file", "remove a [file] from the server"));
 		showMessage(String.format("%-20s %s", "l", "get a list of all [files] on the server"));
 		showMessage(String.format("%-20s %s", "p", "print the command menu"));
-		showMessage(String.format("%-20s %s", "q", "quit the program"));
-		showMessage(""); //empty line
+		showMessage(String.format("%-20s %s", "q", "quit the program \n"));
 	}
 
 	private void handleUserInput(String input) throws ExitProgram, IOException {
 		String[] parts = input.split("\\s+");
 		String command = parts[0];
 		String fileName = (parts.length > 1) ? parts[1] : "";
-
-		boolean validCommand = false;
-		while (!validCommand) {
-			if (validCommands.contains(command)) {
-				validCommand = true;
-				if (command.equals(ProtocolMessages.PRINT)) {
-					printCommandMenu();
-				} else {
-					client.handleRequest(command, fileName);
-				}
-			} else {
-				showMessage("That is not a valid command. Please try again.");
-				printCommandMenu();
-			}
+		
+		if (!validCommands.contains(command)) {
+			showMessage("That is not a valid command. Please try again");
+			printCommandMenu();
+		} else if (command.equals(ProtocolMessages.PRINT)) {
+			printCommandMenu();
+		} else {
+			client.handleRequest(command, fileName);
 		}
 	}
 }
