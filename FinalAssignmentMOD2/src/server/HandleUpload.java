@@ -12,12 +12,10 @@ public class HandleUpload {
 
 	private DatagramSocket uploadSocket;
 	private File fileDirectory;
-	private List<String> filesOnServer;
 
-	public HandleUpload(DatagramSocket uploadSocket, File fileDirectory, List<String> filesOnServer) {
+	public HandleUpload(DatagramSocket uploadSocket, File fileDirectory) {
 		this.uploadSocket = uploadSocket;
 		this.fileDirectory = fileDirectory;
-		this.filesOnServer = filesOnServer;
 	}
 
 	public void start() {
@@ -44,7 +42,6 @@ public class HandleUpload {
 			outputStream.flush();
 			outputStream.close();
 			
-			filesOnServer.add(fileName);	
 			System.out.println(confirmation);
 		} catch (IOException e) {
 			System.out.println("IO Error: " + e.getMessage());

@@ -26,12 +26,10 @@ public class FileServer {
 	private DatagramSocket downloadSocket;
 	private DatagramSocket listSocket;
 
-	private List<String> filesOnServer;
 	private File fileDirectory;
 	Communicator communicator;
 
 	public FileServer() {	
-		filesOnServer = new ArrayList<>();
 		fileDirectory = new File(System.getProperty("user.home") + "/FilesOnServer");
 	}
 
@@ -73,7 +71,7 @@ public class FileServer {
 	}
 
 	public synchronized void handleUpload() {
-		HandleUpload handleUpload = new HandleUpload(uploadSocket, fileDirectory, filesOnServer);
+		HandleUpload handleUpload = new HandleUpload(uploadSocket, fileDirectory);
 		handleUpload.start();
 	}
 
