@@ -128,7 +128,7 @@ public class FileClient {
 	}
 
 	private synchronized void downloadFile(String fileName) {
-		DownloadHandler downloadHandler = new DownloadHandler(view, clientSocket, serverAddress, downloadPort, fileDirectory, maxNameLength, fileName);
+		DownloadHandler downloadHandler = new DownloadHandler(view, clientSocket, serverAddress, downloadPort, fileDirectory, fileName);
 		new Thread(downloadHandler).start();
 	}
 

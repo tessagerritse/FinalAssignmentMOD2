@@ -17,16 +17,14 @@ public class DownloadHandler implements Runnable {
 	private InetAddress serverAddress;
 	private int downloadPort;
 	private File fileDirectory;
-	private int maxNameLength;
 	private String fileName;
 
-	public DownloadHandler(ClientTUI view, DatagramSocket clientSocket, InetAddress serverAddress, int downloadPort, File fileDirectory, int maxNameLength, String fileName) {
+	public DownloadHandler(ClientTUI view, DatagramSocket clientSocket, InetAddress serverAddress, int downloadPort, File fileDirectory, String fileName) {
 		this.view = view;
 		this.clientSocket = clientSocket;
 		this.serverAddress = serverAddress;
 		this.downloadPort = downloadPort;
 		this.fileDirectory = fileDirectory;
-		this.maxNameLength = maxNameLength;
 		this.fileName = fileName;
 	}
 
