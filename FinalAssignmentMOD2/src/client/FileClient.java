@@ -123,12 +123,12 @@ public class FileClient {
 	}
 	
 	private void uploadFile(String fileName) throws IOException {
-		UploadHandler uploadHandler = new UploadHandler(view, clientSocket, serverAddress, uploadPort, maxNameLength, fileName);
-		new Thread(uploadHandler).start();		
+		UploadHandler uploadHandler = new UploadHandler(view, clientSocket, serverAddress, uploadPort, fileDirectory, maxNameLength, fileName);
+		new Thread(uploadHandler).start();	
 	}
 
 	private void downloadFile(String fileName) {
-		DownloadHandler downloadHandler = new DownloadHandler(view, clientSocket, serverAddress, downloadPort, maxNameLength, fileName);
+		DownloadHandler downloadHandler = new DownloadHandler(view, clientSocket, serverAddress, downloadPort, fileDirectory, maxNameLength, fileName);
 		new Thread(downloadHandler).start();
 	}
 
