@@ -30,6 +30,7 @@ public class Communicator implements Runnable {
 			while (true) {
 				fileServer.handleUpload();
 				fileServer.handleDownload(clientAddress, clientPort);
+				fileServer.handleRemove();
 			}
 		} catch (IOException e) {
 			System.out.println(e.getMessage());

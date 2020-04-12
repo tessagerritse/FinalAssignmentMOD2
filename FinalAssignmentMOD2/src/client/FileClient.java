@@ -133,8 +133,8 @@ public class FileClient {
 	}
 
 	private synchronized void removeFile(String fileName) {
-		// TODO Auto-generated method stub
-		
+		RemoveHandler removeHandler = new RemoveHandler(view, clientSocket, serverAddress, communicationPort, fileDirectory, fileName);
+		new Thread(removeHandler).start();
 	}
 
 	private synchronized void getListOfFiles() {

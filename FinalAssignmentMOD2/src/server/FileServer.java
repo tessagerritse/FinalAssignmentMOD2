@@ -79,4 +79,9 @@ public class FileServer {
 		HandleDownload handleDownload = new HandleDownload(downloadSocket, fileDirectory, clientAddress, clientPort);
 		handleDownload.start();
 	}
+
+	public synchronized void handleRemove() {
+		HandleRemove handleRemove = new HandleRemove(communicationSocket, fileDirectory);
+		handleRemove.start();
+	}
 }
