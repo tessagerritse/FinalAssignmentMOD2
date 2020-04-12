@@ -10,20 +10,14 @@ public class Communicator implements Runnable {
 	
 	private FileServer fileServer;
 	private DatagramSocket communicationSocket;
-	private int uploadPort;
-	private int downloadPort;
-	private int listPort;
 	
 	private InetAddress clientAddress;
 	private int clientPort;
 
 	public Communicator(FileServer fileServer, DatagramSocket communicationSocket, 
-			int uploadPort, int downloadPort, int listPort, DatagramPacket connectRequest) {
+			DatagramPacket connectRequest) {
 		this.fileServer = fileServer;
 		this.communicationSocket = communicationSocket;
-		this.uploadPort = uploadPort;
-		this.downloadPort = downloadPort;
-		this.listPort = listPort;
 		
 		clientAddress = connectRequest.getAddress();
 		clientPort = connectRequest.getPort();
@@ -32,21 +26,22 @@ public class Communicator implements Runnable {
 	@Override
 	public void run() {
 		try {
-			sendPortNumbersAndMaxNameLength();
+			sendMaxNameLengthAndPortNumbers();
 			while (true) {
 				fileServer.handleUpload();
+				fileServer.handleDownload();
 			}
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
 	}
 
-	private void sendPortNumbersAndMaxNameLength()
+	private void sendMaxNameLengthAndPortNumbers()
 			throws IOException {
-		byte[] maxNameBytes = BigInteger.valueOf(fileServer.MAX_NAME_LENGTH).toByteArray();
-		byte[] uploadPortBytes = BigInteger.valueOf(uploadPort).toByteArray();
-		byte[] downloadPortBytes = BigInteger.valueOf(downloadPort).toByteArray();
-		byte[] listPortBytes = BigInteger.valueOf(listPort).toByteArray();		
+		byte[] maxNameBytes = BigInteger.valueOf(FileServer.MAX_NAME_LENGTH).toByteArray();
+		byte[] uploadPortBytes = BigInteger.valueOf(FileServer.UPLOAD_PORT).toByteArray();
+		byte[] downloadPortBytes = BigInteger.valueOf(FileServer.DOWNLOAD_PORT).toByteArray();
+		byte[] listPortBytes = BigInteger.valueOf(FileServer.LIST_PORT).toByteArray();		
 		
 		byte[] buffOut = new byte[7];
 		System.arraycopy(maxNameBytes, 0, buffOut, 0, maxNameBytes.length);
@@ -56,8 +51,8 @@ public class Communicator implements Runnable {
 		System.arraycopy(listPortBytes, 0, buffOut, maxNameBytes.length + uploadPortBytes.length + 
 				downloadPortBytes.length, listPortBytes.length);
 		
-		DatagramPacket sendPortNumbersAndMaxNameLength = new DatagramPacket(buffOut, buffOut.length, clientAddress, clientPort);
-		communicationSocket.send(sendPortNumbersAndMaxNameLength);
+		DatagramPacket sendMaxNameLengthAndPortNumbers = new DatagramPacket(buffOut, buffOut.length, clientAddress, clientPort);
+		communicationSocket.send(sendMaxNameLengthAndPortNumbers);
 		
 		
 //		byte[] buffer0 = BigInteger.valueOf(uploadPort).toByteArray();

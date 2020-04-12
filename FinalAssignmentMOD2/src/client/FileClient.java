@@ -1,5 +1,6 @@
 package client;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.DatagramPacket;
@@ -13,7 +14,8 @@ import transmission.ProtocolMessages;
 
 public class FileClient {
 
-	private FileClientTUI view;
+	private File fileDirectory;
+	private ClientTUI view;
 	private DatagramSocket clientSocket;
 	private InetAddress serverAddress;
 	
@@ -23,12 +25,9 @@ public class FileClient {
 	private int listPort;
 	private int maxNameLength;
 	
-	private UploadHandler uploadHandler;
-	private DownloadHandler downloadHandler;
-	private ListHandler listHander;
-	
 	public FileClient() {
-		view = new FileClientTUI(this);
+		fileDirectory = new File(System.getProperty("user.home") + "/FilesOnClient");
+		view = new ClientTUI(this);
 	}
 
 	public static void main(String[] args) {
@@ -52,8 +51,9 @@ public class FileClient {
 			clientSocket = new DatagramSocket();
 			
 			createConnection();		
-			getPortNumbersAndMaxNameLength();
-			view.start();
+			receiveMaxNameLengthAndPortNumbers();
+			createFileDirectory();
+			view.start(maxNameLength);
 		} catch (UnknownHostException e) {
 			view.showMessage(e.getMessage());
 		} catch (SocketException e) {
@@ -63,47 +63,36 @@ public class FileClient {
 		}
 	}
 
-	private void getPortNumbersAndMaxNameLength() throws IOException {
+	private void createFileDirectory() {
+		if (!fileDirectory.exists()) {
+			fileDirectory.mkdir();
+	    }
+		view.showMessage("You are now connected to the server.");
+		view.showMessage("Files will be uploaded from and/or saved in " + fileDirectory + ". \n");
+	}
+
+	private void receiveMaxNameLengthAndPortNumbers() throws IOException {
 		byte[] buffIn = new byte[7];
 		DatagramPacket getPortNumbersAndMaxNameLength = new DatagramPacket(buffIn, buffIn.length);
 		clientSocket.receive(getPortNumbersAndMaxNameLength);
-		
+				
 		byte[] maxNameBytes = new byte[1];
 		System.arraycopy(buffIn, 0, maxNameBytes, 0, maxNameBytes.length);
 		maxNameLength = new BigInteger(maxNameBytes).intValue();
-		System.out.println("maxNameLength is: " + maxNameLength);
 		
 		byte[] uploadPortBytes = new byte[2];
 		System.arraycopy(buffIn, maxNameBytes.length, uploadPortBytes, 0, uploadPortBytes.length);
 		uploadPort = new BigInteger(uploadPortBytes).intValue();
-		System.out.println("uploadPort is: " + uploadPort);
 		
 		byte[] downloadPortBytes = new byte[2];
 		System.arraycopy(buffIn, maxNameBytes.length + uploadPortBytes.length, downloadPortBytes, 
 				0, downloadPortBytes.length);
 		downloadPort = new BigInteger(downloadPortBytes).intValue();
-		System.out.println("downloadPort is: " + downloadPort);
 		
 		byte[] listPortBytes = new byte[2];
 		System.arraycopy(buffIn, maxNameBytes.length + uploadPortBytes.length + 
 				downloadPortBytes.length, listPortBytes, 0, listPortBytes.length);
 		listPort = new BigInteger(listPortBytes).intValue();
-		System.out.println("listPort is: " + listPort);
-		
-//		byte[] buffer0 = new byte[2];
-//		DatagramPacket setupResponse0 = new DatagramPacket(buffer0, buffer0.length);
-//		clientSocket.receive(setupResponse0);
-//		uploadPort = new BigInteger(buffer0).intValue();
-//		
-//		byte[] buffer1 = new byte[2];
-//		DatagramPacket setupResponse1 = new DatagramPacket(buffer1, buffer1.length);
-//		clientSocket.receive(setupResponse1);
-//		downloadPort = new BigInteger(buffer1).intValue();
-//		
-//		byte[] buffer2 = new byte[2];
-//		DatagramPacket setupResponse2 = new DatagramPacket(buffer2, buffer2.length);
-//		clientSocket.receive(setupResponse2);
-//		listPort = new BigInteger(buffer2).intValue();
 	}	
 	
 	private void createConnection() throws IOException {
@@ -134,13 +123,13 @@ public class FileClient {
 	}
 	
 	private void uploadFile(String fileName) throws IOException {
-		uploadHandler = new UploadHandler(view, clientSocket, serverAddress, uploadPort, maxNameLength, fileName);
+		UploadHandler uploadHandler = new UploadHandler(view, clientSocket, serverAddress, uploadPort, maxNameLength, fileName);
 		new Thread(uploadHandler).start();		
 	}
 
 	private void downloadFile(String fileName) {
-		// TODO Auto-generated method stub
-		
+		DownloadHandler downloadHandler = new DownloadHandler(view, clientSocket, serverAddress, downloadPort, maxNameLength, fileName);
+		new Thread(downloadHandler).start();
 	}
 
 	private void removeFile(String fileName) {

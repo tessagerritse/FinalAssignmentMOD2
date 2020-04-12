@@ -13,24 +13,24 @@ import java.util.List;
 import client.FileClient;
 
 public class FileServer {
-
+	
+	public static final int MAX_NAME_LENGTH = 25;
+	public static final int COMMUNICATION_PORT = 8888;
+	public static final int UPLOAD_PORT = 8008;
+	public static final int DOWNLOAD_PORT = 8080;
+	public static final int LIST_PORT = 8800;
+	
 	private DatagramSocket communicationSocket;
 	private DatagramSocket uploadSocket;
 	private DatagramSocket downloadSocket;
 	private DatagramSocket listSocket;
 
-	private final int communicationPort = 8888;
-	private final int uploadPort = 8008;
-	private final int downloadPort = 8080;
-	private final int listPort = 8800;
-	
-	public static final int MAX_NAME_LENGTH = 25;
+	private List<String> filesOnServer;
+	private File fileDirectory;
 
-	private List<String> filesOnServer = new ArrayList<>();
-	private String fileDirectory = "/Users/tessa.gerritse/OneDrive - Nedap/Documents/University/"
-			+ "MOD2 (MOD3 UT)/FinalAssignment/Files/";
-
-	public FileServer() {		
+	public FileServer() {	
+		filesOnServer = new ArrayList<>();
+		fileDirectory = new File(System.getProperty("user.home") + "/FilesOnServer");
 	}
 
 	public static void main(String[] args) {
@@ -51,41 +51,32 @@ public class FileServer {
 	}
 
 	private void setup() throws SocketException {
-		communicationSocket = new DatagramSocket(communicationPort);
-		uploadSocket = new DatagramSocket(uploadPort);
-		downloadSocket = new DatagramSocket(downloadPort);
-		listSocket = new DatagramSocket(listPort);
-		System.out.println("Connect to portnumber " + communicationPort + " to work with this server.");
+		if (!fileDirectory.exists()) {
+			fileDirectory.mkdir();
+	    }
+		
+		communicationSocket = new DatagramSocket(COMMUNICATION_PORT);
+		uploadSocket = new DatagramSocket(UPLOAD_PORT);
+		downloadSocket = new DatagramSocket(DOWNLOAD_PORT);
+		listSocket = new DatagramSocket(LIST_PORT);
+		System.out.println("Connect to portnumber " + COMMUNICATION_PORT + " to work with this server. \n");
 	}
 
 	private void connectClient() throws IOException {
 		DatagramPacket connectRequest = new DatagramPacket(new byte[1], 1);
 		communicationSocket.receive(connectRequest);
 
-		Communicator communicator = new Communicator(this, communicationSocket, uploadPort, 
-				downloadPort, listPort, connectRequest);
+		Communicator communicator = new Communicator(this, communicationSocket, connectRequest);
 		new Thread(communicator).start();
 	}
 
-	public synchronized void handleUpload() throws IOException {
-		byte[] buffIn = new byte[26000];
-		DatagramPacket uploadRequest = new DatagramPacket(buffIn, buffIn.length);
-		uploadSocket.receive(uploadRequest);		
-		
-		byte[] fileNameBytes = new byte[MAX_NAME_LENGTH];
-		System.arraycopy(buffIn, 0, fileNameBytes, 0, fileNameBytes.length);
-		String fileName = new String(fileNameBytes);
-		System.out.println("The file name is: " + fileName);
-		byte[] fileContentBytes = new byte[buffIn.length - MAX_NAME_LENGTH];
-		System.arraycopy(buffIn, fileNameBytes.length, fileContentBytes, 0, fileContentBytes.length);
-		
-		//String fileName = "File" + filesOnServer.size();
-		System.out.println(fileDirectory + fileName);
-		File file = new File(fileDirectory + fileName);
-		OutputStream outputStream = new FileOutputStream(file);
-		outputStream.write(fileContentBytes);
-		outputStream.close();
-		System.out.println(fileName + " has just been uploaded and saved");
-		filesOnServer.add(fileName);		
+	public synchronized void handleUpload() {
+		HandleUpload handleUpload = new HandleUpload(uploadSocket, fileDirectory, filesOnServer);
+		handleUpload.start();
+	}
+
+	public synchronized void handleDownload() {
+		HandleDownload handleDownload = new HandleDownload(downloadSocket, fileDirectory);
+		handleDownload.start();
 	}
 }
