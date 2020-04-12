@@ -23,12 +23,14 @@ public class ClientTUI {
 	private PrintWriter consoleOut;
 
 	private List<String> validCommands = new ArrayList<>();
+	private List<String> fileNecessary = new ArrayList<>();
 
 	public ClientTUI(FileClient client) {
 		this.client = client;
 		consoleIn = new BufferedReader(new InputStreamReader(System.in));
 		consoleOut = new PrintWriter(System.out, true);
 		validCommands.addAll(Arrays.asList(ProtocolMessages.VALID_COMMANDS));
+		fileNecessary.addAll(Arrays.asList(ProtocolMessages.FILE_NECESSARY));
 	}
 
 	public void start(int maxNameLength) throws IOException {
@@ -77,11 +79,13 @@ public class ClientTUI {
 	private void handleUserInput(String input, int maxNameLength) throws ExitProgram, IOException {
 		String[] parts = input.split("\\s+");
 		String command = parts[0];
-		String fileName = (parts.length > 1) ? parts[1] : "";
+		String fileName = (parts.length > 1) ? fileName = parts[1] : "";
 		
 		if (!validCommands.contains(command)) {
 			showMessage("That is not a valid command. Please try again \n");
 			printCommandMenu();
+		} else if (fileNecessary.contains(command) && fileName.isEmpty()) {
+			showMessage("The file name is missing. Please try again.");
 		} else if (fileName.length() > maxNameLength) {
 			showMessage("That fileName is too long. The fileName may at most be " + maxNameLength + " characters long \n");
 		} else if (command.equals(ProtocolMessages.PRINT)) {		
