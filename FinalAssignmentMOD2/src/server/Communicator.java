@@ -29,7 +29,7 @@ public class Communicator implements Runnable {
 			sendMaxNameLengthAndPortNumbers();
 			while (true) {
 				fileServer.handleUpload();
-				fileServer.handleDownload();
+				fileServer.handleDownload(clientAddress, clientPort);
 			}
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
@@ -53,21 +53,5 @@ public class Communicator implements Runnable {
 		
 		DatagramPacket sendMaxNameLengthAndPortNumbers = new DatagramPacket(buffOut, buffOut.length, clientAddress, clientPort);
 		communicationSocket.send(sendMaxNameLengthAndPortNumbers);
-		
-		
-//		byte[] buffer0 = BigInteger.valueOf(uploadPort).toByteArray();
-//		DatagramPacket sendUploadPort0 = new DatagramPacket(buffer0, buffer0.length, clientAddress, 
-//				clientPort);
-//		communicationSocket.send(sendUploadPort0);
-//		
-//		byte[] buffer1 = BigInteger.valueOf(downloadPort).toByteArray();
-//		DatagramPacket sendUploadPort1 = new DatagramPacket(buffer1, buffer1.length, clientAddress, 
-//				clientPort);
-//		communicationSocket.send(sendUploadPort1);
-//		
-//		byte[] buffer2 = BigInteger.valueOf(listPort).toByteArray();
-//		DatagramPacket sendUploadPort2 = new DatagramPacket(buffer2, buffer2.length, clientAddress, 
-//				clientPort);
-//		communicationSocket.send(sendUploadPort2);
 	}
 }

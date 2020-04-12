@@ -122,22 +122,22 @@ public class FileClient {
 		}
 	}
 	
-	private void uploadFile(String fileName) throws IOException {
+	private synchronized void uploadFile(String fileName) throws IOException {
 		UploadHandler uploadHandler = new UploadHandler(view, clientSocket, serverAddress, uploadPort, fileDirectory, maxNameLength, fileName);
 		new Thread(uploadHandler).start();	
 	}
 
-	private void downloadFile(String fileName) {
+	private synchronized void downloadFile(String fileName) {
 		DownloadHandler downloadHandler = new DownloadHandler(view, clientSocket, serverAddress, downloadPort, fileDirectory, maxNameLength, fileName);
 		new Thread(downloadHandler).start();
 	}
 
-	private void removeFile(String fileName) {
+	private synchronized void removeFile(String fileName) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private void getListOfFiles() {
+	private synchronized void getListOfFiles() {
 		// TODO Auto-generated method stub
 		
 	}

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -14,10 +15,14 @@ public class HandleDownload {
 
 	private DatagramSocket downloadSocket;
 	private File fileDirectory;
+	private InetAddress clientAddress;
+	private int clientPort;
 
-	public HandleDownload(DatagramSocket downloadSocket, File fileDirectory) {
+	public HandleDownload(DatagramSocket downloadSocket, File fileDirectory, InetAddress clientAddress, int clientPort) {
 		this.downloadSocket = downloadSocket;
 		this.fileDirectory = fileDirectory;
+		this.clientAddress = clientAddress;
+		this.clientPort = clientPort;
 	}
 
 	public void start() {
@@ -27,17 +32,23 @@ public class HandleDownload {
 			downloadSocket.receive(downloadRequest);
 			
 			String fileName = new String(fileNameBytes).trim();
-			URI uri = getClass().getResource(fileName).toURI();
-			Path filePath = Paths.get(uri);
-			byte[] fileContentBytes = Files.readAllBytes(filePath);		
+			File file = new File(fileDirectory + "/" + fileName);
+			Path path = Paths.get(file.toURI());
 			
-						
+			if (file.createNewFile()) {
+				Files.delete(path);
+				String feedback = fileName + " doesn't exist on server.";
+				byte[] feedbackBytes = feedback.getBytes();
+				DatagramPacket failedDownload = new DatagramPacket(feedbackBytes, feedbackBytes.length, clientAddress, clientPort);
+				downloadSocket.send(failedDownload);
+			} else {
+				URI uri = file.toURI();
+				byte[] fileContentBytes = Files.readAllBytes(path);
+				DatagramPacket downloadResponse = new DatagramPacket(fileContentBytes, fileContentBytes.length, clientAddress, clientPort);
+				downloadSocket.send(downloadResponse);
+			}
 		} catch (IOException e) {
 			System.out.println("IO Error: " + e.getMessage());
-		} catch (URISyntaxException e) {
-			System.out.println("Error: Could not convert URL to URI: " + e.getMessage());
-
 		}
 	}
-
 }

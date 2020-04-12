@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ public class FileServer {
 
 	private List<String> filesOnServer;
 	private File fileDirectory;
+	Communicator communicator;
 
 	public FileServer() {	
 		filesOnServer = new ArrayList<>();
@@ -66,7 +68,7 @@ public class FileServer {
 		DatagramPacket connectRequest = new DatagramPacket(new byte[1], 1);
 		communicationSocket.receive(connectRequest);
 
-		Communicator communicator = new Communicator(this, communicationSocket, connectRequest);
+		communicator = new Communicator(this, communicationSocket, connectRequest);
 		new Thread(communicator).start();
 	}
 
@@ -75,8 +77,8 @@ public class FileServer {
 		handleUpload.start();
 	}
 
-	public synchronized void handleDownload() {
-		HandleDownload handleDownload = new HandleDownload(downloadSocket, fileDirectory);
+	public synchronized void handleDownload(InetAddress clientAddress, int clientPort) {
+		HandleDownload handleDownload = new HandleDownload(downloadSocket, fileDirectory, clientAddress, clientPort);
 		handleDownload.start();
 	}
 }

@@ -34,12 +34,25 @@ public class DownloadHandler implements Runnable {
 	public void run() {
 		try {
 			byte[] fileNameBytes = fileName.getBytes();
-			DatagramPacket downloadRequest = new DatagramPacket(fileNameBytes, maxNameLength, serverAddress, downloadPort);
+			DatagramPacket downloadRequest = new DatagramPacket(fileNameBytes, fileNameBytes.length, serverAddress, downloadPort);
 			clientSocket.send(downloadRequest);
-			
-			byte[] buffIn = new byte[26000];
-			DatagramPacket downloadFile = new DatagramPacket(buffIn, buffIn.length);
+
+			byte[] fileContentBytes = new byte[26000];
+			DatagramPacket downloadFile = new DatagramPacket(fileContentBytes, fileContentBytes.length);
 			clientSocket.receive(downloadFile);
+
+			File file = new File(fileDirectory + "/" + fileName);
+
+			String newFile = "File " + fileName + " is a new file and has just been downloaded and saved. \n";
+			String replaceFile = "File " + fileName + " has just been downloaded and saved. \n"
+					+ "A file with the same name already existed, so it has been overwritten. \n";
+			String confirmation = (file.createNewFile()) ? newFile : replaceFile;
+
+			OutputStream outputStream = new FileOutputStream(file);
+			outputStream.write(fileContentBytes);
+			outputStream.flush();
+			outputStream.close();
+			view.showMessage(confirmation);
 		} catch (IOException e) {
 			view.showMessage("IO error: " + e.getMessage());
 		}		
