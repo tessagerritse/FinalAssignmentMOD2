@@ -26,9 +26,36 @@ public class HandleRemove {
 			communicationSocket.receive(removeRequest);
 			
 			String fileName = new String(fileNameBytes).trim();
+			
+			System.out.println("User wants to remove " + fileName);
+			
 			File file = new File(fileDirectory + "/" + fileName);
-			Path path = Paths.get(file.toURI());
-			Files.delete(path);
+			
+			//File f = new File(System.getProperty("user.home") + "/FilesOnServer" + "/tiny.pdf");
+			if(!file.exists()) { 
+			   System.out.println("Doesn't exist");
+			} else if (!file.isDirectory()) {
+				System.out.println("Is a directory");
+			} else if (!file.canWrite()) {
+				System.out.println("No write permissions");
+			} else {
+				file.delete();
+			}
+			
+			if(file.delete()) { 
+	            System.out.println("File deleted successfully"); 
+	        } else { 
+	            System.out.println("Failed to delete the file"); 
+	        } 
+			
+			
+			
+			
+//			Path path = Paths.get(file.toURI());
+//			Files.delete(path);
+			
+			
+			
 		} catch (IOException e) {
 			System.out.println("IO error: " + e.getMessage());
 		}

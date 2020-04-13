@@ -31,6 +31,9 @@ public class RemoveHandler implements Runnable {
 			byte[] fileNameBytes = fileName.getBytes();
 			DatagramPacket removeRequest = new DatagramPacket(fileNameBytes, fileNameBytes.length, serverAddress, communicationPort);
 			clientSocket.send(removeRequest);
+			
+			System.out.println("Sent remove of " + fileName + " to server");
+			
 		} catch (IOException e) {
 			view.showMessage("IO error: " + e.getMessage());
 		}
