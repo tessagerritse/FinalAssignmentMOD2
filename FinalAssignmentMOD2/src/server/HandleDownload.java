@@ -32,17 +32,20 @@ public class HandleDownload {
 			downloadSocket.receive(downloadRequest);
 			
 			String fileName = new String(fileNameBytes).trim();
+			
 			File file = new File(fileDirectory + "/" + fileName);
 			Path path = Paths.get(file.toURI());
-			
 			if (file.createNewFile()) {
 				Files.delete(path);
 				String feedback = fileName + " doesn't exist on server.";
+				
+				System.out.println(feedback);
+				
 				byte[] feedbackBytes = feedback.getBytes();
 				DatagramPacket failedDownload = new DatagramPacket(feedbackBytes, feedbackBytes.length, clientAddress, clientPort);
 				downloadSocket.send(failedDownload);
 			} else {
-				URI uri = file.toURI();
+				URI uri = file.toURI();				
 				byte[] fileContentBytes = Files.readAllBytes(path);
 				DatagramPacket downloadResponse = new DatagramPacket(fileContentBytes, fileContentBytes.length, clientAddress, clientPort);
 				downloadSocket.send(downloadResponse);
