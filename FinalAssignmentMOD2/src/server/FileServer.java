@@ -62,7 +62,6 @@ public class FileServer {
 		downloadSocket = new DatagramSocket(DOWNLOAD_PORT);
 		removeSocket = new DatagramSocket(REMOVE_PORT);
 		listSocket = new DatagramSocket(LIST_PORT);
-		System.out.println("Connect to portnumber " + COMMUNICATION_PORT + " to work with this server. \n");
 	}
 
 	private void connectClient() throws IOException {
