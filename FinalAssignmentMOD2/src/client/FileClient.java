@@ -19,11 +19,12 @@ public class FileClient {
 	private DatagramSocket clientSocket;
 	private InetAddress serverAddress;
 	
+	private int maxNameLength;
 	private int communicationPort;
 	private int uploadPort;
 	private int downloadPort;
+	private int removePort;
 	private int listPort;
-	private int maxNameLength;
 	
 	public FileClient() {
 		fileDirectory = new File(System.getProperty("user.home") + "/FilesOnClient");
@@ -71,7 +72,7 @@ public class FileClient {
 	}
 
 	private void receiveMaxNameLengthAndPortNumbers() throws IOException {
-		byte[] buffIn = new byte[7];
+		byte[] buffIn = new byte[9];
 		DatagramPacket getPortNumbersAndMaxNameLength = new DatagramPacket(buffIn, buffIn.length);
 		clientSocket.receive(getPortNumbersAndMaxNameLength);
 				
@@ -88,9 +89,14 @@ public class FileClient {
 				0, downloadPortBytes.length);
 		downloadPort = new BigInteger(downloadPortBytes).intValue();
 		
+		byte[] removePortBytes = new byte[2];
+		System.arraycopy(buffIn, maxNameBytes.length + uploadPortBytes.length + downloadPortBytes.length,
+				removePortBytes, 0, removePortBytes.length);
+		removePort = new BigInteger(removePortBytes).intValue();
+		
 		byte[] listPortBytes = new byte[2];
 		System.arraycopy(buffIn, maxNameBytes.length + uploadPortBytes.length + 
-				downloadPortBytes.length, listPortBytes, 0, listPortBytes.length);
+				downloadPortBytes.length + removePortBytes.length, listPortBytes, 0, listPortBytes.length);
 		listPort = new BigInteger(listPortBytes).intValue();
 	}	
 	
@@ -148,7 +154,7 @@ public class FileClient {
 	}
 
 	private void removeFile(String fileName) {
-		RemoveHandler removeHandler = new RemoveHandler(view, clientSocket, serverAddress, communicationPort, fileDirectory, fileName);
+		RemoveHandler removeHandler = new RemoveHandler(view, clientSocket, serverAddress, removePort, fileName);
 		new Thread(removeHandler).start();
 	}
 

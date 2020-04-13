@@ -10,11 +10,11 @@ import java.nio.file.Paths;
 
 public class HandleRemove {
 
-	private DatagramSocket communicationSocket;
+	private DatagramSocket removeSocket;
 	private File fileDirectory;
 
-	public HandleRemove(DatagramSocket communicationSocket, File fileDirectory) {
-		this.communicationSocket = communicationSocket;
+	public HandleRemove(DatagramSocket removeSocket, File fileDirectory) {
+		this.removeSocket = removeSocket;
 		this.fileDirectory = fileDirectory;
 	}
 
@@ -23,7 +23,7 @@ public class HandleRemove {
 		try {
 			byte[] fileNameBytes = new byte[FileServer.MAX_NAME_LENGTH];
 			DatagramPacket removeRequest = new DatagramPacket(fileNameBytes, fileNameBytes.length);
-			communicationSocket.receive(removeRequest);
+			removeSocket.receive(removeRequest);
 			
 			String fileName = new String(fileNameBytes).trim();
 			

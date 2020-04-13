@@ -35,7 +35,7 @@ public class HandleDownload {
 			
 			File file = new File(fileDirectory + "/" + fileName);
 			Path path = Paths.get(file.toURI());
-			if (file.createNewFile()) {
+			if (!file.exists()) {
 				Files.delete(path);
 				String feedback = fileName + " doesn't exist on server.";
 				

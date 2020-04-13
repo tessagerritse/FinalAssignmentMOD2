@@ -11,17 +11,14 @@ public class RemoveHandler implements Runnable {
 	private ClientTUI view;
 	private DatagramSocket clientSocket;
 	private InetAddress serverAddress;
-	private int communicationPort;
-	private File fileDirectory;
+	private int removePort;
 	private String fileName;
 
-	public RemoveHandler(ClientTUI view, DatagramSocket clientSocket, InetAddress serverAddress, int communicationPort,
-			File fileDirectory, String fileName) {
+	public RemoveHandler(ClientTUI view, DatagramSocket clientSocket, InetAddress serverAddress, int removePort, String fileName) {
 		this.view = view;
 		this.clientSocket = clientSocket;
 		this.serverAddress = serverAddress;
-		this.communicationPort = communicationPort;
-		this.fileDirectory = fileDirectory;
+		this.removePort = removePort;
 		this.fileName = fileName;
 	}
 
@@ -29,7 +26,7 @@ public class RemoveHandler implements Runnable {
 	public void run() {
 		try {
 			byte[] fileNameBytes = fileName.getBytes();
-			DatagramPacket removeRequest = new DatagramPacket(fileNameBytes, fileNameBytes.length, serverAddress, communicationPort);
+			DatagramPacket removeRequest = new DatagramPacket(fileNameBytes, fileNameBytes.length, serverAddress, removePort);
 			clientSocket.send(removeRequest);
 			
 			System.out.println("Sent remove of " + fileName + " to server");

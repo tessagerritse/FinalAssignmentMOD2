@@ -19,11 +19,13 @@ public class FileServer {
 	public static final int COMMUNICATION_PORT = 8888;
 	public static final int UPLOAD_PORT = 8008;
 	public static final int DOWNLOAD_PORT = 8080;
-	public static final int LIST_PORT = 8800;
+	public static final int REMOVE_PORT = 8800;
+	public static final int LIST_PORT = 8808;
 	
 	private DatagramSocket communicationSocket;
 	private DatagramSocket uploadSocket;
 	private DatagramSocket downloadSocket;
+	private DatagramSocket removeSocket;
 	private DatagramSocket listSocket;
 
 	private File fileDirectory;
@@ -58,6 +60,7 @@ public class FileServer {
 		communicationSocket = new DatagramSocket(COMMUNICATION_PORT);
 		uploadSocket = new DatagramSocket(UPLOAD_PORT);
 		downloadSocket = new DatagramSocket(DOWNLOAD_PORT);
+		removeSocket = new DatagramSocket(REMOVE_PORT);
 		listSocket = new DatagramSocket(LIST_PORT);
 		System.out.println("Connect to portnumber " + COMMUNICATION_PORT + " to work with this server. \n");
 	}
@@ -81,7 +84,7 @@ public class FileServer {
 	}
 
 	public synchronized void handleRemove() {
-		HandleRemove handleRemove = new HandleRemove(communicationSocket, fileDirectory);
+		HandleRemove handleRemove = new HandleRemove(removeSocket, fileDirectory);
 		handleRemove.start();
 	}
 

@@ -72,15 +72,18 @@ public class Communicator implements Runnable {
 		byte[] maxNameBytes = BigInteger.valueOf(FileServer.MAX_NAME_LENGTH).toByteArray();
 		byte[] uploadPortBytes = BigInteger.valueOf(FileServer.UPLOAD_PORT).toByteArray();
 		byte[] downloadPortBytes = BigInteger.valueOf(FileServer.DOWNLOAD_PORT).toByteArray();
+		byte[] removePortBytes = BigInteger.valueOf(FileServer.REMOVE_PORT).toByteArray();
 		byte[] listPortBytes = BigInteger.valueOf(FileServer.LIST_PORT).toByteArray();		
 		
-		byte[] buffOut = new byte[7];
+		byte[] buffOut = new byte[9];
 		System.arraycopy(maxNameBytes, 0, buffOut, 0, maxNameBytes.length);
 		System.arraycopy(uploadPortBytes, 0, buffOut, maxNameBytes.length, uploadPortBytes.length);
 		System.arraycopy(downloadPortBytes, 0, buffOut, maxNameBytes.length + uploadPortBytes.length, 
 				downloadPortBytes.length);
+		System.arraycopy(removePortBytes, 0, buffOut, maxNameBytes.length + uploadPortBytes.length + 
+				downloadPortBytes.length, removePortBytes.length);
 		System.arraycopy(listPortBytes, 0, buffOut, maxNameBytes.length + uploadPortBytes.length + 
-				downloadPortBytes.length, listPortBytes.length);
+				downloadPortBytes.length + removePortBytes.length, listPortBytes.length);
 		
 		DatagramPacket sendMaxNameLengthAndPortNumbers = new DatagramPacket(buffOut, buffOut.length, clientAddress, clientPort);
 		communicationSocket.send(sendMaxNameLengthAndPortNumbers);
