@@ -47,7 +47,6 @@ public class FileClient {
 		try {
 			serverAddress = InetAddress.getByName(hostName);
 			communicationPort = port;
-			
 			clientSocket = new DatagramSocket();
 			
 			createConnection();		
@@ -96,15 +95,26 @@ public class FileClient {
 	}	
 	
 	private void createConnection() throws IOException {
-		DatagramPacket setupRequest = new DatagramPacket(new byte[1], 1, serverAddress, 
-				communicationPort);
+		DatagramPacket setupRequest = new DatagramPacket(new byte[1], 1, serverAddress, communicationPort);
 		clientSocket.send(setupRequest);
 		view.showMessage("Connecting to the server \n");
 	}
 
 	public void handleRequest(String command, String fileName) throws ExitProgram, IOException {
+		
+		System.out.println("Your command is :" + command);
+		
+		byte[] requestByte = command.getBytes();
+		
+		System.out.println("The length of the message is: " + requestByte.length);
+		
+		DatagramPacket request = new DatagramPacket(requestByte, requestByte.length, serverAddress, communicationPort);
+		clientSocket.send(request);
+		
+		System.out.println("Sent request");
+		
 		switch (command) {
-		case ProtocolMessages.UPLOAD:
+		case ProtocolMessages.UPLOAD:			
 			uploadFile(fileName);
 			break;
 		case ProtocolMessages.DOWNLOAD:
@@ -122,24 +132,29 @@ public class FileClient {
 		}
 	}
 	
-	private synchronized void uploadFile(String fileName) throws IOException {
+	private void uploadFile(String fileName) throws IOException {	
+		
+		System.out.println("Will upload file: " + fileName);
+		
 		UploadHandler uploadHandler = new UploadHandler(view, clientSocket, serverAddress, uploadPort, fileDirectory, maxNameLength, fileName);
 		new Thread(uploadHandler).start();	
+		
+		System.out.println("Uploader is done");
 	}
 
-	private synchronized void downloadFile(String fileName) {
+	private void downloadFile(String fileName) {
 		DownloadHandler downloadHandler = new DownloadHandler(view, clientSocket, serverAddress, downloadPort, fileDirectory, fileName);
 		new Thread(downloadHandler).start();
 	}
 
-	private synchronized void removeFile(String fileName) {
+	private void removeFile(String fileName) {
 		RemoveHandler removeHandler = new RemoveHandler(view, clientSocket, serverAddress, communicationPort, fileDirectory, fileName);
 		new Thread(removeHandler).start();
 	}
 
-	private synchronized void getListOfFiles() {
-		// TODO Auto-generated method stub
-		
+	private void getListOfFiles() {
+		ListHandler listHandler = new ListHandler(view, clientSocket);
+		new Thread(listHandler).start();
 	}
 
 	public void quitProgram() throws ExitProgram {

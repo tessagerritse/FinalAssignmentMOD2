@@ -46,7 +46,6 @@ public class Communicator implements Runnable {
 		
 		String command = new String(requestByte).trim();
 		
-		
 		System.out.println("The command is: " + command);
 		
 		switch (command) {
@@ -63,8 +62,7 @@ public class Communicator implements Runnable {
 			fileServer.handleRemove();
 			break;
 		case ProtocolMessages.LIST:
-			break;
-		case ProtocolMessages.QUIT:
+			fileServer.handleList(clientAddress, clientPort);
 			break;
 		}
 	}

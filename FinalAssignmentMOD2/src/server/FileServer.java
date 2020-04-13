@@ -84,4 +84,9 @@ public class FileServer {
 		HandleRemove handleRemove = new HandleRemove(communicationSocket, fileDirectory);
 		handleRemove.start();
 	}
+
+	public synchronized void handleList(InetAddress clientAddress, int clientPort) {
+		HandleList handleList = new HandleList(listSocket, fileDirectory, clientAddress, clientPort);
+		handleList.start();
+	}
 }

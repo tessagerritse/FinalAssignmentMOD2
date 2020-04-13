@@ -11,7 +11,7 @@ public class ProtocolMessages {
 	
 	public static final String[] VALID_COMMANDS = {UPLOAD, DOWNLOAD, REMOVE, LIST, PRINT, QUIT};	
 	
-	public static final String[] FILE_NECESSARY = {UPLOAD, DOWNLOAD, REMOVE, LIST, PRINT, QUIT};
+	public static final String[] FILE_NECESSARY = {UPLOAD, DOWNLOAD, REMOVE};
 }
 
 
