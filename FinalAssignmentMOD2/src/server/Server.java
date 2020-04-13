@@ -11,9 +11,9 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
-import client.FileClient;
+import client.Client;
 
-public class FileServer {
+public class Server {
 	
 	public static final int MAX_NAME_LENGTH = 25;
 	public static final int COMMUNICATION_PORT = 8888;
@@ -31,12 +31,12 @@ public class FileServer {
 	private File fileDirectory;
 	Communicator communicator;
 
-	public FileServer() {	
+	public Server() {	
 		fileDirectory = new File(System.getProperty("user.home") + "/FilesOnServer");
 	}
 
 	public static void main(String[] args) {
-		(new FileServer()).start();
+		(new Server()).start();
 	} 
 
 	private void start() {

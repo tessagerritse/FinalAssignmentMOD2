@@ -12,7 +12,7 @@ import java.net.UnknownHostException;
 import exceptions.ExitProgram;
 import transmission.ProtocolMessages;
 
-public class FileClient {
+public class Client {
 
 	private File fileDirectory;
 	private ClientTUI view;
@@ -26,7 +26,7 @@ public class FileClient {
 	private int removePort;
 	private int listPort;
 	
-	public FileClient() {
+	public Client() {
 		fileDirectory = new File(System.getProperty("user.home") + "/FilesOnClient");
 		view = new ClientTUI(this);
 	}
@@ -40,7 +40,7 @@ public class FileClient {
 		String hostName = args[0];
 		int port = Integer.parseInt(args[1]);
 		
-		(new FileClient()).start(hostName, port);
+		(new Client()).start(hostName, port);
 		
 	}
 	

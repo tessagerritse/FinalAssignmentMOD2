@@ -21,7 +21,7 @@ public class HandleRemove {
 	public void start() {
 		
 		try {
-			byte[] fileNameBytes = new byte[FileServer.MAX_NAME_LENGTH];
+			byte[] fileNameBytes = new byte[Server.MAX_NAME_LENGTH];
 			DatagramPacket removeRequest = new DatagramPacket(fileNameBytes, fileNameBytes.length);
 			removeSocket.receive(removeRequest);
 			

@@ -27,7 +27,7 @@ public class HandleDownload {
 
 	public void start() {
 		try {
-			byte[] fileNameBytes = new byte[FileServer.MAX_NAME_LENGTH];
+			byte[] fileNameBytes = new byte[Server.MAX_NAME_LENGTH];
 			DatagramPacket downloadRequest = new DatagramPacket(fileNameBytes, fileNameBytes.length);
 			downloadSocket.receive(downloadRequest);
 			

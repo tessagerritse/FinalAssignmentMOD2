@@ -24,10 +24,10 @@ public class HandleUpload {
 			DatagramPacket uploadRequest = new DatagramPacket(buffIn, buffIn.length);
 			uploadSocket.receive(uploadRequest);
 			
-			byte[] fileNameBytes = new byte[FileServer.MAX_NAME_LENGTH];
+			byte[] fileNameBytes = new byte[Server.MAX_NAME_LENGTH];
 			System.arraycopy(buffIn, 0, fileNameBytes, 0, fileNameBytes.length);
 			String fileName = new String(fileNameBytes).trim();
-			byte[] fileContentBytes = new byte[buffIn.length - FileServer.MAX_NAME_LENGTH];
+			byte[] fileContentBytes = new byte[buffIn.length - Server.MAX_NAME_LENGTH];
 			System.arraycopy(buffIn, fileNameBytes.length, fileContentBytes, 0, fileContentBytes.length);
 			
 			File file = new File(fileDirectory + "/" + fileName);

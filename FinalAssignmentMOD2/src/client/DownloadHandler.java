@@ -8,7 +8,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import server.FileServer;
+import server.Server;
 
 public class DownloadHandler implements Runnable {
 

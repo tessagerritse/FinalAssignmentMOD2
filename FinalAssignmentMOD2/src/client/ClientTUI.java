@@ -18,14 +18,14 @@ import transmission.ProtocolMessages;
  */
 public class ClientTUI {
 
-	private FileClient client;
+	private Client client;
 	private BufferedReader consoleIn;
 	private PrintWriter consoleOut;
 
 	private List<String> validCommands = new ArrayList<>();
 	private List<String> fileNecessary = new ArrayList<>();
 
-	public ClientTUI(FileClient client) {
+	public ClientTUI(Client client) {
 		this.client = client;
 		consoleIn = new BufferedReader(new InputStreamReader(System.in));
 		consoleOut = new PrintWriter(System.out, true);

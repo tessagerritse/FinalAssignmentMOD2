@@ -10,13 +10,13 @@ import transmission.ProtocolMessages;
 
 public class Communicator implements Runnable {
 	
-	private FileServer fileServer;
+	private Server fileServer;
 	private DatagramSocket communicationSocket;
 	
 	private InetAddress clientAddress;
 	private int clientPort;
 
-	public Communicator(FileServer fileServer, DatagramSocket communicationSocket, 
+	public Communicator(Server fileServer, DatagramSocket communicationSocket, 
 			DatagramPacket connectRequest) {
 		this.fileServer = fileServer;
 		this.communicationSocket = communicationSocket;
@@ -69,11 +69,11 @@ public class Communicator implements Runnable {
 
 	private void sendMaxNameLengthAndPortNumbers()
 			throws IOException {
-		byte[] maxNameBytes = BigInteger.valueOf(FileServer.MAX_NAME_LENGTH).toByteArray();
-		byte[] uploadPortBytes = BigInteger.valueOf(FileServer.UPLOAD_PORT).toByteArray();
-		byte[] downloadPortBytes = BigInteger.valueOf(FileServer.DOWNLOAD_PORT).toByteArray();
-		byte[] removePortBytes = BigInteger.valueOf(FileServer.REMOVE_PORT).toByteArray();
-		byte[] listPortBytes = BigInteger.valueOf(FileServer.LIST_PORT).toByteArray();		
+		byte[] maxNameBytes = BigInteger.valueOf(Server.MAX_NAME_LENGTH).toByteArray();
+		byte[] uploadPortBytes = BigInteger.valueOf(Server.UPLOAD_PORT).toByteArray();
+		byte[] downloadPortBytes = BigInteger.valueOf(Server.DOWNLOAD_PORT).toByteArray();
+		byte[] removePortBytes = BigInteger.valueOf(Server.REMOVE_PORT).toByteArray();
+		byte[] listPortBytes = BigInteger.valueOf(Server.LIST_PORT).toByteArray();		
 		
 		byte[] buffOut = new byte[9];
 		System.arraycopy(maxNameBytes, 0, buffOut, 0, maxNameBytes.length);
