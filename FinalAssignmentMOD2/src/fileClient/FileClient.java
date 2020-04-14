@@ -14,6 +14,7 @@ import shared.Protocol;
 public class FileClient {
 
 	private File fileDirectory;
+	private MetaHandler metaHandler;
 	private FileClientTUI view;
 	private InetAddress serverAddress;
 	
@@ -25,6 +26,7 @@ public class FileClient {
 
 	public FileClient() {
 		fileDirectory = new File(System.getProperty("user.home") + "/FilesOnClient");
+		metaHandler = new MetaHandler(view, metaSocket, downloadSocket, listSocket);
 		view = new FileClientTUI(this);
 	}
 
@@ -45,36 +47,19 @@ public class FileClient {
 			setupDirectory();
 			setupSockets();
 			connectToServer();
-			
+//			startReceivingMeta();
 			view.start();
 		} catch (UnknownHostException e) {
 			view.showMessage("Unknown host exception at getting server address: " + e.getMessage());
 		} catch (SocketException e) {
-			view.showMessage("Socket exception at creating client socket: " + e.getMessage());
+			view.showMessage("Socket exception at creating sockets: " + e.getMessage());
 		} catch (IOException e) {
 			view.showMessage("IO exception at connecting to server: " + e.getMessage());
 		}
 	}
 
 	private void startReceivingMeta() throws IOException {
-		while (true) {
-			try {
-				Thread.sleep(50000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			
-			String feedback = receiveFeedback();
-			view.showMessage("Message from server: " + feedback);
-		}
-	}
-
-	private String receiveFeedback() throws IOException {
-		byte[] feedbackBytes = new byte[Protocol.FEEDBACK_PACKET_SIZE];
-		DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length);
-		metaSocket.receive(feedbackPacket);
-		String feedback = new String(feedbackPacket.getData()).trim();
-		return feedback;
+		new Thread(metaHandler).start();
 	}
 
 	private void connectToServer() throws IOException {
@@ -82,8 +67,11 @@ public class FileClient {
 		metaSocket.send(connectRequest);
 		view.showMessage("Trying to connect to the server \n");
 		
-		String feedback = receiveFeedback();
-		view.showMessage(feedback);
+		byte[] feedbackBytes = new byte[Protocol.FEEDBACK_PACKET_SIZE];
+		DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length);
+		metaSocket.receive(feedbackPacket);
+		String feedback = new String(feedbackPacket.getData()).trim();
+		view.showMessage("Message from server: " + feedback);
 	}
 
 	private void setupSockets() throws SocketException {

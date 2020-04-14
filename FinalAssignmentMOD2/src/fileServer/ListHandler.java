@@ -35,23 +35,31 @@ public class ListHandler implements Runnable {
 				
 				String feedback;
 				if (listOfFiles.length == 0) {
-					feedback = "There are to files on the server. \n";
+					feedback = "The file directory on the server is empty. \n";
 				} else {
+					String[] guidingMessage = {"There are " + listOfFiles.length + " files on the server: "};
+					String[] completeList = new String[guidingMessage.length + listOfFiles.length];
+					System.arraycopy(guidingMessage, 0, completeList, 0, guidingMessage.length);
+					System.arraycopy(listOfFiles, 0, completeList, guidingMessage.length, listOfFiles.length);
+					
 					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 					ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-					objectOutputStream.writeObject(listOfFiles);
+					objectOutputStream.writeObject(completeList);
 					objectOutputStream.flush();
 					objectOutputStream.close();
 
-					byte[] listOfFilesBytes = byteArrayOutputStream.toByteArray();		
-					DatagramPacket listResponse = new DatagramPacket(listOfFilesBytes, listOfFilesBytes.length, listCommandPacket.getAddress(), listCommandPacket.getPort());
+					byte[] completeListBytes = byteArrayOutputStream.toByteArray();		
+					DatagramPacket listResponse = new DatagramPacket(completeListBytes, completeListBytes.length, listCommandPacket.getAddress(), listCommandPacket.getPort());
 					listSocket.send(listResponse);
 					
 					feedback = "Sent a list of files on server. \n";
 				}
 				byte[] feedbackBytes = feedback.getBytes();
 				DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, listCommandPacket.getAddress(), clientMetaPort);
-				metaSocket.send(feedbackPacket);
+//				metaSocket.send(feedbackPacket);
+				
+				//TODO deze print verwijderen en meta werkend krijgen
+				System.out.println(feedback);
 			} catch (IOException e) {
 				System.out.println("IO exception at list handler: " + e.getMessage());
 			}

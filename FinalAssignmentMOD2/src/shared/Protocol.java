@@ -12,6 +12,9 @@ public class Protocol {
 	public static final int NAME_PACKET_SIZE = 25;
 	public static final int COMMAND_PACKET_SIZE = 1;
 	public static final int FEEDBACK_PACKET_SIZE = 100;
+	
+	public static final int HEADER_SIZE = 1;
+	public static final int PACKET_SIZE = 256;
 
 	public static final String UPLOAD = "u";
 	public static final String DOWNLOAD = "d";

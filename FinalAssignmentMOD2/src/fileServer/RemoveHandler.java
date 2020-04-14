@@ -41,7 +41,6 @@ public class RemoveHandler implements Runnable {
 				if (!file.exists()) {
 					feedback = "File " + fileName + " doesn't exist on server. \n";
 				} else {
-					file.delete();
 					if(file.delete()) { 
 			            feedback = "File " + fileName + " deleted successfully"; 
 			        } else { 
@@ -50,7 +49,10 @@ public class RemoveHandler implements Runnable {
 				}
 				byte[] feedbackBytes = feedback.getBytes();
 				DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, namePacket.getAddress(), clientMetaPort);
-				metaSocket.send(feedbackPacket);
+//				metaSocket.send(feedbackPacket);
+				
+				//TODO deze print verwijderen en in plaats daarvan meta werken krijgen
+				System.out.println(feedback);
 			} catch (IOException e) {
 				System.out.println("IO exception at upload handler: " + e.getMessage());
 			}

@@ -54,7 +54,10 @@ public class UploadHandler implements Runnable {
 
 				byte[] feedbackBytes = feedback.getBytes();
 				DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, filePacket.getAddress(), clientMetaPort);
-				metaSocket.send(feedbackPacket);
+//				metaSocket.send(feedbackPacket);
+
+				//TODO deze print verwijderen en in plaats daarvan meta werkend krijgen
+				System.out.println(feedback);
 			} catch (IOException e) {
 				System.out.println("IO exception at upload handler: " + e.getMessage());
 				e.printStackTrace();

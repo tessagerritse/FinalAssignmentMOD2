@@ -49,7 +49,11 @@ public class DownloadHandler implements Runnable {
 				}
 				byte[] feedbackBytes = feedback.getBytes();
 				DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, namePacket.getAddress(), clientMetaPort);
-				metaSocket.send(feedbackPacket);
+//				metaSocket.send(feedbackPacket);
+				
+				//TODO deze print verwijderen en meta werkend maken
+				System.out.println(feedback);
+				
 			} catch (IOException e) {
 				System.out.println("IO exception at download handler: " + e.getMessage());
 			}

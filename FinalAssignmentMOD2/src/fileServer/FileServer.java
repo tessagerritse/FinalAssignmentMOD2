@@ -50,24 +50,24 @@ public class FileServer {
 		
 		clientMetaPort = connectRequest.getPort(); 
 		
-		String feedback = "You are now connected to the server. \n";
+		String feedback = "You are now connected. \n";
 		byte[] feedbackBytes = feedback.getBytes();
 		DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, connectRequest.getAddress(), clientMetaPort);
 		metaSocket.send(feedbackPacket);
 	}
 
 	private void setupHandlers() {
-		UploadHandler uploadListener = new UploadHandler(uploadSocket, metaSocket, fileDirectory, clientMetaPort);
-		new Thread(uploadListener).start();
+		UploadHandler uploadhandler = new UploadHandler(uploadSocket, metaSocket, fileDirectory, clientMetaPort);
+		new Thread(uploadhandler).start();
 		
-		DownloadHandler downloadListener = new DownloadHandler(downloadSocket, metaSocket, fileDirectory, clientMetaPort);
-		new Thread(downloadListener).start();
+		DownloadHandler downloadhandler = new DownloadHandler(downloadSocket, metaSocket, fileDirectory, clientMetaPort);
+		new Thread(downloadhandler).start();
 		
-		RemoveHandler removeListener = new RemoveHandler(removeSocket, metaSocket, fileDirectory, clientMetaPort);
-		new Thread(removeListener).start();
+		RemoveHandler removehandler = new RemoveHandler(removeSocket, metaSocket, fileDirectory, clientMetaPort);
+		new Thread(removehandler).start();
 		
-		ListHandler listListener = new ListHandler(listSocket, metaSocket, fileDirectory, clientMetaPort);
-		new Thread(listListener).start();
+		ListHandler listhandler = new ListHandler(listSocket, metaSocket, fileDirectory, clientMetaPort);
+		new Thread(listhandler).start();
 	}
 
 	private void setupSockets() throws SocketException {
