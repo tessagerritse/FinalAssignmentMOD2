@@ -9,10 +9,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import shared.FileActions;
+import shared.FileSender;
 import shared.Protocol;
 
 public class UploadInitiator implements Runnable {
-
+	
 	private FileClientTUI view;
 	private DatagramSocket uploadSocket;
 	private InetAddress serverAddress;
@@ -20,7 +22,7 @@ public class UploadInitiator implements Runnable {
 	private String fileName;
 	
 	public UploadInitiator(FileClientTUI view, DatagramSocket uploadSocket, InetAddress serverAddress,
-			File fileDirectory, String fileName) {
+			File fileDirectory, String fileName) {	
 		this.view = view;
 		this.uploadSocket = uploadSocket;
 		this.serverAddress = serverAddress;
@@ -30,28 +32,16 @@ public class UploadInitiator implements Runnable {
 
 	@Override
 	public void run() {
-		try {
-			File file = new File(fileDirectory + "/" + fileName);
-
-			String feedback;
-			if (!file.exists()) {
-				file.delete();
-				feedback = "File " + fileName + " doesn't exist in the directory. Please try again. \n";
-			} else {				
-				Path path = Paths.get(file.toURI());
-				byte[] fileNameBytes = fileName.getBytes();
-				byte[] fileContentBytes = Files.readAllBytes(path);
-				byte[] fileBytes = new byte[Protocol.NAME_PACKET_SIZE + fileContentBytes.length];
-				System.arraycopy(fileNameBytes, 0, fileBytes, 0, fileNameBytes.length);
-				System.arraycopy(fileContentBytes, 0, fileBytes, Protocol.NAME_PACKET_SIZE, fileContentBytes.length);	
-				
-				//new FileSender(fileBytes, serverAddress, uploadSocket).sendFile();
-								
-				DatagramPacket filePacket = new DatagramPacket(fileBytes, fileBytes.length, serverAddress, Protocol.UPLOAD_PORT);
-				uploadSocket.send(filePacket);
-				feedback = "File " + fileName + " is uploaded to the server. \n";
+		try {	
+			File file = FileActions.getFileObject(fileDirectory, fileName);
+			if (!FileActions.exists(file)) {
+				view.showMessage("File " + fileName + " doesn't exist in the directory. Please try again. \n");
+			} else {
+				byte[] fileNameBytes = FileActions.getStringBytes(fileName);
+				byte[] fileContentBytes = FileActions.getFileContent(file);
+				FileSender.sendFile(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, fileNameBytes, fileContentBytes);
 			}
-			view.showMessage(feedback);	
+			view.showMessage("File " + fileName + " is uploaded to the server. \n");	
 		} catch (IOException e) {
 			view.showMessage("IO exception at upload initiator " + e.getMessage());
 		}	
