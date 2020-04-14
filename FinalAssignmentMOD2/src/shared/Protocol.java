@@ -1,14 +1,17 @@
-package transmission;
+package shared;
 
-public class ProtocolMessages {
+public class Protocol {
 	
-	public static final int MAX_NAME_LENGTH = 25;
-	
-	public static final int COMMUNICATION_PORT = 8888;
+	public static final int META_PORT = 8888;
 	public static final int UPLOAD_PORT = 8008;
 	public static final int DOWNLOAD_PORT = 8080;
 	public static final int REMOVE_PORT = 8800;
 	public static final int LIST_PORT = 8808;
+		
+	public static final int FILE_PACKET_SIZE = 26000;
+	public static final int NAME_PACKET_SIZE = 25;
+	public static final int COMMAND_PACKET_SIZE = 1;
+	public static final int FEEDBACK_PACKET_SIZE = 100;
 
 	public static final String UPLOAD = "u";
 	public static final String DOWNLOAD = "d";

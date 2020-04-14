@@ -1,6 +1,6 @@
-package client;
+package fileClient;
+
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -9,31 +9,25 @@ import java.util.Arrays;
 import java.util.List;
 
 import exceptions.ExitProgram;
-import transmission.ProtocolMessages;
+import shared.Protocol;
 
-/**
- * Client TUI for user input and user messages
- * 
- * @author tessa.gerritse
- */
-public class ClientTUI {
-
-	private Client client;
+public class FileClientTUI {
+	
+	private FileClient fileClient;
 	private BufferedReader consoleIn;
 	private PrintWriter consoleOut;
 
 	private List<String> validCommands = new ArrayList<>();
 	private List<String> fileNecessary = new ArrayList<>();
 
-	public ClientTUI(Client client) {
-		this.client = client;
+	public FileClientTUI(FileClient fileClient) {
+		this.fileClient = fileClient;
 		consoleIn = new BufferedReader(new InputStreamReader(System.in));
 		consoleOut = new PrintWriter(System.out, true);
-		validCommands.addAll(Arrays.asList(ProtocolMessages.VALID_COMMANDS));
-		fileNecessary.addAll(Arrays.asList(ProtocolMessages.FILE_NECESSARY));
+		validCommands.addAll(Arrays.asList(Protocol.VALID_COMMANDS));
+		fileNecessary.addAll(Arrays.asList(Protocol.FILE_NECESSARY));
 	}
-
-	public void start(int maxNameLength) throws IOException {
+	public void start() throws IOException {
 		boolean askingForInput = true;
 		String userInput;
 		printCommandMenu();
@@ -41,7 +35,7 @@ public class ClientTUI {
 		while (askingForInput) {
 			userInput = askStringAnswer("What is your command? \n");
 			try {
-				handleUserInput(userInput, maxNameLength);
+				handleUserInput(userInput);
 			} catch (ExitProgram e) {
 				askingForInput = false;
 				consoleIn.close();
@@ -76,7 +70,7 @@ public class ClientTUI {
 		showMessage(String.format("%-20s %s", "q", "quit the program \n"));
 	}
 
-	private void handleUserInput(String input, int maxNameLength) throws ExitProgram, IOException {
+	private void handleUserInput(String input) throws ExitProgram, IOException {
 		String[] parts = input.split("\\s+");
 		String command = parts[0];
 		String fileName = (parts.length > 1) ? fileName = parts[1] : "";
@@ -85,13 +79,13 @@ public class ClientTUI {
 			showMessage("That is not a valid command. Please try again \n");
 			printCommandMenu();
 		} else if (fileNecessary.contains(command) && fileName.isEmpty()) {
-			showMessage("The file name is missing. Please try again.");
-		} else if (fileName.length() > maxNameLength) {
-			showMessage("That fileName is too long. The fileName may at most be " + maxNameLength + " characters long \n");
-		} else if (command.equals(ProtocolMessages.PRINT)) {		
+			showMessage("The file name is missing. Please try again. \n");
+		} else if (fileName.length() > Protocol.NAME_PACKET_SIZE) {
+			showMessage("That fileName is too long. The fileName may at most be " + Protocol.NAME_PACKET_SIZE + " characters long \n");
+		} else if (command.equals(Protocol.PRINT)) {		
 			printCommandMenu();
 		} else {
-			client.handleRequest(command, fileName);
+			fileClient.handleRequest(command, fileName);
 		}
 	}
 }
