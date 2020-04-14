@@ -33,7 +33,7 @@ public class FileServer {
 			setupDirectory();
 			setupSockets();
 			setupHandlers();
-			System.out.println("The server is started en waiting for clients to connect. \n");
+			System.out.println("The server is started and waiting for clients to connect. \n");
 			while (true) {
 				connectClient();
 			}
@@ -47,7 +47,7 @@ public class FileServer {
 	private void connectClient() throws IOException {
 		DatagramPacket connectRequest = new DatagramPacket(new byte[1], 1);
 		metaSocket.receive(connectRequest);
-		
+				
 		clientMetaPort = connectRequest.getPort(); 
 		
 		String feedback = "You are now connected. \n";

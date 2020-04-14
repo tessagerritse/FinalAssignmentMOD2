@@ -29,7 +29,7 @@ public class ListInitiator implements Runnable {
 			DatagramPacket listCommandPacket = new DatagramPacket(listCommand, listCommand.length, serverAddress, Protocol.LIST_PORT);
 			listSocket.send(listCommandPacket);
 			
-			byte[] listOfFilesBytes = new byte[Protocol.FILE_PACKET_SIZE];
+			byte[] listOfFilesBytes = new byte[Protocol.PACKET_SIZE];
 			DatagramPacket listOfFilesPacket = new DatagramPacket(listOfFilesBytes, listOfFilesBytes.length);
 			listSocket.receive(listOfFilesPacket);
 			

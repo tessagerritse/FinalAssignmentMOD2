@@ -7,14 +7,20 @@ public class Protocol {
 	public static final int DOWNLOAD_PORT = 8080;
 	public static final int REMOVE_PORT = 8800;
 	public static final int LIST_PORT = 8808;
-		
-	public static final int FILE_PACKET_SIZE = 26000;
-	public static final int NAME_PACKET_SIZE = 25;
-	public static final int COMMAND_PACKET_SIZE = 1;
-	public static final int FEEDBACK_PACKET_SIZE = 100;
 	
-	public static final int HEADER_SIZE = 1;
-	public static final int PACKET_SIZE = 256;
+	public static final int PACKET_SIZE = (int) (Math.pow(2, 16) - 50); //bytes, note: -50, just to be sure
+	
+	public static final int HEADER = 2; //bytes
+	public static final int NOT_EOF = 0; //int
+	public static final int EOF = 1; //int
+	public static final int INCL_NAME = 2; //int
+	public static final int MAX_SEQNUM = (int) (Math.pow(2, 8) - 1); //ints
+	
+	public static final int DATA_SIZE = PACKET_SIZE - HEADER; //bytes
+	
+	public static final int COMMAND_PACKET_SIZE = 1;
+	public static final int NAME_PACKET_SIZE = 32;
+	public static final int FEEDBACK_PACKET_SIZE = 128;
 
 	public static final String UPLOAD = "u";
 	public static final String DOWNLOAD = "d";

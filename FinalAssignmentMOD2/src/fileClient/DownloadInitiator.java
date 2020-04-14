@@ -35,7 +35,7 @@ public class DownloadInitiator implements Runnable {
 			downloadSocket.send(namePacket);
 
 			// TODO: hier stoppen als file niet bestaat op server
-			byte[] fileContentBytes = new byte[Protocol.FILE_PACKET_SIZE];
+			byte[] fileContentBytes = new byte[Protocol.PACKET_SIZE];
 			DatagramPacket downloadFile = new DatagramPacket(fileContentBytes, fileContentBytes.length);
 			downloadSocket.receive(downloadFile);
 

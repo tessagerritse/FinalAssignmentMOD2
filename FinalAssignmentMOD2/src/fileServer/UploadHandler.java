@@ -28,7 +28,7 @@ public class UploadHandler implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-				byte[] fileBytes= new byte[Protocol.FILE_PACKET_SIZE];
+				byte[] fileBytes= new byte[Protocol.PACKET_SIZE];
 				DatagramPacket filePacket = new DatagramPacket(fileBytes, fileBytes.length);
 				uploadSocket.receive(filePacket);
 
