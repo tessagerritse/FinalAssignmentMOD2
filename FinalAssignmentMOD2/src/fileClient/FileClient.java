@@ -14,7 +14,6 @@ import shared.Protocol;
 public class FileClient {
 
 	private File fileDirectory;
-	private MetaHandler metaHandler;
 	private FileClientTUI view;
 	private InetAddress serverAddress;
 	
@@ -26,7 +25,6 @@ public class FileClient {
 
 	public FileClient() {
 		fileDirectory = new File(System.getProperty("user.home") + "/FilesOnClient");
-		metaHandler = new MetaHandler(view, metaSocket, downloadSocket, listSocket);
 		view = new FileClientTUI(this);
 	}
 
@@ -59,6 +57,7 @@ public class FileClient {
 	}
 
 	private void startReceivingMeta() throws IOException {
+		MetaHandler metaHandler = new MetaHandler(view, metaSocket, downloadSocket, listSocket);
 		new Thread(metaHandler).start();
 	}
 
