@@ -1,10 +1,10 @@
 package fileClient;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
-import shared.Protocol;
+import shared.FileActions;
+import shared.Receiver;
 
 public class MetaHandler implements Runnable {
 
@@ -21,7 +21,7 @@ public class MetaHandler implements Runnable {
 		this.downloadSocket = downloadSocket;
 		this.listSocket = listSocket;
 	}
-	
+
 	public void setListen(boolean listen) {
 		this.listen = listen;
 	}
@@ -30,12 +30,16 @@ public class MetaHandler implements Runnable {
 	public void run() {
 		while (listen) {
 			try {
-				byte[] feedbackBytes = new byte[Protocol.FEEDBACK_PACKET_SIZE];
-				DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length);
-				metaSocket.receive(feedbackPacket);
-				
-				String feedback = new String(feedbackPacket.getData()).trim();
+				byte[] feedbackBytes = Receiver.receiveFeedback(metaSocket);
+				String feedback = FileActions.getStringFromBytes(feedbackBytes);
+
 				view.showMessage("Message from server: " + feedback + "\n");
+
+				if (feedback.contains("exist")) {
+					downloadSocket.close();
+				} else if (feedback.contains("empty")) {
+					listSocket.close();
+				}
 			} catch (IOException e) {
 				view.showMessage("IO exception at meta handler: " + e.getMessage());
 			}

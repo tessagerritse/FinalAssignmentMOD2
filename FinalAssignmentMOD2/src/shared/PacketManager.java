@@ -54,7 +54,7 @@ public class PacketManager {
 		return listOfPackets;
 	}
 
-	public static byte[] unpackNamePacket(DatagramPacket packet) {
+	public static byte[] unpackNameOrFeedbackPacket(DatagramPacket packet) {
 		byte[] fileNameBytes = new byte[FileActions.getDataLength(packet)];
 		byte[] packetBytes = FileActions.getData(packet);
 		System.arraycopy(packetBytes, 0, fileNameBytes, 0, fileNameBytes.length);		
