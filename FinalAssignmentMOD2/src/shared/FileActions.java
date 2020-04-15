@@ -1,7 +1,10 @@
 package shared;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.DatagramPacket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,7 +12,7 @@ import java.nio.file.Paths;
 public class FileActions {
 
 	public static File getFileObject(File fileDirectory, String fileName) {
-		File file = new File(fileDirectory + "/" + fileName);
+		File file = new File(fileDirectory, fileName);
 		return file;
 	}
 
@@ -17,7 +20,7 @@ public class FileActions {
 		return file.exists();
 	}
 
-	public static byte[] getStringBytes(String string) {
+	public static byte[] getBytesFromString(String string) {
 		return string.getBytes();
 	}
 
@@ -31,11 +34,29 @@ public class FileActions {
 		return contentLength <= Protocol.DATA_SIZE;
 	}
 
-	public static byte[] combineNameAndFileArrays(byte[] firstArray, byte[] secondArray) {
-		byte[] combinedArray = new byte[Protocol.NAME_PACKET_SIZE + secondArray.length];
-		System.arraycopy(firstArray, 0, combinedArray, 0, firstArray.length);
-		System.arraycopy(secondArray, 0, combinedArray, Protocol.NAME_PACKET_SIZE, secondArray.length);
-		return combinedArray;
+	public static String getStringFromBytes(byte[] array) {
+		return new String(array).trim();
 	}
-	
+
+	public static void writeFileContentToDirectory(File directory, byte[] fileContentBytes) throws IOException {
+		OutputStream outputStream = new FileOutputStream(directory);
+		outputStream.write(fileContentBytes);
+		outputStream.flush();
+		outputStream.close();
+	}
+
+	public static byte[] getData(DatagramPacket packet) {
+		return packet.getData();
+	}
+
+	public static int fromByteToInt(byte b) {
+		return (int) b & 0xFF;
+	}
+
+	public static byte[] addToByteArray(byte[] arrayToAddTo, byte[] dataToAdd) {
+		byte[] resultArray = new byte[arrayToAddTo.length + dataToAdd.length];
+		System.arraycopy(arrayToAddTo, 0, resultArray, 0, arrayToAddTo.length);
+		System.arraycopy(dataToAdd, 0, resultArray, arrayToAddTo.length, dataToAdd.length);
+		return resultArray;
+	}	
 }

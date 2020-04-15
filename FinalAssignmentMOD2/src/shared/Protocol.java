@@ -15,7 +15,7 @@ public class Protocol {
 	public static final int CLIENT_LIST_PORT = 9909;
 	
 	public static final int HEADER = 2; //bytes	
-	//Function of HEADER bytes
+	//Location of HEADER bytes
 	public static final int INFO = 0;
 	public static final int SEQNUM = 1;
 	//Possible values of INFO

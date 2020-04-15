@@ -47,7 +47,7 @@ public class FileClient {
 			setupDirectory();
 			setupSockets();
 			connectToServer();
-//			startReceivingMeta();
+			startReceivingMeta();
 			view.start();
 		} catch (UnknownHostException e) {
 			view.showMessage("Unknown host exception at getting server address: " + e.getMessage());
@@ -71,7 +71,7 @@ public class FileClient {
 		DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length);
 		metaSocket.receive(feedbackPacket);
 		String feedback = new String(feedbackPacket.getData()).trim();
-		view.showMessage("Message from server: " + feedback);
+		view.showMessage("Message from server: " + feedback + "\n");
 	}
 
 	private void setupSockets() throws SocketException {

@@ -2,15 +2,11 @@ package fileClient;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import shared.FileActions;
-import shared.FileSender;
+import shared.Sender;
 import shared.Protocol;
 
 public class UploadInitiator implements Runnable {
@@ -37,9 +33,9 @@ public class UploadInitiator implements Runnable {
 			if (!FileActions.exists(file)) {
 				view.showMessage("File " + fileName + " doesn't exist in the directory. Please try again. \n");
 			} else {
-				byte[] fileNameBytes = FileActions.getStringBytes(fileName);
+				byte[] fileNameBytes = FileActions.getBytesFromString(fileName);
 				byte[] fileContentBytes = FileActions.getFileContent(file);
-				FileSender.sendFile(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, fileNameBytes, fileContentBytes);
+				Sender.sendFileInclName(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, fileNameBytes, fileContentBytes);
 			}
 			view.showMessage("File " + fileName + " is uploaded to the server. \n");	
 		} catch (IOException e) {

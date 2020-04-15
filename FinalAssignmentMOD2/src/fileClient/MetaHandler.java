@@ -30,7 +30,7 @@ public class MetaHandler implements Runnable {
 				metaSocket.receive(feedbackPacket);
 				
 				String feedback = new String(feedbackPacket.getData()).trim();
-				view.showMessage("Message from server: " + feedback);
+				view.showMessage("Message from server: " + feedback + "\n");
 			} catch (IOException e) {
 				view.showMessage("IO exception at meta handler: " + e.getMessage());
 			}

@@ -41,7 +41,6 @@ public class DownloadInitiator implements Runnable {
 
 			File file = new File(fileDirectory + "/" + fileName);
 
-			String feedback;
 			if (file.exists()) {
 				view.showMessage("File " + fileName + " already exists and will thus be overwritten. \n");
 			}
