@@ -3,7 +3,7 @@ package fileClient;
 import java.io.IOException;
 import java.net.DatagramSocket;
 
-import shared.FileActions;
+import shared.DataActions;
 import shared.Receiver;
 
 public class MetaHandler implements Runnable {
@@ -31,7 +31,7 @@ public class MetaHandler implements Runnable {
 		while (listen) {
 			try {
 				byte[] feedbackBytes = Receiver.receiveFeedback(metaSocket);
-				String feedback = FileActions.getStringFromBytes(feedbackBytes);
+				String feedback = DataActions.getStringFromBytes(feedbackBytes);
 
 				view.showMessage("Message from server: " + feedback + "\n");
 

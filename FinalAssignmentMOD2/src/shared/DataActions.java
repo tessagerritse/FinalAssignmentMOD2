@@ -1,15 +1,17 @@
 package shared;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class FileActions {
+public class DataActions {
 
 	public static File getFileObject(File fileDirectory, String fileName) {
 		File file = new File(fileDirectory, fileName);
@@ -81,5 +83,13 @@ public class FileActions {
 	public static byte[] addDataToPacket(byte[] packet, byte[] packetData) {
 		System.arraycopy(packetData, 0, packet, Protocol.HEADER, packetData.length);
 		return packet;
+	}
+
+	public static String[] getStringArrayFromByteArray(byte[] listOfFilesBytes) throws IOException, ClassNotFoundException {
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(listOfFilesBytes);
+		ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+		String[] listOfFiles = (String[]) objectInputStream.readObject();
+		objectInputStream.close();
+		return listOfFiles;
 	}	
 }

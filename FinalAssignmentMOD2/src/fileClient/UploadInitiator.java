@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import shared.FileActions;
+import shared.DataActions;
 import shared.Sender;
 import shared.Protocol;
 
@@ -29,13 +29,13 @@ public class UploadInitiator implements Runnable {
 	@Override
 	public void run() {
 		try {	
-			File file = FileActions.getFileObject(fileDirectory, fileName);
+			File file = DataActions.getFileObject(fileDirectory, fileName);
 			
-			if (!FileActions.exists(file)) {
+			if (!DataActions.exists(file)) {
 				view.showMessage("File " + fileName + " doesn't exist in the directory. Please try again. \n");
 			} else {
-				byte[] fileNameBytes = FileActions.getBytesFromString(fileName);				
-				byte[] fileContentBytes = FileActions.getFileContent(file);				
+				byte[] fileNameBytes = DataActions.getBytesFromString(fileName);				
+				byte[] fileContentBytes = DataActions.getFileContent(file);				
 				Sender.sendFileInclName(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, fileNameBytes, fileContentBytes);
 				view.showMessage("File " + fileName + " is uploaded to the server. \n");
 			}	

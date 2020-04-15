@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import shared.FileActions;
+import shared.DataActions;
 import shared.Protocol;
 import shared.Receiver;
 import shared.Sender;
@@ -29,20 +29,20 @@ public class DownloadHandler implements Runnable {
 		while (true) {
 			try {
 				byte[] nameBytes = Receiver.receiveName(downloadSocket);
-				String fileName = FileActions.getStringFromBytes(nameBytes);
+				String fileName = DataActions.getStringFromBytes(nameBytes);
 				
-				File file = FileActions.getFileObject(fileDirectory, fileName);
+				File file = DataActions.getFileObject(fileDirectory, fileName);
 				
 				String feedback;
-				if (!FileActions.exists(file)) {
+				if (!DataActions.exists(file)) {
 					file.delete();
 					feedback = "File " + fileName + " doesn't exist on server. \n";
 				} else {
-					byte[] fileContentBytes = FileActions.getFileContent(file);
+					byte[] fileContentBytes = DataActions.getFileContent(file);
 					Sender.sendFilePacket(downloadSocket, clientAddress, Protocol.CLIENT_DOWNLOAD_PORT, fileContentBytes);
 					feedback = "Sent file " + fileName + "\n";
 				}
-				byte[] feedbackBytes = FileActions.getBytesFromString(feedback);
+				byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
 				Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);		
 			} catch (IOException e) {
 				System.out.println("IO exception at download handler: " + e.getMessage());

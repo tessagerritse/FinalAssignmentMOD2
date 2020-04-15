@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import shared.FileActions;
+import shared.DataActions;
 import shared.Protocol;
 import shared.Receiver;
 import shared.Sender;
@@ -33,8 +33,8 @@ public class RemoveHandler implements Runnable {
 		while (true) {
 			try {
 				byte[] nameBytes = Receiver.receiveName(removeSocket);
-				String fileName = FileActions.getStringFromBytes(nameBytes);
-				File file = FileActions.getFileObject(fileDirectory, fileName);
+				String fileName = DataActions.getStringFromBytes(nameBytes);
+				File file = DataActions.getFileObject(fileDirectory, fileName);
 
 				String feedback;
 				if (!file.exists()) {
@@ -46,7 +46,7 @@ public class RemoveHandler implements Runnable {
 			            feedback = "Failed to delete " + fileName + ". Reason unknown."; 
 			        } 
 				}
-				byte[] feedbackBytes = FileActions.getBytesFromString(feedback);
+				byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
 				Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 			} catch (IOException e) {
 				System.out.println("IO exception at upload handler: " + e.getMessage());
