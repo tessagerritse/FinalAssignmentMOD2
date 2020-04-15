@@ -18,7 +18,7 @@ public class Sender {
 		}
 	}
 
-	private static void sendMultipleFilePackets(DatagramSocket socket, InetAddress address, int port, byte[] fileContent) throws IOException {
+	private static void sendMultipleFilePackets(DatagramSocket socket, InetAddress address, int port, byte[] fileContent) {
 		List<byte[]> listOfPackets = PacketManager.makeListOfFilePackets(fileContent); 
 		
 		for (byte[] singlePacket : listOfPackets) {
@@ -27,8 +27,8 @@ public class Sender {
 		}
 	}
 
-	private static void sendFilePacket(DatagramSocket socket, InetAddress address, int port, byte[] fileContent) throws IOException {
-		byte[] singlePacket = PacketManager.makeSingleFilePacket(Protocol.EOF, 0, fileContent);
+	private static void sendFilePacket(DatagramSocket socket, InetAddress address, int port, byte[] fileContent) {
+		byte[] singlePacket = PacketManager.makeSingleFilePacket(Protocol.EOF, fileContent);
 		DatagramPacket packet = new DatagramPacket(singlePacket, singlePacket.length, address, port);
 		sendPacketWaitForAck(socket, packet);
 	}
@@ -38,9 +38,17 @@ public class Sender {
 		socket.send(packet);
 	}
 	
-	private static void sendPacketWaitForAck(DatagramSocket socket, DatagramPacket packet) throws IOException {
-		socket.send(packet);
-		Receiver.receiveAck(socket);
+	private static void sendPacketWaitForAck(DatagramSocket socket, DatagramPacket packet) {	
+		boolean acked = false;		
+		while (!acked) {
+			try {
+				socket.send(packet);
+				Receiver.receiveAck(socket);
+				acked = true;
+			} catch (IOException e) {
+				acked = false;
+			}
+		}
 	}
 	
 	public static void sendAck(DatagramSocket socket, InetAddress address, int port) throws IOException {

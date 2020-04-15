@@ -17,7 +17,9 @@ public class Protocol {
 	public static final int HEADER = 2; //bytes	
 	//Location of HEADER bytes
 	public static final int INFO = 0;
-	public static final int SEQNUM = 1;
+	public static final int LRC = 1; //Longitudinal redundancy check for integrity
+	//public static final int SEQNUM = 1;
+	
 	//Possible values of INFO
 	public static final int NOT_EOF = 0; //int
 	public static final int EOF = 1; //int

@@ -6,10 +6,10 @@ import java.util.List;
 
 public class PacketManager {
 
-	public static byte[] makeSingleFilePacket(int protocolInfo, int sequenceNumber, byte[] contentBytes) {
+	public static byte[] makeSingleFilePacket(int protocolInfo, byte[] contentBytes) {
 		byte[] singlePacket = new byte[Protocol.HEADER + contentBytes.length];
 		singlePacket[Protocol.INFO] = (byte) protocolInfo;
-		singlePacket[Protocol.SEQNUM] = (byte) sequenceNumber;
+		singlePacket[Protocol.LRC] = FileActions.calculateLRC(contentBytes);
 		System.arraycopy(contentBytes, 0, singlePacket, Protocol.HEADER, contentBytes.length);
 		return singlePacket;
 	}
@@ -39,7 +39,10 @@ public class PacketManager {
 					packet[Protocol.INFO] = (byte) Protocol.NOT_EOF;
 				}	
 				//packet[Protocol.SEQNUM] = (byte) seqNum;
-				System.arraycopy(contentBytes, filePointer, packet, Protocol.HEADER, dataLength);
+				
+				byte[] packetData = FileActions.getDataByteArray(contentBytes, filePointer, dataLength);
+				packet[Protocol.LRC] = FileActions.calculateLRC(packetData);
+				packet = FileActions.addDataToPacket(packet, packetData);				
 
 				listOfPackets.add(packet);
 
@@ -63,9 +66,8 @@ public class PacketManager {
 		return FileActions.fromByteToInt(infoByte);
 	}
 
-	public static int unpackFilePacketSeqNum(DatagramPacket packet) {
-		byte seqNum = FileActions.getData(packet)[Protocol.SEQNUM];
-		return FileActions.fromByteToInt(seqNum);
+	public static byte unpackFilePacketLRC(DatagramPacket packet) {
+		return FileActions.getData(packet)[Protocol.LRC];
 	}
 
 	public static byte[] unpackFilePacketData(DatagramPacket packet) {
@@ -73,10 +75,5 @@ public class PacketManager {
 		byte[] packetBytes = FileActions.getData(packet);
 		System.arraycopy(packetBytes, Protocol.HEADER, data, 0, data.length);
 		return data;
-	}
-
-	public static int unpackAck(DatagramPacket packet) {
-		byte seqNum = FileActions.getData(packet)[0];
-		return FileActions.fromByteToInt(seqNum);
 	}
 }

@@ -64,6 +64,12 @@ public class FileActions {
 		return resultArray;
 	}
 	
+	public static byte[] getDataByteArray(byte[] contentBytes, int filePointer, int dataLength) {
+		byte[] dataByteArray = new byte[dataLength];
+		System.arraycopy(contentBytes, filePointer, dataByteArray, 0, dataByteArray.length);
+		return dataByteArray;
+	}
+	
 	public static byte calculateLRC(byte[] contentBytes) {
 		byte LRC = 0;
 		for (int i = 0; i < contentBytes.length; i++) {
@@ -71,4 +77,9 @@ public class FileActions {
 		}
 		return LRC;
 	}
+
+	public static byte[] addDataToPacket(byte[] packet, byte[] packetData) {
+		System.arraycopy(packetData, 0, packet, Protocol.HEADER, packetData.length);
+		return packet;
+	}	
 }
