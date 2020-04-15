@@ -9,7 +9,7 @@ public class Receiver {
 	public static byte[] receiveName(DatagramSocket socket) throws IOException {
 		byte[] namePacket = new byte[Protocol.NAME_PACKET_SIZE];
 		DatagramPacket packet = new DatagramPacket(namePacket, namePacket.length);
-		socket.receive(packet);		
+		socket.receive(packet);	
 		return PacketManager.unpackNamePacket(packet);
 	}
 

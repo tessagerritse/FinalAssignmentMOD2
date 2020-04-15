@@ -45,6 +45,10 @@ public class FileActions {
 		outputStream.close();
 	}
 
+	public static int getDataLength(DatagramPacket packet) {
+		return packet.getLength();
+	}
+
 	public static byte[] getData(DatagramPacket packet) {
 		return packet.getData();
 	}
