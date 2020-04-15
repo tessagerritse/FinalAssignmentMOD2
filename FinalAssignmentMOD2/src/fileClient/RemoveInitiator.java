@@ -1,11 +1,12 @@
 package fileClient;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import shared.FileActions;
 import shared.Protocol;
+import shared.Sender;
 
 public class RemoveInitiator implements Runnable {
 
@@ -25,10 +26,8 @@ public class RemoveInitiator implements Runnable {
 	@Override
 	public void run() {
 		try {
-			byte[] nameBytes = fileName.getBytes();
-			DatagramPacket namePacket = new DatagramPacket(nameBytes, nameBytes.length, serverAddress, Protocol.REMOVE_PORT);
-			removeSocket.send(namePacket);
-			
+			byte[] nameBytes = FileActions.getBytesFromString(fileName);
+			Sender.sendNamePacket(removeSocket, serverAddress, Protocol.REMOVE_PORT, nameBytes);
 			view.showMessage("Sent request to server to remove " + fileName + ". \n");
 		} catch (IOException e) {
 			view.showMessage("IO exception at remove initiator: " + e.getMessage());

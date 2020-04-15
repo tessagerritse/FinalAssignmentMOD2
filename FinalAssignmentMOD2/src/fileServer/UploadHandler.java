@@ -30,7 +30,7 @@ public class UploadHandler implements Runnable {
 	public void run() {
 		while (true) {
 			try {	
-				byte[] fileNameBytes  = Receiver.receiveName(uploadSocket, clientAddress);						
+				byte[] fileNameBytes  = Receiver.receiveName(uploadSocket);						
 				byte[] fileContentBytes = Receiver.receiveFile(uploadSocket, clientAddress, Protocol.CLIENT_UPLOAD_PORT);
 				
 				String fileName = FileActions.getStringFromBytes(fileNameBytes);				

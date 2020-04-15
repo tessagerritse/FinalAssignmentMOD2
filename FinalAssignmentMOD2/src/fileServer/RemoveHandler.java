@@ -9,7 +9,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import shared.FileActions;
 import shared.Protocol;
+import shared.Receiver;
+import shared.Sender;
 
 public class RemoveHandler implements Runnable {
 
@@ -29,13 +32,9 @@ public class RemoveHandler implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-				byte[] nameBytes= new byte[Protocol.NAME_PACKET_SIZE];
-				DatagramPacket namePacket = new DatagramPacket(nameBytes, nameBytes.length);
-				removeSocket.receive(namePacket);
-
-				String fileName = new String(namePacket.getData()).trim();
-
-				File file = new File(fileDirectory + "/" + fileName);
+				byte[] nameBytes = Receiver.receiveName(removeSocket);
+				String fileName = FileActions.getStringFromBytes(nameBytes);
+				File file = FileActions.getFileObject(fileDirectory, fileName);
 
 				String feedback;
 				if (!file.exists()) {
@@ -47,12 +46,8 @@ public class RemoveHandler implements Runnable {
 			            feedback = "Failed to delete " + fileName + ". Reason unknown."; 
 			        } 
 				}
-				byte[] feedbackBytes = feedback.getBytes();
-				DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, clientAddress, Protocol.CLIENT_META_PORT);
-//				metaSocket.send(feedbackPacket);
-				
-				//TODO deze print verwijderen en in plaats daarvan meta werken krijgen
-				System.out.println(feedback);
+				byte[] feedbackBytes = FileActions.getBytesFromString(feedback);
+				Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 			} catch (IOException e) {
 				System.out.println("IO exception at upload handler: " + e.getMessage());
 			}

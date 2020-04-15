@@ -28,7 +28,7 @@ public class DownloadHandler implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-				byte[] nameBytes = Receiver.receiveName(downloadSocket, clientAddress);
+				byte[] nameBytes = Receiver.receiveName(downloadSocket);
 				String fileName = FileActions.getStringFromBytes(nameBytes);
 				
 				File file = FileActions.getFileObject(fileDirectory, fileName);
