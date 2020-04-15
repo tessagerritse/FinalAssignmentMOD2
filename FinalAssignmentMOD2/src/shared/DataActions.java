@@ -1,10 +1,12 @@
 package shared;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.nio.file.Files;
@@ -59,12 +61,19 @@ public class DataActions {
 		return (int) b & 0xFF;
 	}
 
-	public static byte[] addToByteArray(byte[] arrayToAddTo, byte[] dataToAdd) {
-		byte[] resultArray = new byte[arrayToAddTo.length + dataToAdd.length];
-		System.arraycopy(arrayToAddTo, 0, resultArray, 0, arrayToAddTo.length);
-		System.arraycopy(dataToAdd, 0, resultArray, arrayToAddTo.length, dataToAdd.length);
+	public static byte[] combine2ByteArrays(byte[] firstArray, byte[] secondArray) {
+		byte[] resultArray = new byte[firstArray.length + secondArray.length];
+		System.arraycopy(firstArray, 0, resultArray, 0, firstArray.length);
+		System.arraycopy(secondArray, 0, resultArray, firstArray.length, secondArray.length);
 		return resultArray;
 	}
+	
+	public static String[] combine2StringArrays(String[] firstArray, String[] secondArray) {
+		String[] resultArray = new String[firstArray.length + secondArray.length];
+		System.arraycopy(firstArray, 0, resultArray, 0, firstArray.length);
+		System.arraycopy(secondArray, 0, resultArray, firstArray.length, secondArray.length);
+		return resultArray;
+	}	
 	
 	public static byte[] getDataByteArray(byte[] contentBytes, int filePointer, int dataLength) {
 		byte[] dataByteArray = new byte[dataLength];
@@ -91,5 +100,14 @@ public class DataActions {
 		String[] listOfFiles = (String[]) objectInputStream.readObject();
 		objectInputStream.close();
 		return listOfFiles;
-	}	
+	}
+
+	public static byte[] getByteArrayFromStringArray(String[] completeList) throws IOException {
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+		objectOutputStream.writeObject(completeList);
+		objectOutputStream.flush();
+		objectOutputStream.close();
+		return byteArrayOutputStream.toByteArray();
+	}
 }

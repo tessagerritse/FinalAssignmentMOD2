@@ -1,14 +1,13 @@
 package fileClient;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import shared.DataActions;
 import shared.Protocol;
+import shared.Receiver;
+import shared.Sender;
 
 public class ListInitiator implements Runnable {
 
@@ -25,18 +24,11 @@ public class ListInitiator implements Runnable {
 	@Override
 	public void run() {
 		try {
-			byte[] listCommand = Protocol.LIST.getBytes();
-			DatagramPacket listCommandPacket = new DatagramPacket(listCommand, listCommand.length, serverAddress, Protocol.LIST_PORT);
-			listSocket.send(listCommandPacket);
+			byte[] listCommand = DataActions.getBytesFromString(Protocol.LIST);
+			Sender.sendCommand(listSocket, serverAddress, Protocol.LIST_PORT, listCommand);
 			
-			byte[] listOfFilesBytes = new byte[Protocol.PACKET_SIZE];
-			DatagramPacket listOfFilesPacket = new DatagramPacket(listOfFilesBytes, listOfFilesBytes.length);
-			listSocket.receive(listOfFilesPacket);
-			
-			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(listOfFilesPacket.getData());
-			ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-			String[] listOfFiles = (String[]) objectInputStream.readObject();
-			objectInputStream.close();
+			byte[] listOfFilesBytes = Receiver.receiveMultiplePackets(listSocket, serverAddress, Protocol.CLIENT_LIST_PORT);
+			String[] listOfFiles = DataActions.getStringArrayFromByteArray(listOfFilesBytes);
 			
 			for (String file : listOfFiles) {
 				view.showMessage(file);
@@ -47,5 +39,4 @@ public class ListInitiator implements Runnable {
 			view.showMessage("ClassNotFound exception at list initiator: " + e.getMessage());
 		}
 	}
-
 }

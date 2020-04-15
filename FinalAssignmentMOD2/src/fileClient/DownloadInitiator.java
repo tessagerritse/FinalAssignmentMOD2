@@ -8,7 +8,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import shared.FileActions;
+import shared.DataActions;
 import shared.Protocol;
 import shared.Receiver;
 import shared.Sender;
@@ -33,18 +33,18 @@ public class DownloadInitiator implements Runnable {
 	@Override
 	public void run() {
 		try {
-			File file = FileActions.getFileObject(fileDirectory, fileName);
+			File file = DataActions.getFileObject(fileDirectory, fileName);
 
-			if (FileActions.exists(file)) {
+			if (DataActions.exists(file)) {
 				view.showMessage("File " + fileName + " already exists and will thus be overwritten. \n");
 			}
 			
-			byte[] nameBytes = FileActions.getBytesFromString(fileName);
+			byte[] nameBytes = DataActions.getBytesFromString(fileName);
 			Sender.sendNamePacket(downloadSocket, serverAddress, Protocol.DOWNLOAD_PORT, nameBytes);
 			
 			//TODO: hier stoppen als file niet bestaat op server
-			byte[] fileContentBytes = Receiver.receiveFile(downloadSocket, serverAddress, Protocol.DOWNLOAD_PORT);
-			FileActions.writeFileContentToDirectory(file, fileContentBytes);
+			byte[] fileContentBytes = Receiver.receiveMultiplePackets(downloadSocket, serverAddress, Protocol.DOWNLOAD_PORT);
+			DataActions.writeFileContentToDirectory(file, fileContentBytes);
 		} catch (IOException e) {
 			view.showMessage("IO exception at download initiator: " + e.getMessage());
 		}	

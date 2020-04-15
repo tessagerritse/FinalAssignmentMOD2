@@ -7,7 +7,7 @@ import java.io.OutputStream;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import shared.FileActions;
+import shared.DataActions;
 import shared.Protocol;
 import shared.Receiver;
 import shared.Sender;
@@ -31,10 +31,10 @@ public class UploadHandler implements Runnable {
 		while (true) {
 			try {	
 				byte[] fileNameBytes  = Receiver.receiveName(uploadSocket);						
-				byte[] fileContentBytes = Receiver.receiveFile(uploadSocket, clientAddress, Protocol.CLIENT_UPLOAD_PORT);
+				byte[] fileContentBytes = Receiver.receiveMultiplePackets(uploadSocket, clientAddress, Protocol.CLIENT_UPLOAD_PORT);
 				
-				String fileName = FileActions.getStringFromBytes(fileNameBytes);				
-				File file = FileActions.getFileObject(fileDirectory, fileName);
+				String fileName = DataActions.getStringFromBytes(fileNameBytes);				
+				File file = DataActions.getFileObject(fileDirectory, fileName);
 				
 				String feedback;
 				if (!file.exists()) {
@@ -43,9 +43,9 @@ public class UploadHandler implements Runnable {
 					feedback = "File " + fileName + " already existed and is thus overwritten. \n";
 				}
 
-				FileActions.writeFileContentToDirectory(file, fileContentBytes);
+				DataActions.writeFileContentToDirectory(file, fileContentBytes);
 				
-				byte[] feedbackBytes = FileActions.getBytesFromString(feedback);
+				byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
 				Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 			} catch (IOException e) {
 				System.out.println("IO exception at upload handler: " + e.getMessage());

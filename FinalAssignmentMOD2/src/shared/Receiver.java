@@ -14,28 +14,28 @@ public class Receiver {
 		return PacketManager.unpackNameOrFeedbackPacket(packet);
 	}
 
-	public static byte[] receiveFile(DatagramSocket socket, InetAddress address, int port) throws IOException {		
+	public static byte[] receiveMultiplePackets(DatagramSocket socket, InetAddress address, int port) throws IOException {		
 		boolean lastPacket = false;
 		byte[] fileContentBytes = null;
 
 		while(!lastPacket) {
 
-			DatagramPacket packet = receiveSingleFilePacket(socket);
+			DatagramPacket packet = receiveSinglePacket(socket);
 
-			byte LRC = PacketManager.unpackFilePacketLRC(packet);
-			byte[] dataToAdd = PacketManager.unpackFilePacketData(packet);	
+			byte LRC = PacketManager.unpackPacketLRC(packet);
+			byte[] dataToAdd = PacketManager.unpackPacketData(packet);	
 
-			if (LRC == FileActions.calculateLRC(dataToAdd)) {
+			if (LRC == DataActions.calculateLRC(dataToAdd)) {
 				Sender.sendAck(socket, address, port);
 			} 
 
 			if (fileContentBytes == null) {
 				fileContentBytes = dataToAdd;
 			} else {		
-				fileContentBytes = FileActions.addToByteArray(fileContentBytes, dataToAdd);
+				fileContentBytes = DataActions.combine2ByteArrays(fileContentBytes, dataToAdd);
 			}
 
-			int info = PacketManager.unpackFilePacketInfo(packet);			
+			int info = PacketManager.unpackPacketInfo(packet);			
 			if (info == Protocol.EOF) {
 				lastPacket = true;
 			}
@@ -43,7 +43,7 @@ public class Receiver {
 		return fileContentBytes;
 	}
 
-	private static DatagramPacket receiveSingleFilePacket(DatagramSocket socket) throws IOException {
+	public static DatagramPacket receiveSinglePacket(DatagramSocket socket) throws IOException {
 		byte[] singleFilePacket = new byte[Protocol.PACKET_SIZE];
 		DatagramPacket packet = new DatagramPacket(singleFilePacket, singleFilePacket.length);
 		socket.receive(packet);		
@@ -62,5 +62,11 @@ public class Receiver {
 		DatagramPacket packet = new DatagramPacket(feedbackBytes, feedbackBytes.length);
 		metaSocket.receive(packet);
 		return PacketManager.unpackNameOrFeedbackPacket(packet);
+	}
+
+	public static void receiveCommand(DatagramSocket socket) throws IOException {
+		byte[] listCommand = new byte[Protocol.COMMAND_PACKET_SIZE];
+		DatagramPacket listCommandPacket = new DatagramPacket(listCommand, listCommand.length);
+		socket.receive(listCommandPacket);
 	}
 }

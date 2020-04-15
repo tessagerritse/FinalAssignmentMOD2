@@ -8,18 +8,16 @@ import java.util.List;
 
 public class Sender {
 
-	public static void sendFileInclName(DatagramSocket socket, InetAddress address, int port, byte[] fileName, byte[] fileContent) throws IOException {
-		if (FileActions.fitsOnePacket(fileContent.length)) {			
-			sendNamePacket(socket, address, port, fileName);
-			sendFilePacket(socket, address, port, fileContent);
+	public static void sendSingleOrMultiplePackets(DatagramSocket socket, InetAddress address, int port, byte[] content) throws IOException {
+		if (DataActions.fitsOnePacket(content.length)) {			
+			sendSinglePacket(socket, address, port, content);
 		} else {			
-			sendNamePacket(socket, address, port, fileName);
-			sendMultipleFilePackets(socket, address, port, fileContent);
+			sendMultiplePackets(socket, address, port, content);
 		}
 	}
 
-	private static void sendMultipleFilePackets(DatagramSocket socket, InetAddress address, int port, byte[] fileContent) {
-		List<byte[]> listOfPackets = PacketManager.makeListOfFilePackets(fileContent); 
+	private static void sendMultiplePackets(DatagramSocket socket, InetAddress address, int port, byte[] content) {
+		List<byte[]> listOfPackets = PacketManager.makeMultiplePackets(content); 
 		
 		for (byte[] singlePacket : listOfPackets) {
 			DatagramPacket packet = new DatagramPacket(singlePacket, singlePacket.length, address, port);
@@ -27,8 +25,8 @@ public class Sender {
 		}
 	}
 
-	public static void sendFilePacket(DatagramSocket socket, InetAddress address, int port, byte[] fileContent) {
-		byte[] singlePacket = PacketManager.makeSingleFilePacket(Protocol.EOF, fileContent);
+	public static void sendSinglePacket(DatagramSocket socket, InetAddress address, int port, byte[] content) {
+		byte[] singlePacket = PacketManager.makeSinglePacket(Protocol.EOF, content);
 		DatagramPacket packet = new DatagramPacket(singlePacket, singlePacket.length, address, port);
 		sendPacketWaitForAck(socket, packet);
 	}
@@ -60,5 +58,10 @@ public class Sender {
 	public static void sendFeedback(DatagramSocket metaSocket, InetAddress clientAddress, byte[] feedbackBytes) throws IOException {
 		DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, clientAddress, Protocol.CLIENT_META_PORT);
 		metaSocket.send(feedbackPacket);
+	}
+
+	public static void sendCommand(DatagramSocket socket, InetAddress address, int port, byte[] command) throws IOException {
+		DatagramPacket commandPacket = new DatagramPacket(command, command.length, address, port);
+		socket.send(commandPacket);
 	}
 }

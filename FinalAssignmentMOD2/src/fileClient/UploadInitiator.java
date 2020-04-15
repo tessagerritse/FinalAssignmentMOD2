@@ -34,9 +34,12 @@ public class UploadInitiator implements Runnable {
 			if (!DataActions.exists(file)) {
 				view.showMessage("File " + fileName + " doesn't exist in the directory. Please try again. \n");
 			} else {
-				byte[] fileNameBytes = DataActions.getBytesFromString(fileName);				
-				byte[] fileContentBytes = DataActions.getFileContent(file);				
-				Sender.sendFileInclName(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, fileNameBytes, fileContentBytes);
+				byte[] fileNameBytes = DataActions.getBytesFromString(fileName);	
+				Sender.sendNamePacket(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, fileNameBytes);
+
+				byte[] fileContentBytes = DataActions.getFileContent(file);	
+				Sender.sendSingleOrMultiplePackets(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, fileContentBytes);
+				
 				view.showMessage("File " + fileName + " is uploaded to the server. \n");
 			}	
 		} catch (IOException e) {
