@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 
 import shared.Protocol;
 
@@ -14,13 +15,13 @@ public class ListHandler implements Runnable {
 	private DatagramSocket listSocket;
 	private DatagramSocket metaSocket;
 	private File fileDirectory;
-	private int clientMetaPort;
+	private InetAddress clientAddress;
 
-	public ListHandler(DatagramSocket listSocket, DatagramSocket metaSocket, File fileDirectory, int clientMetaPort) {
+	public ListHandler(DatagramSocket listSocket, DatagramSocket metaSocket, File fileDirectory, InetAddress clientAddress) {
 		this.listSocket = listSocket;
 		this.metaSocket = metaSocket;
 		this.fileDirectory = fileDirectory;
-		this.clientMetaPort = clientMetaPort;
+		this.clientAddress = clientAddress;
 	}
 
 	@Override
@@ -49,13 +50,13 @@ public class ListHandler implements Runnable {
 					objectOutputStream.close();
 
 					byte[] completeListBytes = byteArrayOutputStream.toByteArray();		
-					DatagramPacket listResponse = new DatagramPacket(completeListBytes, completeListBytes.length, listCommandPacket.getAddress(), listCommandPacket.getPort());
+					DatagramPacket listResponse = new DatagramPacket(completeListBytes, completeListBytes.length, clientAddress, Protocol.CLIENT_LIST_PORT);
 					listSocket.send(listResponse);
 					
 					feedback = "Sent a list of files on server. \n";
 				}
 				byte[] feedbackBytes = feedback.getBytes();
-				DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, listCommandPacket.getAddress(), clientMetaPort);
+				DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, clientAddress, Protocol.CLIENT_META_PORT);
 //				metaSocket.send(feedbackPacket);
 				
 				//TODO deze print verwijderen en meta werkend krijgen

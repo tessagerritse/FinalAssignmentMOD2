@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,13 +16,13 @@ public class DownloadHandler implements Runnable {
 	private DatagramSocket downloadSocket;
 	private DatagramSocket metaSocket;
 	private File fileDirectory;
-	private int clientMetaPort;
+	private InetAddress clientAddress;
 
-	public DownloadHandler(DatagramSocket downloadSocket, DatagramSocket metaSocket, File fileDirectory, int clientMetaPort) {
+	public DownloadHandler(DatagramSocket downloadSocket, DatagramSocket metaSocket, File fileDirectory, InetAddress clientAddress) {
 		this.downloadSocket = downloadSocket;
 		this.metaSocket = metaSocket;
 		this.fileDirectory = fileDirectory;
-		this.clientMetaPort = clientMetaPort;
+		this.clientAddress = clientAddress;
 	}
 
 	@Override
@@ -43,12 +44,12 @@ public class DownloadHandler implements Runnable {
 				} else {
 					Path path = Paths.get(file.toURI());			
 					byte[] fileContentBytes = Files.readAllBytes(path);
-					DatagramPacket downloadResponse = new DatagramPacket(fileContentBytes, fileContentBytes.length, namePacket.getAddress(), namePacket.getPort());
+					DatagramPacket downloadResponse = new DatagramPacket(fileContentBytes, fileContentBytes.length, clientAddress, Protocol.CLIENT_DOWNLOAD_PORT);
 					downloadSocket.send(downloadResponse);
 					feedback = "Sent file " + fileName + " from server. \n";
 				}
 				byte[] feedbackBytes = feedback.getBytes();
-				DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, namePacket.getAddress(), clientMetaPort);
+				DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, namePacket.getAddress(), Protocol.CLIENT_META_PORT);
 //				metaSocket.send(feedbackPacket);
 				
 				//TODO deze print verwijderen en meta werkend maken

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
 
 import shared.Protocol;
@@ -18,7 +19,7 @@ public class FileServer {
 	private DatagramSocket removeSocket;
 	private DatagramSocket listSocket;
 
-	private int clientMetaPort;
+	private InetAddress clientAddress;
 
 	public FileServer() {	
 		fileDirectory = new File(System.getProperty("user.home") + "/FilesOnServer");
@@ -32,42 +33,43 @@ public class FileServer {
 		try {
 			setupDirectory();
 			setupSockets();
-			setupHandlers();
 			System.out.println("The server is started and waiting for clients to connect. \n");
-			while (true) {
-				connectClient();
-			}
+			receiveConnectRequest();
+			setupHandlers();
+			sendConnectApproved();
 		} catch (SocketException e) {
 			System.out.println("Socket exception at server-setup: " + e.getMessage());
 		} catch (IOException e) {
 			System.out.println("IO exception at connecting with client: " + e.getMessage());
 		}
 	}
-	
-	private void connectClient() throws IOException {
-		DatagramPacket connectRequest = new DatagramPacket(new byte[1], 1);
-		metaSocket.receive(connectRequest);
-				
-		clientMetaPort = connectRequest.getPort(); 
-		
+
+	private void sendConnectApproved() throws IOException {		
 		String feedback = "You are now connected. \n";
 		byte[] feedbackBytes = feedback.getBytes();
-		DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, connectRequest.getAddress(), clientMetaPort);
+		DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, clientAddress, Protocol.CLIENT_META_PORT);
 		metaSocket.send(feedbackPacket);
 	}
 
 	private void setupHandlers() {
-		UploadHandler uploadhandler = new UploadHandler(uploadSocket, metaSocket, fileDirectory, clientMetaPort);
+		UploadHandler uploadhandler = new UploadHandler(uploadSocket, metaSocket, fileDirectory, clientAddress);
 		new Thread(uploadhandler).start();
 		
-		DownloadHandler downloadhandler = new DownloadHandler(downloadSocket, metaSocket, fileDirectory, clientMetaPort);
+		DownloadHandler downloadhandler = new DownloadHandler(downloadSocket, metaSocket, fileDirectory, clientAddress);
 		new Thread(downloadhandler).start();
 		
-		RemoveHandler removehandler = new RemoveHandler(removeSocket, metaSocket, fileDirectory, clientMetaPort);
+		RemoveHandler removehandler = new RemoveHandler(removeSocket, metaSocket, fileDirectory, clientAddress);
 		new Thread(removehandler).start();
 		
-		ListHandler listhandler = new ListHandler(listSocket, metaSocket, fileDirectory, clientMetaPort);
+		ListHandler listhandler = new ListHandler(listSocket, metaSocket, fileDirectory, clientAddress);
 		new Thread(listhandler).start();
+	}
+	
+	private void receiveConnectRequest() throws IOException {
+		DatagramPacket connectRequest = new DatagramPacket(new byte[1], 1);
+		metaSocket.receive(connectRequest);
+		
+		clientAddress = connectRequest.getAddress();
 	}
 
 	private void setupSockets() throws SocketException {

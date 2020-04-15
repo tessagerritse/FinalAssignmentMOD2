@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,14 +16,13 @@ public class RemoveHandler implements Runnable {
 	private DatagramSocket removeSocket;
 	private DatagramSocket metaSocket;
 	private File fileDirectory;
-	private int clientMetaPort;
+	private InetAddress clientAddress;
 
-	public RemoveHandler(DatagramSocket removeSocket, DatagramSocket metaSocket, File fileDirectory,
-			int clientMetaPort) {
+	public RemoveHandler(DatagramSocket removeSocket, DatagramSocket metaSocket, File fileDirectory, InetAddress clientAddress) {
 		this.removeSocket = removeSocket;
 		this.metaSocket = metaSocket;
 		this.fileDirectory = fileDirectory;
-		this.clientMetaPort = clientMetaPort;
+		this.clientAddress = clientAddress;
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class RemoveHandler implements Runnable {
 			        } 
 				}
 				byte[] feedbackBytes = feedback.getBytes();
-				DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, namePacket.getAddress(), clientMetaPort);
+				DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, clientAddress, Protocol.CLIENT_META_PORT);
 //				metaSocket.send(feedbackPacket);
 				
 				//TODO deze print verwijderen en in plaats daarvan meta werken krijgen

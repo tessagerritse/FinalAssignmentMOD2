@@ -75,11 +75,11 @@ public class FileClient {
 	}
 
 	private void setupSockets() throws SocketException {
-		metaSocket = new DatagramSocket();
-		uploadSocket = new DatagramSocket();
-		downloadSocket = new DatagramSocket();
-		removeSocket = new DatagramSocket();
-		listSocket = new DatagramSocket();
+		metaSocket = new DatagramSocket(Protocol.CLIENT_META_PORT);
+		uploadSocket = new DatagramSocket(Protocol.CLIENT_UPLOAD_PORT);
+		downloadSocket = new DatagramSocket(Protocol.CLIENT_DOWNLOAD_PORT);
+		removeSocket = new DatagramSocket(Protocol.CLIENT_REMOVE_PORT);
+		listSocket = new DatagramSocket(Protocol.CLIENT_LIST_PORT);
 	}
 
 	private void setupDirectory() {
