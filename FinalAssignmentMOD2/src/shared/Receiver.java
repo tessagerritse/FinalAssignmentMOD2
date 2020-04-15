@@ -8,7 +8,7 @@ import java.net.SocketException;
 
 public class Receiver {
 
-	public static byte[] receiveName(DatagramSocket socket, InetAddress address, int port) throws IOException {
+	public static byte[] receiveName(DatagramSocket socket, InetAddress address) throws IOException {
 		byte[] namePacket = new byte[Protocol.NAME_PACKET_SIZE];
 		DatagramPacket packet = new DatagramPacket(namePacket, namePacket.length);
 		socket.receive(packet);
@@ -21,7 +21,7 @@ public class Receiver {
 		
 		while(!lastPacket) {
 			
-			DatagramPacket packet = receiveSingleFilePacket(socket, address, port);
+			DatagramPacket packet = receiveSingleFilePacket(socket);
 			
 			byte LRC = PacketManager.unpackFilePacketLRC(packet);
 			byte[] dataToAdd = PacketManager.unpackFilePacketData(packet);	
@@ -44,7 +44,7 @@ public class Receiver {
 		return fileContentBytes;
 	}
 
-	private static DatagramPacket receiveSingleFilePacket(DatagramSocket socket, InetAddress address, int port) throws IOException {
+	private static DatagramPacket receiveSingleFilePacket(DatagramSocket socket) throws IOException {
 		byte[] singleFilePacket = new byte[Protocol.PACKET_SIZE];
 		DatagramPacket packet = new DatagramPacket(singleFilePacket, singleFilePacket.length);
 		socket.receive(packet);		

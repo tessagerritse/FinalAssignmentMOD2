@@ -27,13 +27,13 @@ public class Sender {
 		}
 	}
 
-	private static void sendFilePacket(DatagramSocket socket, InetAddress address, int port, byte[] fileContent) {
+	public static void sendFilePacket(DatagramSocket socket, InetAddress address, int port, byte[] fileContent) {
 		byte[] singlePacket = PacketManager.makeSingleFilePacket(Protocol.EOF, fileContent);
 		DatagramPacket packet = new DatagramPacket(singlePacket, singlePacket.length, address, port);
 		sendPacketWaitForAck(socket, packet);
 	}
 	
-	private static void sendNamePacket(DatagramSocket socket, InetAddress address, int port, byte[] fileName) throws IOException {
+	public static void sendNamePacket(DatagramSocket socket, InetAddress address, int port, byte[] fileName) throws IOException {
 		DatagramPacket packet = new DatagramPacket(fileName, fileName.length, address, port);
 		socket.send(packet);
 	}
@@ -57,8 +57,7 @@ public class Sender {
 		socket.send(packet);
 	}
 
-	public static void sendFeedback(DatagramSocket metaSocket, InetAddress clientAddress, String feedback) throws IOException {
-		byte[] feedbackBytes = feedback.getBytes();
+	public static void sendFeedback(DatagramSocket metaSocket, InetAddress clientAddress, byte[] feedbackBytes) throws IOException {
 		DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, clientAddress, Protocol.CLIENT_META_PORT);
 		metaSocket.send(feedbackPacket);
 	}

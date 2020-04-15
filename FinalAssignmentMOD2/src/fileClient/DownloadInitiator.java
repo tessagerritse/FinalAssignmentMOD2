@@ -8,7 +8,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import shared.FileActions;
 import shared.Protocol;
+import shared.Receiver;
+import shared.Sender;
 
 public class DownloadInitiator implements Runnable {
 
@@ -30,28 +33,20 @@ public class DownloadInitiator implements Runnable {
 	@Override
 	public void run() {
 		try {
-			byte[] nameBytes = fileName.getBytes();
-			DatagramPacket namePacket = new DatagramPacket(nameBytes, nameBytes.length, serverAddress, Protocol.DOWNLOAD_PORT);
-			downloadSocket.send(namePacket);
+			File file = FileActions.getFileObject(fileDirectory, fileName);
 
-			// TODO: hier stoppen als file niet bestaat op server
-			byte[] fileContentBytes = new byte[Protocol.PACKET_SIZE];
-			DatagramPacket downloadFile = new DatagramPacket(fileContentBytes, fileContentBytes.length);
-			downloadSocket.receive(downloadFile);
-
-			File file = new File(fileDirectory + "/" + fileName);
-
-			if (file.exists()) {
+			if (FileActions.exists(file)) {
 				view.showMessage("File " + fileName + " already exists and will thus be overwritten. \n");
 			}
-
-			OutputStream outputStream = new FileOutputStream(file);
-			outputStream.write(fileContentBytes);
-			outputStream.flush();
-			outputStream.close();
+			
+			byte[] nameBytes = FileActions.getBytesFromString(fileName);
+			Sender.sendNamePacket(downloadSocket, serverAddress, Protocol.DOWNLOAD_PORT, nameBytes);
+			
+			//TODO: hier stoppen als file niet bestaat op server
+			byte[] fileContentBytes = Receiver.receiveFile(downloadSocket, serverAddress, Protocol.DOWNLOAD_PORT);
+			FileActions.writeFileContentToDirectory(file, fileContentBytes);
 		} catch (IOException e) {
 			view.showMessage("IO exception at download initiator: " + e.getMessage());
 		}	
 	}
-
 }
