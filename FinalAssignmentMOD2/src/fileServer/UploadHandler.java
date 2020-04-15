@@ -8,6 +8,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 import shared.FileActions;
+import shared.Protocol;
 import shared.Receiver;
 import shared.Sender;
 
@@ -29,10 +30,10 @@ public class UploadHandler implements Runnable {
 	public void run() {
 		while (true) {
 			try {	
-				byte[] fileNameBytes  = Receiver.receiveName(uploadSocket);				
-				byte[] fileContentBytes = Receiver.receiveFile(uploadSocket);
+				byte[] fileNameBytes  = Receiver.receiveName(uploadSocket, clientAddress, Protocol.CLIENT_UPLOAD_PORT);						
+				byte[] fileContentBytes = Receiver.receiveFile(uploadSocket, clientAddress, Protocol.CLIENT_UPLOAD_PORT);
 				
-				String fileName = FileActions.getStringFromBytes(fileNameBytes);
+				String fileName = FileActions.getStringFromBytes(fileNameBytes);				
 				File file = FileActions.getFileObject(fileDirectory, fileName);
 				
 				String feedback;

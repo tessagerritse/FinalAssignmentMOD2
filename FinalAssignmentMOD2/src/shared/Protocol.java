@@ -24,14 +24,16 @@ public class Protocol {
 	public static final int NOT_EOF_NAME = 2; //int
 	public static final int EOF_NAME = 3; //int
 	//Maximal SEQNUM (sequence number)
-	public static final int MAX_SEQNUM = (int) (Math.pow(2, 8) - 1); //ints
+	//public static final int MAX_SEQNUM = (int) (Math.pow(2, 8) - 1); //ints
 	
-	public static final int PACKET_SIZE = (int) (Math.pow(2, 16) - 50); //bytes, note: -50, just to be sure
+	public static final int PACKET_SIZE = (int) (Math.pow(2, 16) - (int) (Math.pow(2, 7))); //bytes
 	public static final int DATA_SIZE = PACKET_SIZE - HEADER; //bytes
 	
-	public static final int COMMAND_PACKET_SIZE = 1;
-	public static final int NAME_PACKET_SIZE = 32;
-	public static final int FEEDBACK_PACKET_SIZE = 128;
+	public static final int ACK_PACKET_SIZE = (int) (Math.pow(2, 0));
+	public static final int NAME_PACKET_SIZE = (int) (Math.pow(2, 5));
+	public static final int FEEDBACK_PACKET_SIZE = (int) (Math.pow(2, 7));
+	public static final int COMMAND_PACKET_SIZE = (int) (Math.pow(2, 0));
+
 
 	//Possible user commands
 	public static final String UPLOAD = "u";
@@ -41,6 +43,7 @@ public class Protocol {
 	public static final String PRINT = "p";
 	public static final String QUIT = "q";
 	
+	//String arrays for user-input-checks in the TUI
 	public static final String[] VALID_COMMANDS = {UPLOAD, DOWNLOAD, REMOVE, LIST, PRINT, QUIT};	
 	public static final String[] FILE_NECESSARY = {UPLOAD, DOWNLOAD, REMOVE};
 }

@@ -9,10 +9,10 @@ import java.util.List;
 public class Sender {
 
 	public static void sendFileInclName(DatagramSocket socket, InetAddress address, int port, byte[] fileName, byte[] fileContent) throws IOException {
-		if (FileActions.fitsOnePacket(fileContent.length)) {
+		if (FileActions.fitsOnePacket(fileContent.length)) {			
 			sendNamePacket(socket, address, port, fileName);
 			sendFilePacket(socket, address, port, fileContent);
-		} else {
+		} else {			
 			sendNamePacket(socket, address, port, fileName);
 			sendMultipleFilePackets(socket, address, port, fileContent);
 		}
@@ -20,20 +20,32 @@ public class Sender {
 
 	private static void sendMultipleFilePackets(DatagramSocket socket, InetAddress address, int port, byte[] fileContent) throws IOException {
 		List<byte[]> listOfPackets = PacketManager.makeListOfFilePackets(fileContent); 
+		
 		for (byte[] singlePacket : listOfPackets) {
 			DatagramPacket packet = new DatagramPacket(singlePacket, singlePacket.length, address, port);
-			socket.send(packet);
+			sendPacketWaitForAck(socket, packet);	
 		}
 	}
 
 	private static void sendFilePacket(DatagramSocket socket, InetAddress address, int port, byte[] fileContent) throws IOException {
 		byte[] singlePacket = PacketManager.makeSingleFilePacket(Protocol.EOF, 0, fileContent);
 		DatagramPacket packet = new DatagramPacket(singlePacket, singlePacket.length, address, port);
-		socket.send(packet);
+		sendPacketWaitForAck(socket, packet);
 	}
 	
 	private static void sendNamePacket(DatagramSocket socket, InetAddress address, int port, byte[] fileName) throws IOException {
 		DatagramPacket packet = new DatagramPacket(fileName, fileName.length, address, port);
+		socket.send(packet);
+	}
+	
+	private static void sendPacketWaitForAck(DatagramSocket socket, DatagramPacket packet) throws IOException {
+		socket.send(packet);
+		Receiver.receiveAck(socket);
+	}
+	
+	public static void sendAck(DatagramSocket socket, InetAddress address, int port) throws IOException {
+		byte[] ack = new byte[Protocol.ACK_PACKET_SIZE];
+		DatagramPacket packet = new DatagramPacket(ack, ack.length, address, port);
 		socket.send(packet);
 	}
 

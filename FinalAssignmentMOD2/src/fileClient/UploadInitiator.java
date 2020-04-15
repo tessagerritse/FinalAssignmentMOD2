@@ -30,14 +30,15 @@ public class UploadInitiator implements Runnable {
 	public void run() {
 		try {	
 			File file = FileActions.getFileObject(fileDirectory, fileName);
+			
 			if (!FileActions.exists(file)) {
 				view.showMessage("File " + fileName + " doesn't exist in the directory. Please try again. \n");
 			} else {
-				byte[] fileNameBytes = FileActions.getBytesFromString(fileName);
-				byte[] fileContentBytes = FileActions.getFileContent(file);
+				byte[] fileNameBytes = FileActions.getBytesFromString(fileName);				
+				byte[] fileContentBytes = FileActions.getFileContent(file);				
 				Sender.sendFileInclName(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, fileNameBytes, fileContentBytes);
-			}
-			view.showMessage("File " + fileName + " is uploaded to the server. \n");	
+				view.showMessage("File " + fileName + " is uploaded to the server. \n");
+			}	
 		} catch (IOException e) {
 			view.showMessage("IO exception at upload initiator " + e.getMessage());
 		}	

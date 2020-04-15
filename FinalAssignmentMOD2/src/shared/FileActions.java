@@ -62,5 +62,13 @@ public class FileActions {
 		System.arraycopy(arrayToAddTo, 0, resultArray, 0, arrayToAddTo.length);
 		System.arraycopy(dataToAdd, 0, resultArray, arrayToAddTo.length, dataToAdd.length);
 		return resultArray;
-	}	
+	}
+	
+	public static byte calculateLRC(byte[] contentBytes) {
+		byte LRC = 0;
+		for (int i = 0; i < contentBytes.length; i++) {
+			LRC ^= contentBytes[i];
+		}
+		return LRC;
+	}
 }
