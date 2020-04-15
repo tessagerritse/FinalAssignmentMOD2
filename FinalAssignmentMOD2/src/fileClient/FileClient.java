@@ -22,6 +22,8 @@ public class FileClient {
 	private DatagramSocket downloadSocket;
 	private DatagramSocket removeSocket;
 	private DatagramSocket listSocket;
+	
+	private MetaHandler metaHandler;
 
 	public FileClient() {
 		fileDirectory = new File(System.getProperty("user.home") + "/FilesOnClient");
@@ -57,7 +59,7 @@ public class FileClient {
 	}
 
 	private void startReceivingMeta() throws IOException {
-		MetaHandler metaHandler = new MetaHandler(view, metaSocket, downloadSocket, listSocket);
+		metaHandler = new MetaHandler(view, metaSocket, downloadSocket, listSocket);
 		new Thread(metaHandler).start();
 	}
 
@@ -113,11 +115,12 @@ public class FileClient {
 
 	private void quitProgram() throws ExitProgram {
 		view.showMessage("You have ordered to quit the program. Bye!");
-		metaSocket.close();
+		metaHandler.setListen(false);
 		uploadSocket.close();
 		downloadSocket.close();
 		removeSocket.close();
 		listSocket.close();
+		metaSocket.close();
 		throw new ExitProgram("User has ordered to quit the program. Client is closed.");
 	}
 }

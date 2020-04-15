@@ -12,6 +12,7 @@ public class MetaHandler implements Runnable {
 	private DatagramSocket metaSocket;
 	private DatagramSocket downloadSocket;
 	private DatagramSocket listSocket;
+	private boolean listen = true;
 
 	public MetaHandler(FileClientTUI view, DatagramSocket metaSocket, DatagramSocket downloadSocket,
 			DatagramSocket listSocket) {
@@ -20,10 +21,14 @@ public class MetaHandler implements Runnable {
 		this.downloadSocket = downloadSocket;
 		this.listSocket = listSocket;
 	}
+	
+	public void setListen(boolean listen) {
+		this.listen = listen;
+	}
 
 	@Override
 	public void run() {
-		while (true) {
+		while (listen) {
 			try {
 				byte[] feedbackBytes = new byte[Protocol.FEEDBACK_PACKET_SIZE];
 				DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length);
