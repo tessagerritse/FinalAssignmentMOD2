@@ -24,8 +24,11 @@ ssh.settings {
 //  knownHosts = allowAnyHosts // Disable host key verification
 }
 
-// mainClassName = 'com.nedap.university.Main'
-version = '0.0.1'
+// mainClassName = 'fileServer.FileServer'
+mainClassName = 'fileClient.FileClient'
+
+// version = 'server'
+version = 'client'
 
 jar {
     manifest {
