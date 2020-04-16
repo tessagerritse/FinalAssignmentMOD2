@@ -23,14 +23,16 @@ public class DownloadInitiator implements Runnable {
 	private InetAddress serverAddress;
 	private File fileDirectory;
 	private String fileName;
+	private MetaHandler metaHandler;
 
 	public DownloadInitiator(FileClientTUI view, DatagramSocket downloadSocket, InetAddress serverAddress,
-			File fileDirectory, String fileName) {
+			File fileDirectory, String fileName, MetaHandler metaHandler) {
 		this.view = view;
 		this.downloadSocket = downloadSocket;
 		this.serverAddress = serverAddress;
 		this.fileDirectory = fileDirectory;
 		this.fileName = fileName;
+		this.metaHandler = metaHandler;
 	}
 
 	@Override
@@ -48,9 +50,21 @@ public class DownloadInitiator implements Runnable {
 			byte[] nameBytes = DataActions.getBytesFromString(fileName);
 			Sender.sendNamePacket(downloadSocket, serverAddress, Protocol.DOWNLOAD_PORT, nameBytes);
 			
-			byte[] fileContentBytes = Receiver.receiveMultiplePackets(downloadSocket, serverAddress, 
-					Protocol.DOWNLOAD_PORT);
-			DataActions.writeFileContentToDirectory(file, fileContentBytes);
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			if (metaHandler.ableToDownload()) {				
+				byte[] fileContentBytes = Receiver.receiveMultiplePackets(downloadSocket, serverAddress, 
+						Protocol.DOWNLOAD_PORT);
+				DataActions.writeFileContentToDirectory(file, fileContentBytes);
+				view.showMessage("Received " + fileName + " and saved it in the local file directory.");
+			} else {
+				view.showMessage("Did not receive " + fileName + " , because it does not exist on the server.");
+			}
+			
 		} catch (IOException e) {
 			view.showMessage("IO exception at download initiator: " + e.getMessage());
 		}	

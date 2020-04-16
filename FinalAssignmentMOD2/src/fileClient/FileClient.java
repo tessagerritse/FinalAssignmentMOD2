@@ -106,7 +106,7 @@ public class FileClient {
 			break;
 		case Protocol.DOWNLOAD:
 			DownloadInitiator downloadInitiator = new DownloadInitiator(view, downloadSocket, serverAddress, 
-					fileDirectory, fileName);
+					fileDirectory, fileName, metaHandler);
 			new Thread(downloadInitiator).start();
 			break;
 		case Protocol.REMOVE:
@@ -115,7 +115,7 @@ public class FileClient {
 			new Thread(removeInitiator).start();
 			break;
 		case Protocol.LIST:
-			ListInitiator listInitiator = new ListInitiator(view, listSocket, serverAddress);
+			ListInitiator listInitiator = new ListInitiator(view, listSocket, serverAddress, metaHandler);
 			new Thread(listInitiator).start();
 			break;
 		case Protocol.QUIT:

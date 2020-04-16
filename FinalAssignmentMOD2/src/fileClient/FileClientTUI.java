@@ -35,13 +35,11 @@ public class FileClientTUI {
 	}
 	public void start() throws IOException {
 		boolean askingForInput = true;
-		String userInput;
 		printCommandMenu();
 		
 		while (askingForInput) {
-			userInput = askStringAnswer("What is your command? \n");
 			try {
-				handleUserInput(userInput);
+				handleUserInput();
 			} catch (ExitProgram e) {
 				askingForInput = false;
 				consoleIn.close();
@@ -66,8 +64,8 @@ public class FileClientTUI {
 	}
 
 	private void printCommandMenu() {
-		showMessage("When asked to enter a command, please use one of the following commands");
-		showMessage("For [file] fill in the name of the file you want to use, including the extension");
+		showMessage("When asked to give your command, please use one of the following commands");
+		showMessage("For [file] fill in the name of the file you want to use, including the extension \n");
 		showMessage(String.format("%-20s %s", "u file", "upload a [file] to the server"));
 		showMessage(String.format("%-20s %s", "d file", "download a [file] from the server"));
 		showMessage(String.format("%-20s %s", "r file", "remove a [file] from the server"));
@@ -76,8 +74,10 @@ public class FileClientTUI {
 		showMessage(String.format("%-20s %s", "q", "quit the program \n"));
 	}
 
-	private void handleUserInput(String input) throws ExitProgram, IOException {
-		String[] parts = input.split("\\s+");
+	private void handleUserInput() throws ExitProgram, IOException {
+		String userInput = askStringAnswer("What is your command? \n");
+		
+		String[] parts = userInput.split("\\s+");
 		String command = parts[0];
 		String fileName = (parts.length > 1) ? fileName = parts[1] : "";
 		

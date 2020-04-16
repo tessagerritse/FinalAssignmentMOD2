@@ -20,11 +20,14 @@ public class ListInitiator implements Runnable {
 	private FileClientTUI view;
 	private DatagramSocket listSocket;
 	private InetAddress serverAddress;
+	private MetaHandler metaHandler;
 
-	public ListInitiator(FileClientTUI view, DatagramSocket listSocket, InetAddress serverAddress) {
+	public ListInitiator(FileClientTUI view, DatagramSocket listSocket, InetAddress serverAddress, 
+			MetaHandler metaHandler) {
 		this.view = view;
 		this.listSocket = listSocket;
 		this.serverAddress = serverAddress;
+		this.metaHandler = metaHandler;
 	}
 
 	@Override
@@ -37,12 +40,22 @@ public class ListInitiator implements Runnable {
 			byte[] listCommand = DataActions.getBytesFromString(Protocol.LIST);
 			Sender.sendCommand(listSocket, serverAddress, Protocol.LIST_PORT, listCommand);
 			
-			byte[] listOfFilesBytes = Receiver.receiveMultiplePackets(listSocket, serverAddress, 
-					Protocol.LIST_PORT);			
-			String[] listOfFiles = DataActions.getStringArrayFromByteArray(listOfFilesBytes);
-			
-			for (String file : listOfFiles) {
-				view.showMessage(file);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			if (metaHandler.ableToList()) {
+				byte[] listOfFilesBytes = Receiver.receiveMultiplePackets(listSocket, serverAddress, 
+						Protocol.LIST_PORT);			
+				String[] listOfFiles = DataActions.getStringArrayFromByteArray(listOfFilesBytes);
+
+				for (String file : listOfFiles) {
+					view.showMessage(file);
+				}	
+			} else {
+				view.showMessage("Did not receive a list of files, because the file directory on the server is empty.");
 			}
 		} catch (IOException e) {
 			view.showMessage("IO exception at list initiator: " + e.getMessage());
