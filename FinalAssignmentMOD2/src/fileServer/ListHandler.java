@@ -28,7 +28,7 @@ public class ListHandler implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-				Receiver.receiveCommand(listSocket);
+				Receiver.receiveCommand(listSocket, clientAddress, Protocol.CLIENT_LIST_PORT);
 
 				String[] listOfFiles = fileDirectory.list();
 				
@@ -38,8 +38,13 @@ public class ListHandler implements Runnable {
 				} else {
 					String[] guidingMessage = {"There are " + listOfFiles.length + " files on the server: "};
 					String[] completeList = DataActions.combine2StringArrays(guidingMessage, listOfFiles);
+					
+					for (String file : listOfFiles) {
+						System.out.println(file);
+					}
+					
 					byte[] completeListBytes = DataActions.getByteArrayFromStringArray(completeList);
-					Sender.sendSingleOrMultiplePackets(listSocket, clientAddress, Protocol.LIST_PORT, completeListBytes);
+					Sender.sendSingleOrMultiplePackets(listSocket, clientAddress, Protocol.CLIENT_LIST_PORT, completeListBytes);
 					feedback = "Sent a list of files on server. \n";
 				}
 				byte[] feedbackBytes = DataActions.getBytesFromString(feedback);

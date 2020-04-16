@@ -3,8 +3,10 @@ package shared;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -16,7 +18,7 @@ import java.nio.file.Paths;
 public class DataActions {
 
 	public static File getFileObject(File fileDirectory, String fileName) {
-		File file = new File(fileDirectory, fileName);
+		File file = new File(fileDirectory + "/" + fileName);
 		return file;
 	}
 
@@ -28,9 +30,14 @@ public class DataActions {
 		return string.getBytes();
 	}
 
-	public static byte[] getFileContent(File file) throws IOException {
-		Path path = Paths.get(file.toURI());
-		byte[] fileContentBytes = Files.readAllBytes(path);
+	public static byte[] getFileContent(File directory) throws IOException {
+		InputStream inputStream = new FileInputStream(directory);
+		byte[] fileContentBytes = inputStream.readAllBytes();
+		inputStream.close();
+		
+		
+//		Path path = Paths.get(file.toURI());
+//		byte[] fileContentBytes = Files.readAllBytes(path);
 		return fileContentBytes;
 	}
 
@@ -108,6 +115,7 @@ public class DataActions {
 		objectOutputStream.writeObject(completeList);
 		objectOutputStream.flush();
 		objectOutputStream.close();
-		return byteArrayOutputStream.toByteArray();
+		byte[] completeListBytes = byteArrayOutputStream.toByteArray();
+		return completeListBytes;
 	}
 }

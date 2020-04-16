@@ -6,12 +6,20 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 public class Receiver {
+	
+	public static DatagramPacket receiveSinglePacket(DatagramSocket socket, InetAddress address, int port) throws IOException {
+		byte[] singleFilePacket = new byte[Protocol.PACKET_SIZE];
+		DatagramPacket packet = new DatagramPacket(singleFilePacket, singleFilePacket.length);
+		socket.receive(packet);	
 
-	public static byte[] receiveName(DatagramSocket socket) throws IOException {
-		byte[] namePacket = new byte[Protocol.NAME_PACKET_SIZE];
-		DatagramPacket packet = new DatagramPacket(namePacket, namePacket.length);
-		socket.receive(packet);
-		return PacketManager.unpackNameOrFeedbackPacket(packet);
+		byte LRC = PacketManager.unpackPacketLRC(packet);
+		byte[] data = PacketManager.unpackPacketData(packet);	
+
+		if (LRC == DataActions.calculateLRC(data)) {
+			Sender.sendAck(socket, address, port);
+		} 
+		
+		return packet;
 	}
 
 	public static byte[] receiveMultiplePackets(DatagramSocket socket, InetAddress address, int port) throws IOException {		
@@ -20,14 +28,8 @@ public class Receiver {
 
 		while(!lastPacket) {
 
-			DatagramPacket packet = receiveSinglePacket(socket);
-
-			byte LRC = PacketManager.unpackPacketLRC(packet);
-			byte[] dataToAdd = PacketManager.unpackPacketData(packet);	
-
-			if (LRC == DataActions.calculateLRC(dataToAdd)) {
-				Sender.sendAck(socket, address, port);
-			} 
+			DatagramPacket packet = receiveSinglePacket(socket, address, port);	
+			byte[] dataToAdd = PacketManager.unpackPacketData(packet);
 
 			if (fileContentBytes == null) {
 				fileContentBytes = dataToAdd;
@@ -42,19 +44,23 @@ public class Receiver {
 		}
 		return fileContentBytes;
 	}
-
-	public static DatagramPacket receiveSinglePacket(DatagramSocket socket) throws IOException {
-		byte[] singleFilePacket = new byte[Protocol.PACKET_SIZE];
-		DatagramPacket packet = new DatagramPacket(singleFilePacket, singleFilePacket.length);
-		socket.receive(packet);		
-		return packet;
+	
+	public static byte[] receiveName(DatagramSocket socket, InetAddress address, int port) throws IOException {
+		byte[] namePacket = new byte[Protocol.NAME_PACKET_SIZE];
+		DatagramPacket packet = new DatagramPacket(namePacket, namePacket.length);
+		socket.receive(packet);
+		Sender.sendAck(socket, address, port);
+		return PacketManager.unpackNameOrFeedbackPacket(packet);
 	}
 
 	public static void receiveAck(DatagramSocket socket) throws IOException {
 		byte[] ack = new byte[Protocol.ACK_PACKET_SIZE];
 		DatagramPacket packet = new DatagramPacket(ack, ack.length);
-		socket.setSoTimeout(1000);
+		
+		socket.setSoTimeout(Protocol.TIMEOUT);
 		socket.receive(packet);
+		socket.setSoTimeout(0);
+
 	}
 
 	public static byte[] receiveFeedback(DatagramSocket metaSocket) throws IOException {
@@ -64,9 +70,10 @@ public class Receiver {
 		return PacketManager.unpackNameOrFeedbackPacket(packet);
 	}
 
-	public static void receiveCommand(DatagramSocket socket) throws IOException {
+	public static void receiveCommand(DatagramSocket socket, InetAddress address, int port) throws IOException {
 		byte[] listCommand = new byte[Protocol.COMMAND_PACKET_SIZE];
 		DatagramPacket listCommandPacket = new DatagramPacket(listCommand, listCommand.length);
 		socket.receive(listCommandPacket);
+		//Sender.sendAck(socket, address, port);
 	}
 }

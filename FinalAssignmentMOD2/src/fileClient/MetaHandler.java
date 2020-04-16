@@ -35,11 +35,11 @@ public class MetaHandler implements Runnable {
 
 				view.showMessage("Message from server: " + feedback + "\n");
 
-				if (feedback.contains("exist")) {
-					downloadSocket.close();
-				} else if (feedback.contains("empty")) {
-					listSocket.close();
-				}
+//				if (feedback.contains("exist")) {
+//					downloadSocket.close();
+//				} else if (feedback.contains("empty")) {
+//					listSocket.close();
+//				}
 			} catch (IOException e) {
 				view.showMessage("IO exception at meta handler: " + e.getMessage());
 			}

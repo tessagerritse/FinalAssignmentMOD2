@@ -32,7 +32,7 @@ public class RemoveHandler implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-				byte[] nameBytes = Receiver.receiveName(removeSocket);
+				byte[] nameBytes = Receiver.receiveName(removeSocket, clientAddress, Protocol.CLIENT_REMOVE_PORT);
 				String fileName = DataActions.getStringFromBytes(nameBytes);
 				File file = DataActions.getFileObject(fileDirectory, fileName);
 

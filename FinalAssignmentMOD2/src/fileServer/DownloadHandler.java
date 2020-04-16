@@ -28,18 +28,17 @@ public class DownloadHandler implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-				byte[] nameBytes = Receiver.receiveName(downloadSocket);
+				byte[] nameBytes = Receiver.receiveName(downloadSocket, clientAddress, Protocol.CLIENT_DOWNLOAD_PORT);
 				String fileName = DataActions.getStringFromBytes(nameBytes);
 				
 				File file = DataActions.getFileObject(fileDirectory, fileName);
 				
 				String feedback;
 				if (!DataActions.exists(file)) {
-					file.delete();
 					feedback = "File " + fileName + " doesn't exist on server. \n";
 				} else {
 					byte[] fileContentBytes = DataActions.getFileContent(file);
-					Sender.sendSinglePacket(downloadSocket, clientAddress, Protocol.CLIENT_DOWNLOAD_PORT, fileContentBytes);
+					Sender.sendSingleOrMultiplePackets(downloadSocket, clientAddress, Protocol.CLIENT_DOWNLOAD_PORT, fileContentBytes);
 					feedback = "Sent file " + fileName + "\n";
 				}
 				byte[] feedbackBytes = DataActions.getBytesFromString(feedback);

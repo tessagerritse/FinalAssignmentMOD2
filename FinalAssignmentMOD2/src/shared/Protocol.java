@@ -36,6 +36,7 @@ public class Protocol {
 	public static final int FEEDBACK_PACKET_SIZE = (int) (Math.pow(2, 7));
 	public static final int COMMAND_PACKET_SIZE = (int) (Math.pow(2, 0));
 
+	public static final int TIMEOUT = 1000;
 
 	//Possible user commands
 	public static final String UPLOAD = "u";

@@ -27,7 +27,10 @@ public class ListInitiator implements Runnable {
 			byte[] listCommand = DataActions.getBytesFromString(Protocol.LIST);
 			Sender.sendCommand(listSocket, serverAddress, Protocol.LIST_PORT, listCommand);
 			
-			byte[] listOfFilesBytes = Receiver.receiveMultiplePackets(listSocket, serverAddress, Protocol.CLIENT_LIST_PORT);
+			byte[] listOfFilesBytes = Receiver.receiveMultiplePackets(listSocket, serverAddress, Protocol.LIST_PORT);
+			
+			System.out.println("Received list bytes!");
+			
 			String[] listOfFiles = DataActions.getStringArrayFromByteArray(listOfFilesBytes);
 			
 			for (String file : listOfFiles) {
