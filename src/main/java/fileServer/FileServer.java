@@ -81,6 +81,8 @@ public class FileServer {
 		metaSocket.receive(connectRequest);
 		
 		clientAddress = connectRequest.getAddress();
+		
+		System.out.println("Client with hostname " + clientAddress.getHostName() + " just connected.");
 	}
 
 	private void setupSockets() throws SocketException {
