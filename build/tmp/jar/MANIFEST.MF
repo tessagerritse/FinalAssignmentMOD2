@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Implementation-Title: Nedap University Module 2 Sample Project
-Implementation-Version: 0.0.1
-Main-Class: com.nedap.university.Main
+Implementation-Title: Nedap University Module 2 Final Project
+Implementation-Version: client
+Main-Class: fileClient.FileClient
 
