@@ -1,10 +1,7 @@
 package fileClient;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
@@ -13,6 +10,12 @@ import shared.Protocol;
 import shared.Receiver;
 import shared.Sender;
 
+/**
+ * Downloads a file from the server when user commands.
+ * 
+ * @author tessa.gerritse
+ *
+ */
 public class DownloadInitiator implements Runnable {
 
 	private FileClientTUI view;
@@ -31,6 +34,9 @@ public class DownloadInitiator implements Runnable {
 	}
 
 	@Override
+	/**
+	 * Sends a file name, receives the indicated file, and saves it in local directory.
+	 */
 	public void run() {
 		try {
 			File file = DataActions.getFileObject(fileDirectory, fileName);
@@ -42,8 +48,8 @@ public class DownloadInitiator implements Runnable {
 			byte[] nameBytes = DataActions.getBytesFromString(fileName);
 			Sender.sendNamePacket(downloadSocket, serverAddress, Protocol.DOWNLOAD_PORT, nameBytes);
 			
-			//TODO: hier stoppen als file niet bestaat op server
-			byte[] fileContentBytes = Receiver.receiveMultiplePackets(downloadSocket, serverAddress, Protocol.DOWNLOAD_PORT);
+			byte[] fileContentBytes = Receiver.receiveMultiplePackets(downloadSocket, serverAddress, 
+					Protocol.DOWNLOAD_PORT);
 			DataActions.writeFileContentToDirectory(file, fileContentBytes);
 		} catch (IOException e) {
 			view.showMessage("IO exception at download initiator: " + e.getMessage());

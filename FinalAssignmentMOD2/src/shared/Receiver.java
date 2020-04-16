@@ -5,9 +5,16 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+/**
+ * Class with several methods to receive several kinds of packets and/or multiple packets.
+ * 
+ * @author tessa.gerritse
+ *
+ */
 public class Receiver {
 	
-	public static DatagramPacket receiveSinglePacket(DatagramSocket socket, InetAddress address, int port) throws IOException {
+	public static DatagramPacket receiveSinglePacket(DatagramSocket socket, InetAddress address, int port) 
+			throws IOException {
 		byte[] singleFilePacket = new byte[Protocol.PACKET_SIZE];
 		DatagramPacket packet = new DatagramPacket(singleFilePacket, singleFilePacket.length);
 		socket.receive(packet);	
@@ -22,7 +29,8 @@ public class Receiver {
 		return packet;
 	}
 
-	public static byte[] receiveMultiplePackets(DatagramSocket socket, InetAddress address, int port) throws IOException {		
+	public static byte[] receiveMultiplePackets(DatagramSocket socket, InetAddress address, int port) 
+			throws IOException {		
 		boolean lastPacket = false;
 		byte[] fileContentBytes = null;
 
@@ -45,7 +53,8 @@ public class Receiver {
 		return fileContentBytes;
 	}
 	
-	public static byte[] receiveName(DatagramSocket socket, InetAddress address, int port) throws IOException {
+	public static byte[] receiveName(DatagramSocket socket, InetAddress address, int port) 
+			throws IOException {
 		byte[] namePacket = new byte[Protocol.NAME_PACKET_SIZE];
 		DatagramPacket packet = new DatagramPacket(namePacket, namePacket.length);
 		socket.receive(packet);
@@ -70,10 +79,11 @@ public class Receiver {
 		return PacketManager.unpackNameOrFeedbackPacket(packet);
 	}
 
-	public static void receiveCommand(DatagramSocket socket, InetAddress address, int port) throws IOException {
+	public static void receiveCommand(DatagramSocket socket, InetAddress address, int port) 
+			throws IOException {
 		byte[] listCommand = new byte[Protocol.COMMAND_PACKET_SIZE];
 		DatagramPacket listCommandPacket = new DatagramPacket(listCommand, listCommand.length);
 		socket.receive(listCommandPacket);
-		//Sender.sendAck(socket, address, port);
+		Sender.sendAck(socket, address, port);
 	}
 }

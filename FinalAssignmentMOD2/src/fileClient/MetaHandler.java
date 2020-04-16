@@ -6,20 +6,22 @@ import java.net.DatagramSocket;
 import shared.DataActions;
 import shared.Receiver;
 
+/**
+ * Starts at setup of client and does nothin else than listening 
+ * for feedback from the server to display to the user.
+ * 
+ * @author tessa.gerritse
+ *
+ */
 public class MetaHandler implements Runnable {
 
 	private FileClientTUI view;
 	private DatagramSocket metaSocket;
-	private DatagramSocket downloadSocket;
-	private DatagramSocket listSocket;
 	private boolean listen = true;
 
-	public MetaHandler(FileClientTUI view, DatagramSocket metaSocket, DatagramSocket downloadSocket,
-			DatagramSocket listSocket) {
+	public MetaHandler(FileClientTUI view, DatagramSocket metaSocket) {
 		this.view = view;
 		this.metaSocket = metaSocket;
-		this.downloadSocket = downloadSocket;
-		this.listSocket = listSocket;
 	}
 
 	public void setListen(boolean listen) {
@@ -34,12 +36,6 @@ public class MetaHandler implements Runnable {
 				String feedback = DataActions.getStringFromBytes(feedbackBytes);
 
 				view.showMessage("Message from server: " + feedback + "\n");
-
-//				if (feedback.contains("exist")) {
-//					downloadSocket.close();
-//				} else if (feedback.contains("empty")) {
-//					listSocket.close();
-//				}
 			} catch (IOException e) {
 				view.showMessage("IO exception at meta handler: " + e.getMessage());
 			}

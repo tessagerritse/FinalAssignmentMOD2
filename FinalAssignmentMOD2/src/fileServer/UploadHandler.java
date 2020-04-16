@@ -1,9 +1,7 @@
 package fileServer;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
@@ -12,6 +10,12 @@ import shared.Protocol;
 import shared.Receiver;
 import shared.Sender;
 
+/**
+ * Receives a file from a client and saves it on the server.
+ * 
+ * @author tessa.gerritse
+ *
+ */
 public class UploadHandler implements Runnable {
 
 	private DatagramSocket uploadSocket;
@@ -19,7 +23,8 @@ public class UploadHandler implements Runnable {
 	private File fileDirectory;
 	private InetAddress clientAddress;
 
-	public UploadHandler(DatagramSocket uploadSocket, DatagramSocket metaSocket, File fileDirectory, InetAddress clientAddress) {
+	public UploadHandler(DatagramSocket uploadSocket, DatagramSocket metaSocket, File fileDirectory, 
+			InetAddress clientAddress) {
 		this.uploadSocket = uploadSocket;
 		this.metaSocket = metaSocket;
 		this.fileDirectory = fileDirectory;
@@ -27,11 +32,17 @@ public class UploadHandler implements Runnable {
 	}
 
 	@Override
+	/**
+	 * Continually listens for a name packet, receives a name packet and file packet(s) if the arrive, 
+	 * unpacks them, and saves the file
+	 */
 	public void run() {
 		while (true) {
 			try {	
-				byte[] fileNameBytes  = Receiver.receiveName(uploadSocket, clientAddress, Protocol.CLIENT_UPLOAD_PORT);						
-				byte[] fileContentBytes = Receiver.receiveMultiplePackets(uploadSocket, clientAddress, Protocol.CLIENT_UPLOAD_PORT);
+				byte[] fileNameBytes  = Receiver.receiveName(uploadSocket, clientAddress, 
+						Protocol.CLIENT_UPLOAD_PORT);						
+				byte[] fileContentBytes = Receiver.receiveMultiplePackets(uploadSocket, clientAddress, 
+						Protocol.CLIENT_UPLOAD_PORT);
 				
 				String fileName = DataActions.getStringFromBytes(fileNameBytes);				
 				File file = DataActions.getFileObject(fileDirectory, fileName);

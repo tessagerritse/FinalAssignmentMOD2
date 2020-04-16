@@ -11,6 +11,12 @@ import java.util.List;
 import exceptions.ExitProgram;
 import shared.Protocol;
 
+/**
+ * Takes care of the user-input and provides feedback to the user if his input cannot be handled.
+ * 
+ * @author tessa.gerritse
+ *
+ */
 public class FileClientTUI {
 	
 	private FileClient fileClient;
@@ -81,7 +87,8 @@ public class FileClientTUI {
 		} else if (fileNecessary.contains(command) && fileName.isEmpty()) {
 			showMessage("The file name is missing. Please try again. \n");
 		} else if (fileName.length() > Protocol.NAME_PACKET_SIZE) {
-			showMessage("That fileName is too long. The fileName may at most be " + Protocol.NAME_PACKET_SIZE + " characters long \n");
+			showMessage("That fileName is too long. The fileName may at most be " + Protocol.NAME_PACKET_SIZE 
+					+ " characters long \n");
 		} else if (command.equals(Protocol.PRINT)) {		
 			printCommandMenu();
 		} else {

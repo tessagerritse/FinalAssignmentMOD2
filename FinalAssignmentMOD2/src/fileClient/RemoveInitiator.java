@@ -8,6 +8,12 @@ import shared.DataActions;
 import shared.Protocol;
 import shared.Sender;
 
+/**
+ * Sends a remove request of a certain file when user commands.
+ * 
+ * @author tessa.gerritse
+ *
+ */
 public class RemoveInitiator implements Runnable {
 
 	private FileClientTUI view;
@@ -24,6 +30,10 @@ public class RemoveInitiator implements Runnable {
 	}
 
 	@Override
+	/**
+	 * Sends name of the file that has to be removed, receives feedback if it was successful or not,
+	 * and displays feedback
+	 */
 	public void run() {
 		try {
 			byte[] nameBytes = DataActions.getBytesFromString(fileName);

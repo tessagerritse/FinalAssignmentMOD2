@@ -15,21 +15,18 @@ public class Protocol {
 	public static final int CLIENT_LIST_PORT = 9909;
 	
 	public static final int HEADER = 2; //bytes	
-	//Location of HEADER bytes
+	//Information in Header files on index:
 	public static final int INFO = 0;
-	public static final int LRC = 1; //Longitudinal redundancy check for integrity
+	public static final int LRC = 1; 
 	//public static final int SEQNUM = 1;
 	
 	//Possible values of INFO
 	public static final int NOT_EOF = 0; //int
 	public static final int EOF = 1; //int
-	public static final int NOT_EOF_NAME = 2; //int
-	public static final int EOF_NAME = 3; //int
-	//Maximal SEQNUM (sequence number)
-	//public static final int MAX_SEQNUM = (int) (Math.pow(2, 8) - 1); //ints
 	
-	public static final int PACKET_SIZE = (int) (Math.pow(2, 16) - (int) (Math.pow(2, 7))); //bytes
+	public static final int PACKET_SIZE = (int) (Math.pow(2, 9)- (int) (Math.pow(2, 7))); //bytes
 	public static final int DATA_SIZE = PACKET_SIZE - HEADER; //bytes
+	//public static final int MAX_SEQNUM = (int) (Math.pow(2, 8) - 1); //ints
 	
 	public static final int ACK_PACKET_SIZE = (int) (Math.pow(2, 0));
 	public static final int NAME_PACKET_SIZE = (int) (Math.pow(2, 5));

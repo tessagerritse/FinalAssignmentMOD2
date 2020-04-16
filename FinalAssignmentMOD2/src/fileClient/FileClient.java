@@ -11,6 +11,14 @@ import java.net.UnknownHostException;
 import exceptions.ExitProgram;
 import shared.Protocol;
 
+/**
+ * Regulates the initiation of processes on command of the user. 
+ * A meta-channel is started for the sole purpose of receiving 
+ * feedback from the server to display to the user.
+ * 
+ * @author tessa.gerritse
+ *
+ */
 public class FileClient {
 
 	private File fileDirectory;
@@ -59,7 +67,7 @@ public class FileClient {
 	}
 
 	private void startReceivingMeta() throws IOException {
-		metaHandler = new MetaHandler(view, metaSocket, downloadSocket, listSocket);
+		metaHandler = new MetaHandler(view, metaSocket);
 		new Thread(metaHandler).start();
 	}
 
@@ -92,15 +100,18 @@ public class FileClient {
 	public void handleRequest(String command, String fileName) throws ExitProgram {				
 		switch (command) {
 		case Protocol.UPLOAD:	
-			UploadInitiator uploadInitiator = new UploadInitiator(view, uploadSocket, serverAddress, fileDirectory, fileName);
+			UploadInitiator uploadInitiator = new UploadInitiator(view, uploadSocket, serverAddress, 
+					fileDirectory, fileName);
 			new Thread(uploadInitiator).start();
 			break;
 		case Protocol.DOWNLOAD:
-			DownloadInitiator downloadInitiator = new DownloadInitiator(view, downloadSocket, serverAddress, fileDirectory, fileName);
+			DownloadInitiator downloadInitiator = new DownloadInitiator(view, downloadSocket, serverAddress, 
+					fileDirectory, fileName);
 			new Thread(downloadInitiator).start();
 			break;
 		case Protocol.REMOVE:
-			RemoveInitiator removeInitiator = new RemoveInitiator(view, removeSocket, serverAddress, fileName);
+			RemoveInitiator removeInitiator = new RemoveInitiator(view, removeSocket, serverAddress, 
+					fileName);
 			new Thread(removeInitiator).start();
 			break;
 		case Protocol.LIST:

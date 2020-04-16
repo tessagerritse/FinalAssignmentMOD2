@@ -4,6 +4,16 @@ import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class with packet-related methods.
+ * Build packets or unpack packets.
+ * 
+ * Some comments are left, where sequence numbers were implemented.
+ * Currently, they are not used for an ARQ protocol.
+ * 
+ * @author tessa.gerritse
+ *
+ */
 public class PacketManager {
 
 	public static byte[] makeSinglePacket(int protocolInfo, byte[] contentBytes) {
@@ -20,7 +30,7 @@ public class PacketManager {
 		int numberOfPackets = (int) Math.ceil((double)contentBytes.length/(double)Protocol.DATA_SIZE);		
 		//int numberOfSeqNumLoops = (int) Math.ceil((double)numberOfPackets/(double)Protocol.MAX_SEQNUM);
 
-		int filePointer = 0;
+		int dataPointer = 0;
 		int packetPointer = 0;
 
 		//for (int i = 0; i < numberOfSeqNumLoops; i++) {
@@ -28,9 +38,9 @@ public class PacketManager {
 
 			//while (packetPointer <= Protocol.MAX_SEQNUM && filePointer < contentBytes.length) {
 			
-			while(filePointer < contentBytes.length) {
+			while(dataPointer < contentBytes.length) {
 
-				int dataLength = Math.min(Protocol.DATA_SIZE, contentBytes.length - filePointer);				
+				int dataLength = Math.min(Protocol.DATA_SIZE, contentBytes.length - dataPointer);				
 				byte[] packet = new byte[Protocol.HEADER + dataLength];
 				
 				if (packetPointer == numberOfPackets - 1) {					
@@ -40,7 +50,7 @@ public class PacketManager {
 				}	
 				//packet[Protocol.SEQNUM] = (byte) seqNum;
 				
-				byte[] packetData = DataActions.getDataByteArray(contentBytes, filePointer, dataLength);
+				byte[] packetData = DataActions.getDataByteArray(contentBytes, dataPointer, dataLength);
 				packet[Protocol.LRC] = DataActions.calculateLRC(packetData);
 				packet = DataActions.addDataToPacket(packet, packetData);				
 
@@ -48,26 +58,27 @@ public class PacketManager {
 
 				//seqNum++;
 				packetPointer++;
-				filePointer += dataLength;
+				dataPointer += dataLength;
 			}	
 		//}		
 		return listOfPackets;
 	}
 
 	public static byte[] unpackNameOrFeedbackPacket(DatagramPacket packet) {
-		byte[] fileNameBytes = new byte[DataActions.getDataLength(packet)];
-		byte[] packetBytes = DataActions.getData(packet);
-		System.arraycopy(packetBytes, 0, fileNameBytes, 0, fileNameBytes.length);		
-		return fileNameBytes;
+		byte[] contentBytes = new byte[DataActions.getDataLength(packet)];
+		byte[] packetData = DataActions.getData(packet);
+		System.arraycopy(packetData, 0, contentBytes, 0, contentBytes.length);		
+		return contentBytes;
 	}
 
 	public static int unpackPacketInfo(DatagramPacket packet) {
 		byte infoByte = DataActions.getData(packet)[Protocol.INFO];
-		return DataActions.fromByteToInt(infoByte);
+		return DataActions.getIntFromByte(infoByte);
 	}
 
 	public static byte unpackPacketLRC(DatagramPacket packet) {
-		return DataActions.getData(packet)[Protocol.LRC];
+		byte LRC = DataActions.getData(packet)[Protocol.LRC];
+		return LRC;
 	}
 
 	public static byte[] unpackPacketData(DatagramPacket packet) {

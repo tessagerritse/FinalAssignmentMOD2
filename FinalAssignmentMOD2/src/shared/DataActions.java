@@ -11,10 +11,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.DatagramPacket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
+/**
+ * A class of various methods to use for file- and data management.
+ * 
+ * @author tessa.gerritse
+ *
+ */
 public class DataActions {
 
 	public static File getFileObject(File fileDirectory, String fileName) {
@@ -25,47 +28,78 @@ public class DataActions {
 	public static boolean exists(File file) {
 		return file.exists();
 	}
-
-	public static byte[] getBytesFromString(String string) {
-		return string.getBytes();
+	
+	public static String[] getListOfFiles(File fileDirectory) {
+		return fileDirectory.list();
 	}
-
+	
 	public static byte[] getFileContent(File directory) throws IOException {
 		InputStream inputStream = new FileInputStream(directory);
 		byte[] fileContentBytes = inputStream.readAllBytes();
 		inputStream.close();
-		
-		
-//		Path path = Paths.get(file.toURI());
-//		byte[] fileContentBytes = Files.readAllBytes(path);
 		return fileContentBytes;
 	}
-
-	public static boolean fitsOnePacket(int contentLength) {
-		return contentLength <= Protocol.DATA_SIZE;
-	}
-
-	public static String getStringFromBytes(byte[] array) {
-		return new String(array).trim();
-	}
-
-	public static void writeFileContentToDirectory(File directory, byte[] fileContentBytes) throws IOException {
+	
+	public static void writeFileContentToDirectory(File directory, byte[] fileContentBytes) 
+			throws IOException {
 		OutputStream outputStream = new FileOutputStream(directory);
 		outputStream.write(fileContentBytes);
 		outputStream.flush();
 		outputStream.close();
 	}
 
+	public static byte[] getBytesFromString(String string) {
+		return string.getBytes();
+	}
+
+	public static String getStringFromBytes(byte[] array) {
+		return new String(array).trim();
+	}
+
+	public static int getIntFromByte(byte b) {
+		return (int) b & 0xFF;
+	}
+
+	public static String[] getStringArrayFromByteArray(byte[] listOfFilesBytes) 
+			throws IOException, ClassNotFoundException {
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(listOfFilesBytes);
+		ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+		String[] listOfFiles = (String[]) objectInputStream.readObject();
+		objectInputStream.close();
+		return listOfFiles;
+	}
+
+	public static byte[] getByteArrayFromStringArray(String[] completeList) throws IOException {
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+		objectOutputStream.writeObject(completeList);
+		objectOutputStream.flush();
+		objectOutputStream.close();
+		byte[] completeListBytes = byteArrayOutputStream.toByteArray();
+		return completeListBytes;
+	}	
+
+	/**
+	 * Gets the length of the actual data in a packet. 
+	 * Any empty parts of the packets will be trimmed.
+	 * @param packet
+	 * @return data length (int)
+	 */
 	public static int getDataLength(DatagramPacket packet) {
 		return packet.getLength();
 	}
 
+	/**
+	 * Get the data from the packet. This data possibly includes header-bytes
+	 * @param packet
+	 * @return data array (byte)
+	 */
 	public static byte[] getData(DatagramPacket packet) {
 		return packet.getData();
 	}
-
-	public static int fromByteToInt(byte b) {
-		return (int) b & 0xFF;
+	
+	public static boolean fitsOnePacket(int contentLength) {
+		return contentLength <= Protocol.DATA_SIZE;
 	}
 
 	public static byte[] combine2ByteArrays(byte[] firstArray, byte[] secondArray) {
@@ -82,40 +116,40 @@ public class DataActions {
 		return resultArray;
 	}	
 	
+	/**
+	 * Gets a certain part of a large data array to put in a packet.
+	 * @param contentBytes is the original large data array
+	 * @param filePointer is the starting point for the new sub array
+	 * @param dataLength is the end point for the new sub array
+	 * @return sub array
+	 */
 	public static byte[] getDataByteArray(byte[] contentBytes, int filePointer, int dataLength) {
 		byte[] dataByteArray = new byte[dataLength];
 		System.arraycopy(contentBytes, filePointer, dataByteArray, 0, dataByteArray.length);
 		return dataByteArray;
 	}
 	
+	/**
+	 * Puts data in a packet.
+	 * @param packet 
+	 * @param packetData is the data to put in the packet
+	 * @return
+	 */
+	public static byte[] addDataToPacket(byte[] packet, byte[] packetData) {
+		System.arraycopy(packetData, 0, packet, Protocol.HEADER, packetData.length);
+		return packet;
+	}
+	
+	/**
+	 * LRC: Longitudinal redundancy check for integrity.
+	 * @param contentBytes is the byte array of content data that is received in a packet
+	 * @return LRC 
+	 */
 	public static byte calculateLRC(byte[] contentBytes) {
 		byte LRC = 0;
 		for (int i = 0; i < contentBytes.length; i++) {
 			LRC ^= contentBytes[i];
 		}
 		return LRC;
-	}
-
-	public static byte[] addDataToPacket(byte[] packet, byte[] packetData) {
-		System.arraycopy(packetData, 0, packet, Protocol.HEADER, packetData.length);
-		return packet;
-	}
-
-	public static String[] getStringArrayFromByteArray(byte[] listOfFilesBytes) throws IOException, ClassNotFoundException {
-		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(listOfFilesBytes);
-		ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-		String[] listOfFiles = (String[]) objectInputStream.readObject();
-		objectInputStream.close();
-		return listOfFiles;
-	}
-
-	public static byte[] getByteArrayFromStringArray(String[] completeList) throws IOException {
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-		objectOutputStream.writeObject(completeList);
-		objectOutputStream.flush();
-		objectOutputStream.close();
-		byte[] completeListBytes = byteArrayOutputStream.toByteArray();
-		return completeListBytes;
 	}
 }

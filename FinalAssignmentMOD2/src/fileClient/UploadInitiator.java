@@ -9,6 +9,12 @@ import shared.DataActions;
 import shared.Sender;
 import shared.Protocol;
 
+/**
+ * Uploads a file to the server when user commands.
+ * 
+ * @author tessa.gerritse
+ *
+ */
 public class UploadInitiator implements Runnable {
 	
 	private FileClientTUI view;
@@ -27,6 +33,10 @@ public class UploadInitiator implements Runnable {
 	}
 
 	@Override
+	/**
+	 * Sends file name and file to server, receives feedback if that file has overwritten another 
+	 * file with the same name or not, and displays the feedback.
+	 */
 	public void run() {
 		try {	
 			File file = DataActions.getFileObject(fileDirectory, fileName);
@@ -38,7 +48,8 @@ public class UploadInitiator implements Runnable {
 				Sender.sendNamePacket(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, fileNameBytes);
 
 				byte[] fileContentBytes = DataActions.getFileContent(file);	
-				Sender.sendSingleOrMultiplePackets(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, fileContentBytes);
+				Sender.sendSingleOrMultiplePackets(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, 
+						fileContentBytes);
 				
 				view.showMessage("File " + fileName + " is uploaded to the server. \n");
 			}	

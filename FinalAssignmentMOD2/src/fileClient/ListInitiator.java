@@ -9,6 +9,12 @@ import shared.Protocol;
 import shared.Receiver;
 import shared.Sender;
 
+/**
+ * Gets a list of files from the server when user commands.
+ * 
+ * @author tessa.gerritse
+ *
+ */
 public class ListInitiator implements Runnable {
 
 	private FileClientTUI view;
@@ -22,15 +28,17 @@ public class ListInitiator implements Runnable {
 	}
 
 	@Override
+	/**
+	 * Sends a request for a list of files on the server, receives the list, and displays it 
+	 * or displays feedback if the list is empty
+	 */
 	public void run() {
 		try {
 			byte[] listCommand = DataActions.getBytesFromString(Protocol.LIST);
 			Sender.sendCommand(listSocket, serverAddress, Protocol.LIST_PORT, listCommand);
 			
-			byte[] listOfFilesBytes = Receiver.receiveMultiplePackets(listSocket, serverAddress, Protocol.LIST_PORT);
-			
-			System.out.println("Received list bytes!");
-			
+			byte[] listOfFilesBytes = Receiver.receiveMultiplePackets(listSocket, serverAddress, 
+					Protocol.LIST_PORT);			
 			String[] listOfFiles = DataActions.getStringArrayFromByteArray(listOfFilesBytes);
 			
 			for (String file : listOfFiles) {

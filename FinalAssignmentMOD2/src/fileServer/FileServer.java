@@ -9,6 +9,13 @@ import java.net.SocketException;
 
 import shared.Protocol;
 
+/**
+ * Listens for clients that want to connect and for user commands on several ports.
+ * The several threads handle the user commands themselves.
+ * 
+ * @author tessa.gerritse
+ *
+ */
 public class FileServer {
 	
 	private File fileDirectory;
@@ -47,18 +54,22 @@ public class FileServer {
 	private void sendConnectApproved() throws IOException {		
 		String feedback = "You are now connected. \n";
 		byte[] feedbackBytes = feedback.getBytes();
-		DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, clientAddress, Protocol.CLIENT_META_PORT);
+		DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, 
+				clientAddress, Protocol.CLIENT_META_PORT);
 		metaSocket.send(feedbackPacket);
 	}
 
 	private void setupHandlers() {
-		UploadHandler uploadhandler = new UploadHandler(uploadSocket, metaSocket, fileDirectory, clientAddress);
+		UploadHandler uploadhandler = new UploadHandler(uploadSocket, metaSocket, fileDirectory, 
+				clientAddress);
 		new Thread(uploadhandler).start();
 		
-		DownloadHandler downloadhandler = new DownloadHandler(downloadSocket, metaSocket, fileDirectory, clientAddress);
+		DownloadHandler downloadhandler = new DownloadHandler(downloadSocket, metaSocket, fileDirectory, 
+				clientAddress);
 		new Thread(downloadhandler).start();
 		
-		RemoveHandler removehandler = new RemoveHandler(removeSocket, metaSocket, fileDirectory, clientAddress);
+		RemoveHandler removehandler = new RemoveHandler(removeSocket, metaSocket, fileDirectory, 
+				clientAddress);
 		new Thread(removehandler).start();
 		
 		ListHandler listhandler = new ListHandler(listSocket, metaSocket, fileDirectory, clientAddress);

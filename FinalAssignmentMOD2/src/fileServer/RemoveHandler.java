@@ -2,18 +2,20 @@ package fileServer;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import shared.DataActions;
 import shared.Protocol;
 import shared.Receiver;
 import shared.Sender;
 
+/**
+ * Removes a file from the server when user commands to do so.
+ * 
+ * @author tessa.gerritse
+ *
+ */
 public class RemoveHandler implements Runnable {
 
 	private DatagramSocket removeSocket;
@@ -21,7 +23,8 @@ public class RemoveHandler implements Runnable {
 	private File fileDirectory;
 	private InetAddress clientAddress;
 
-	public RemoveHandler(DatagramSocket removeSocket, DatagramSocket metaSocket, File fileDirectory, InetAddress clientAddress) {
+	public RemoveHandler(DatagramSocket removeSocket, DatagramSocket metaSocket, File fileDirectory, 
+			InetAddress clientAddress) {
 		this.removeSocket = removeSocket;
 		this.metaSocket = metaSocket;
 		this.fileDirectory = fileDirectory;
@@ -29,10 +32,15 @@ public class RemoveHandler implements Runnable {
 	}
 
 	@Override
+	/**
+	 * Continually listens for a name packet, removes the indicated file if it exists and sends feedback 
+	 * if the removal was successful or not.
+	 */
 	public void run() {
 		while (true) {
 			try {
-				byte[] nameBytes = Receiver.receiveName(removeSocket, clientAddress, Protocol.CLIENT_REMOVE_PORT);
+				byte[] nameBytes = Receiver.receiveName(removeSocket, clientAddress, 
+						Protocol.CLIENT_REMOVE_PORT);
 				String fileName = DataActions.getStringFromBytes(nameBytes);
 				File file = DataActions.getFileObject(fileDirectory, fileName);
 
