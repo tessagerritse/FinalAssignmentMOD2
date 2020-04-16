@@ -42,22 +42,21 @@ public class UploadHandler implements Runnable {
 				byte[] fileNameBytes  = Receiver.receiveName(uploadSocket, clientAddress, 
 						Protocol.CLIENT_UPLOAD_PORT);						
 				byte[] fileContentBytes = Receiver.receiveMultiplePackets(uploadSocket, clientAddress, 
-						Protocol.CLIENT_UPLOAD_PORT);
-				
-				String fileName = DataActions.getStringFromBytes(fileNameBytes);				
+						Protocol.CLIENT_UPLOAD_PORT);				
+				String fileName = DataActions.getStringFromBytes(fileNameBytes);					
 				File file = DataActions.getFileObject(fileDirectory, fileName);
 				
 				String feedback;
 				if (!file.exists()) {
 					feedback = "File " + fileName + " is saved on the server. \n";
 				} else {
-					feedback = "File " + fileName + " already existed and is thus overwritten. \n";
+					feedback = "File " + fileName + " was already in use and is thus overwritten. \n";
 				}
 
 				DataActions.writeFileContentToDirectory(file, fileContentBytes);
 				
 				byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
-				Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
+				Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);				
 			} catch (IOException e) {
 				System.out.println("IO exception at upload handler: " + e.getMessage());
 				e.printStackTrace();

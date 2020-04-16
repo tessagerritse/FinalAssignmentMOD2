@@ -40,12 +40,12 @@ public class ListHandler implements Runnable {
 		while (true) {
 			try {
 				Receiver.receiveCommand(listSocket, clientAddress, Protocol.CLIENT_LIST_PORT);
-
-				String[] listOfFiles = DataActions.getListOfFiles(fileDirectory);
+				String[] listOfFiles = DataActions.getListOfFiles(fileDirectory);			
 				
-				String feedback;
 				if (listOfFiles.length == 0) {
-					feedback = "The file directory on the server is empty. \n";
+					String feedback = "The file directory on the server is empty. \n";
+					byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
+					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				} else {
 					String[] guidingMessage = {"There are " + listOfFiles.length + " files on the server: "};
 					String[] completeList = DataActions.combine2StringArrays(guidingMessage, listOfFiles);
@@ -53,10 +53,10 @@ public class ListHandler implements Runnable {
 					byte[] completeListBytes = DataActions.getByteArrayFromStringArray(completeList);
 					Sender.sendSingleOrMultiplePackets(listSocket, clientAddress, Protocol.CLIENT_LIST_PORT, 
 							completeListBytes);
-					feedback = "Sent a list of files on server. \n";
+					String feedback = "Sent a list of files on server. \n";
+					byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
+					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				}
-				byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
-				Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 			} catch (IOException e) {
 				System.out.println("IO exception at list handler: " + e.getMessage());
 			}

@@ -60,4 +60,12 @@ public class MetaHandler implements Runnable {
 	public boolean ableToList() {
 		return ableToList;
 	}
+	
+	public void setAbleToDownload(boolean ableToDownload) {
+		this.ableToDownload = ableToDownload;
+	}
+
+	public void setAbleToList(boolean ableToList) {
+		this.ableToList = ableToList;
+	}
 }

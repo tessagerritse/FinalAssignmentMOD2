@@ -64,7 +64,7 @@ public class DownloadInitiator implements Runnable {
 			} else {
 				view.showMessage("Did not receive " + fileName + " , because it does not exist on the server.");
 			}
-			
+			metaHandler.setAbleToDownload(true);
 		} catch (IOException e) {
 			view.showMessage("IO exception at download initiator: " + e.getMessage());
 		}	

@@ -37,26 +37,27 @@ public class ListInitiator implements Runnable {
 	 */
 	public void run() {
 		try {
-			byte[] listCommand = DataActions.getBytesFromString(Protocol.LIST);
+			byte[] listCommand = DataActions.getBytesFromString(Protocol.LIST);			
 			Sender.sendCommand(listSocket, serverAddress, Protocol.LIST_PORT, listCommand);
 			
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 
-			if (metaHandler.ableToList()) {
+			if (metaHandler.ableToList()) {				
 				byte[] listOfFilesBytes = Receiver.receiveMultiplePackets(listSocket, serverAddress, 
-						Protocol.LIST_PORT);			
+						Protocol.LIST_PORT);							
 				String[] listOfFiles = DataActions.getStringArrayFromByteArray(listOfFilesBytes);
 
 				for (String file : listOfFiles) {
 					view.showMessage(file);
 				}	
-			} else {
+			} else {				
 				view.showMessage("Did not receive a list of files, because the file directory on the server is empty.");
 			}
+			metaHandler.setListen(true);
 		} catch (IOException e) {
 			view.showMessage("IO exception at list initiator: " + e.getMessage());
 		} catch (ClassNotFoundException e) {

@@ -46,16 +46,18 @@ public class RemoveHandler implements Runnable {
 
 				String feedback;
 				if (!file.exists()) {
-					feedback = "File " + fileName + " doesn't exist on server. \n";
+					feedback = "File " + fileName + " is not one of the files on server. \n";
+					byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
+					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				} else {
 					if(file.delete()) { 
-			            feedback = "File " + fileName + " deleted successfully"; 
+						feedback = "File " + fileName + " deleted successfully"; 
 			        } else { 
-			            feedback = "Failed to delete " + fileName + ". Reason unknown."; 
+			        	feedback = "Failed to delete " + fileName + ". Reason unknown."; 
 			        } 
+					byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
+					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				}
-				byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
-				Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 			} catch (IOException e) {
 				System.out.println("IO exception at upload handler: " + e.getMessage());
 			}
