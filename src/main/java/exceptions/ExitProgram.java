@@ -1,4 +1,4 @@
-package exceptions;
+package main.java.exceptions;
 
 /**
  * This exception is thrown when the user wants to quit the program.

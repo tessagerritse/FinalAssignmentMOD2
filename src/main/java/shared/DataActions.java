@@ -1,4 +1,4 @@
-package shared;
+package main.java.shared;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

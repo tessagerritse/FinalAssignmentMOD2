@@ -1,4 +1,4 @@
-package fileServer;
+package main.java.fileServer;
 
 import java.io.File;
 import java.io.IOException;

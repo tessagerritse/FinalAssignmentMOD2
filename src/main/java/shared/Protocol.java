@@ -1,4 +1,4 @@
-package shared;
+package main.java.shared;
 
 public class Protocol {
 	

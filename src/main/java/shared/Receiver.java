@@ -1,4 +1,4 @@
-package shared;
+package main.java.shared;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

@@ -1,4 +1,4 @@
-package fileClient;
+package main.java.fileClient;
 
 import java.io.File;
 import java.io.IOException;
