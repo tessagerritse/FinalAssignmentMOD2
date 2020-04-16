@@ -5,7 +5,7 @@
 - Clone or download the repository
 - Go to the root directory
 - To start the server execute: $ java -jar ./build/libs/NUM2-server.jar
-- To start the client execute: $ java -jar ./build/libs/NUM2-client.jar
+- To start the client execute: $ java -jar ./build/libs/NUM2-client.jar <hostname of the server>
 - Now a menu of possible commands will be displayed
 - Just answer as indicated and hit return to activate your command
 
