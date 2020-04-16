@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.time.Duration;
+import java.time.Instant;
 
 import main.java.shared.DataActions;
 import main.java.shared.Protocol;
@@ -43,15 +45,20 @@ public class UploadInitiator implements Runnable {
 			
 			if (!DataActions.exists(file)) {
 				view.showMessage("File " + fileName + " doesn't exist in the directory. Please try again. \n");
-			} else {
+			} else {				
 				byte[] fileNameBytes = DataActions.getBytesFromString(fileName);	
+				Instant start = Instant.now();
 				Sender.sendNamePacket(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, fileNameBytes);
 
 				byte[] fileContentBytes = DataActions.getFileContent(file);	
 				Sender.sendSingleOrMultiplePackets(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, 
 						fileContentBytes);
 				
-				view.showMessage("File " + fileName + " is uploaded to the server. \n");
+				Instant end = Instant.now();
+				Duration timeElapsed = Duration.between(start, end); 
+				
+				view.showMessage("File " + fileName + " is uploaded to the server. "
+						+ "It took " + timeElapsed.toMillis() + " milliseconds \n");
 			}	
 		} catch (IOException e) {
 			view.showMessage("IO exception at upload initiator " + e.getMessage());

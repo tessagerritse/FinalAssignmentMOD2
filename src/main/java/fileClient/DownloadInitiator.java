@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.time.Duration;
+import java.time.Instant;
 
 import main.java.shared.DataActions;
 import main.java.shared.Protocol;
@@ -48,6 +50,7 @@ public class DownloadInitiator implements Runnable {
 			}
 			
 			byte[] nameBytes = DataActions.getBytesFromString(fileName);
+			Instant start = Instant.now();
 			Sender.sendNamePacket(downloadSocket, serverAddress, Protocol.DOWNLOAD_PORT, nameBytes);
 			
 			try {
@@ -60,7 +63,12 @@ public class DownloadInitiator implements Runnable {
 				byte[] fileContentBytes = Receiver.receiveMultiplePackets(downloadSocket, serverAddress, 
 						Protocol.DOWNLOAD_PORT);
 				DataActions.writeFileContentToDirectory(file, fileContentBytes);
-				view.showMessage("Received " + fileName + " and saved it in the local file directory.");
+
+				Instant end = Instant.now();
+				Duration timeElapsed = Duration.between(start, end); 
+				
+				view.showMessage("Received " + fileName + " and saved it in the local file directory. "
+						+ "It took " + timeElapsed.toMillis() + " milliseconds \n");
 			} else {
 				view.showMessage("Did not receive " + fileName + " , because it does not exist on the server.");
 			}
