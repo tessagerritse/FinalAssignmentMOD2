@@ -3,8 +3,8 @@ package main.java.fileClient;
 import java.io.IOException;
 import java.net.DatagramSocket;
 
-import shared.DataActions;
-import shared.Receiver;
+import main.java.shared.DataActions;
+import main.java.shared.Receiver;
 
 /**
  * Starts at setup of client and does nothin else than listening 

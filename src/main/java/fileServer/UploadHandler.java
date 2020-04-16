@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import shared.DataActions;
-import shared.Protocol;
-import shared.Receiver;
-import shared.Sender;
+import main.java.shared.DataActions;
+import main.java.shared.Protocol;
+import main.java.shared.Receiver;
+import main.java.shared.Sender;
 
 /**
  * Receives a file from a client and saves it on the server.

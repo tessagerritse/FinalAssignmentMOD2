@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import shared.DataActions;
-import shared.Sender;
-import shared.Protocol;
+import main.java.shared.DataActions;
+import main.java.shared.Protocol;
+import main.java.shared.Sender;
 
 /**
  * Uploads a file to the server when user commands.

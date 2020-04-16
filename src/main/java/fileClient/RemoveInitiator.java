@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import shared.DataActions;
-import shared.Protocol;
-import shared.Sender;
+import main.java.shared.DataActions;
+import main.java.shared.Protocol;
+import main.java.shared.Sender;
 
 /**
  * Sends a remove request of a certain file when user commands.

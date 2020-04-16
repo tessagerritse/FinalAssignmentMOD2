@@ -7,7 +7,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-import shared.Protocol;
+import main.java.shared.Protocol;
 
 /**
  * Listens for clients that want to connect and for user commands on several ports.

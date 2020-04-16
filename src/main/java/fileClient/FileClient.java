@@ -8,8 +8,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import exceptions.ExitProgram;
-import shared.Protocol;
+import main.java.exceptions.ExitProgram;
+import main.java.shared.Protocol;
 
 /**
  * Regulates the initiation of processes on command of the user. 
@@ -51,7 +51,7 @@ public class FileClient {
 
 	public void start(String hostName) {
 		try {
-			serverAddress = InetAddress.getByName(hostName);
+			//serverAddress = InetAddress.getByName(hostName);
 			setupDirectory();
 			setupSockets();
 			connectToServer();
@@ -72,8 +72,11 @@ public class FileClient {
 	}
 
 	private void connectToServer() throws IOException {
-		DatagramPacket connectRequest = new DatagramPacket(new byte[1], 1, serverAddress, Protocol.META_PORT);
+		InetAddress address = InetAddress.getByName("255.255.255.255");
+		metaSocket.setBroadcast(true);		
+		DatagramPacket connectRequest = new DatagramPacket(new byte[1], 1, address, Protocol.META_PORT);
 		metaSocket.send(connectRequest);
+		metaSocket.setBroadcast(false);
 		view.showMessage("Trying to connect to the server \n");
 		
 		byte[] feedbackBytes = new byte[Protocol.FEEDBACK_PACKET_SIZE];
@@ -81,6 +84,8 @@ public class FileClient {
 		metaSocket.receive(feedbackPacket);
 		String feedback = new String(feedbackPacket.getData()).trim();
 		view.showMessage("Message from server: " + feedback + "\n");
+		
+		serverAddress = feedbackPacket.getAddress();
 	}
 
 	private void setupSockets() throws SocketException {
