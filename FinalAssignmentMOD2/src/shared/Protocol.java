@@ -24,7 +24,7 @@ public class Protocol {
 	public static final int NOT_EOF = 0; //int
 	public static final int EOF = 1; //int
 	
-	public static final int PACKET_SIZE = (int) (Math.pow(2, 9)- (int) (Math.pow(2, 7))); //bytes
+	public static final int PACKET_SIZE = (int) (Math.pow(2, 16)- (int) (Math.pow(2, 7))); //bytes
 	public static final int DATA_SIZE = PACKET_SIZE - HEADER; //bytes
 	//public static final int MAX_SEQNUM = (int) (Math.pow(2, 8) - 1); //ints
 	
