@@ -26,8 +26,6 @@ public class FileServer {
 	private DatagramSocket removeSocket;
 	private DatagramSocket listSocket;
 
-	private InetAddress clientAddress;
-
 	public FileServer() {	
 		fileDirectory = new File(System.getProperty("user.home") + "/FilesOnServer");
 	}
@@ -41,9 +39,14 @@ public class FileServer {
 			setupDirectory();
 			setupSockets();
 			System.out.println("The server is started and waiting for clients to connect. \n");
-			receiveConnectRequest();
-			setupHandlers();
-			sendConnectApproved();
+			
+			while (true) {
+				InetAddress clientAddress = receiveConnectRequest();
+				
+				setupHandlers(clientAddress);
+				sendConnectApproved(clientAddress);
+				System.out.println("Client with hostname " + clientAddress.getHostName() + " just connected.");
+			}
 		} catch (SocketException e) {
 			System.out.println("Socket exception at server-setup: " + e.getMessage());
 		} catch (IOException e) {
@@ -51,7 +54,7 @@ public class FileServer {
 		}
 	}
 
-	private void sendConnectApproved() throws IOException {		
+	private void sendConnectApproved(InetAddress clientAddress) throws IOException {		
 		String feedback = "You are now connected. \n";
 		byte[] feedbackBytes = feedback.getBytes();
 		DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, 
@@ -59,7 +62,7 @@ public class FileServer {
 		metaSocket.send(feedbackPacket);
 	}
 
-	private void setupHandlers() {
+	private void setupHandlers(InetAddress clientAddress) {
 		UploadHandler uploadhandler = new UploadHandler(uploadSocket, metaSocket, fileDirectory, 
 				clientAddress);
 		new Thread(uploadhandler).start();
@@ -76,13 +79,11 @@ public class FileServer {
 		new Thread(listhandler).start();
 	}
 	
-	private void receiveConnectRequest() throws IOException {
+	private InetAddress receiveConnectRequest() throws IOException {
 		DatagramPacket connectRequest = new DatagramPacket(new byte[1], 1);
 		metaSocket.receive(connectRequest);
 		
-		clientAddress = connectRequest.getAddress();
-		
-		System.out.println("Client with hostname " + clientAddress.getHostName() + " just connected.");
+		return connectRequest.getAddress();
 	}
 
 	private void setupSockets() throws SocketException {

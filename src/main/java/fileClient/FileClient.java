@@ -39,19 +39,11 @@ public class FileClient {
 	}
 
 	public static void main(String[] args) {
-		if (args.length < 1) {
-			System.out.println("Syntax: FileClient <hostname>");
-			return;
-		}
-
-		String hostName = args[0];
-
-		(new FileClient()).start(hostName);
+		(new FileClient()).start();
 	}
 
-	public void start(String hostName) {
+	public void start() {
 		try {
-			//serverAddress = InetAddress.getByName(hostName);
 			setupDirectory();
 			setupSockets();
 			connectToServer();
