@@ -51,7 +51,7 @@ public class DownloadInitiator implements Runnable {
 			Sender.sendNamePacket(downloadSocket, serverAddress, Protocol.DOWNLOAD_PORT, nameBytes);
 			
 			try {
-				Thread.sleep(10000);
+				Thread.sleep(8000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
