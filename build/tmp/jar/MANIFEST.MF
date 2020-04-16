@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 Implementation-Title: Nedap University Module 2 Final Project
-Implementation-Version: 0.0.1
-Main-Class: main.java.fileServer.FileServer
+Implementation-Version: client
+Main-Class: main.java.fileClient.FileClient
 

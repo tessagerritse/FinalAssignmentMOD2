@@ -24,12 +24,12 @@ ssh.settings {
 //  knownHosts = allowAnyHosts // Disable host key verification
 }
 
-mainClassName = 'main.java.fileServer.FileServer'
-// mainClassName = 'main.java.fileClient.FileClient'
+// mainClassName = 'main.java.fileServer.FileServer'
+mainClassName = 'main.java.fileClient.FileClient'
 
 // version = 'server'
-// version = 'client'
-version = '0.0.1'
+version = 'client'
+// version = '0.0.1'
 
 jar {
     manifest {
