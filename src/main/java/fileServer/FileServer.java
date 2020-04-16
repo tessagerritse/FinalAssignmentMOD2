@@ -25,6 +25,8 @@ public class FileServer {
 	private DatagramSocket downloadSocket;
 	private DatagramSocket removeSocket;
 	private DatagramSocket listSocket;
+	
+	private InetAddress clientAddress;
 
 	public FileServer() {	
 		fileDirectory = new File(System.getProperty("user.home") + "/FilesOnServer");
@@ -39,22 +41,19 @@ public class FileServer {
 			setupDirectory();
 			setupSockets();
 			System.out.println("The server is started and waiting for clients to connect. \n");
-			
-			while (true) {
-				InetAddress clientAddress = receiveConnectRequest();
-				
-				setupHandlers(clientAddress);
-				sendConnectApproved(clientAddress);
+				receiveConnectRequest();
+				setupHandlers();
+				sendConnectApproved();
 				System.out.println("Client with hostname " + clientAddress.getHostName() + " just connected.");
-			}
 		} catch (SocketException e) {
 			System.out.println("Socket exception at server-setup: " + e.getMessage());
+			e.printStackTrace();
 		} catch (IOException e) {
 			System.out.println("IO exception at connecting with client: " + e.getMessage());
 		}
 	}
 
-	private void sendConnectApproved(InetAddress clientAddress) throws IOException {		
+	private void sendConnectApproved() throws IOException {		
 		String feedback = "You are now connected. \n";
 		byte[] feedbackBytes = feedback.getBytes();
 		DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length, 
@@ -62,7 +61,7 @@ public class FileServer {
 		metaSocket.send(feedbackPacket);
 	}
 
-	private void setupHandlers(InetAddress clientAddress) {
+	private void setupHandlers() {
 		UploadHandler uploadhandler = new UploadHandler(uploadSocket, metaSocket, fileDirectory, 
 				clientAddress);
 		new Thread(uploadhandler).start();
@@ -79,15 +78,15 @@ public class FileServer {
 		new Thread(listhandler).start();
 	}
 	
-	private InetAddress receiveConnectRequest() throws IOException {
+	private void receiveConnectRequest() throws IOException {
 		DatagramPacket connectRequest = new DatagramPacket(new byte[1], 1);
 		metaSocket.receive(connectRequest);
 		
-		return connectRequest.getAddress();
+		clientAddress = connectRequest.getAddress();
 	}
 
 	private void setupSockets() throws SocketException {
-		metaSocket = new DatagramSocket(Protocol.META_PORT);
+//		metaSocket = new DatagramSocket(Protocol.META_PORT);
 		uploadSocket = new DatagramSocket(Protocol.UPLOAD_PORT);
 		downloadSocket = new DatagramSocket(Protocol.DOWNLOAD_PORT);
 		removeSocket = new DatagramSocket(Protocol.REMOVE_PORT);

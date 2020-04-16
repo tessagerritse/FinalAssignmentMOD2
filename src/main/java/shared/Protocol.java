@@ -2,11 +2,11 @@ package main.java.shared;
 
 public class Protocol {
 	
-	public static final int META_PORT = 18888;
-	public static final int UPLOAD_PORT = 18008;
-	public static final int DOWNLOAD_PORT = 18080;
-	public static final int REMOVE_PORT = 18800;
-	public static final int LIST_PORT = 18808;
+	public static final int META_PORT = 5000;
+	public static final int UPLOAD_PORT = 4040;
+	public static final int DOWNLOAD_PORT = 4400;
+	public static final int REMOVE_PORT = 4404;
+	public static final int LIST_PORT = 4440;
 	
 	public static final int CLIENT_META_PORT = 9999;
 	public static final int CLIENT_UPLOAD_PORT = 9009;

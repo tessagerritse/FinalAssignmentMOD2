@@ -27,9 +27,9 @@ ssh.settings {
 mainClassName = 'main.java.fileServer.FileServer'
 // mainClassName = 'main.java.fileClient.FileClient'
 
-version = 'server'
+// version = 'server'
 // version = 'client'
-// version = '0.0.1'
+version = '0.0.1'
 
 jar {
     manifest {

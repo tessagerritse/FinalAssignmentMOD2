@@ -24,13 +24,13 @@ public class FileClient {
 	private File fileDirectory;
 	private FileClientTUI view;
 	private InetAddress serverAddress;
-	
+
 	private DatagramSocket metaSocket;
 	private DatagramSocket uploadSocket;
 	private DatagramSocket downloadSocket;
 	private DatagramSocket removeSocket;
 	private DatagramSocket listSocket;
-	
+
 	private MetaHandler metaHandler;
 
 	public FileClient() {
@@ -39,11 +39,19 @@ public class FileClient {
 	}
 
 	public static void main(String[] args) {
-		(new FileClient()).start();
+		if (args.length < 1) {			
+		System.out.println("Syntax: FileClient <hostname>");	
+		return;	
+		}	
+
+		String hostName = args[0];	
+
+		(new FileClient()).start(hostName);
 	}
 
-	public void start() {
+	public void start(String hostName) {
 		try {
+			serverAddress = InetAddress.getByName(hostName);
 			setupDirectory();
 			setupSockets();
 			connectToServer();
@@ -63,20 +71,17 @@ public class FileClient {
 		new Thread(metaHandler).start();
 	}
 
-	private void connectToServer() throws IOException {
-		InetAddress address = InetAddress.getByName("255.255.255.255");
-		metaSocket.setBroadcast(true);		
-		DatagramPacket connectRequest = new DatagramPacket(new byte[1], 1, address, Protocol.META_PORT);
+	private void connectToServer() throws IOException {	
+		DatagramPacket connectRequest = new DatagramPacket(new byte[1], 1, serverAddress, Protocol.META_PORT);
 		metaSocket.send(connectRequest);
-		metaSocket.setBroadcast(false);
 		view.showMessage("Trying to connect to the server \n");
-		
+
 		byte[] feedbackBytes = new byte[Protocol.FEEDBACK_PACKET_SIZE];
 		DatagramPacket feedbackPacket = new DatagramPacket(feedbackBytes, feedbackBytes.length);
 		metaSocket.receive(feedbackPacket);
 		String feedback = new String(feedbackPacket.getData()).trim();
 		view.showMessage("Message from server: " + feedback + "\n");
-		
+
 		serverAddress = feedbackPacket.getAddress();
 	}
 
