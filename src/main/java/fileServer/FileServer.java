@@ -86,7 +86,7 @@ public class FileServer {
 	}
 
 	private void setupSockets() throws SocketException {
-//		metaSocket = new DatagramSocket(Protocol.META_PORT);
+		metaSocket = new DatagramSocket(Protocol.META_PORT);
 		uploadSocket = new DatagramSocket(Protocol.UPLOAD_PORT);
 		downloadSocket = new DatagramSocket(Protocol.DOWNLOAD_PORT);
 		removeSocket = new DatagramSocket(Protocol.REMOVE_PORT);
