@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import main.java.shared.DataActions;
-import main.java.shared.Protocol;
-import main.java.shared.Receiver;
-import main.java.shared.Sender;
+import shared.DataActions;
+import shared.Protocol;
+import shared.Receiver;
+import shared.Sender;
 
 /**
  * Sends a list of files on the server to the client when the user requests it.
@@ -44,7 +44,7 @@ public class ListHandler implements Runnable {
 				Receiver.receiveCommand(listSocket, clientAddress, Protocol.CLIENT_LIST_PORT);
 				String[] listOfFiles = fileDirectory.list();
 
-				if ((listOfFiles == null)) {
+				if ((listOfFiles.length == 0)) {
 					String feedback = "The file directory on the server is empty. \n";
 					byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
