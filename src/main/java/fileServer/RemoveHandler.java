@@ -18,12 +18,14 @@ import main.java.shared.Sender;
  */
 public class RemoveHandler implements Runnable {
 
-	private DatagramSocket removeSocket;
-	private DatagramSocket metaSocket;
-	private File fileDirectory;
-	private InetAddress clientAddress;
+	private final DatagramSocket removeSocket;
+	private final DatagramSocket metaSocket;
+	private final File fileDirectory;
+	private final InetAddress clientAddress;
 
-	public RemoveHandler(DatagramSocket removeSocket, DatagramSocket metaSocket, File fileDirectory, 
+	private boolean listenForRemoves = true;
+
+	public RemoveHandler(DatagramSocket removeSocket, DatagramSocket metaSocket, File fileDirectory,
 			InetAddress clientAddress) {
 		this.removeSocket = removeSocket;
 		this.metaSocket = metaSocket;
@@ -37,7 +39,7 @@ public class RemoveHandler implements Runnable {
 	 * if the removal was successful or not.
 	 */
 	public void run() {
-		while (true) {
+		while (listenForRemoves) {
 			try {
 				byte[] nameBytes = Receiver.receiveName(removeSocket, clientAddress, 
 						Protocol.CLIENT_REMOVE_PORT);
@@ -59,9 +61,12 @@ public class RemoveHandler implements Runnable {
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				}
 			} catch (IOException e) {
+				setListenForRemoves(false);
 				System.out.println("IO exception at upload handler: " + e.getMessage());
 			}
 		}
 	}
-
+	public void setListenForRemoves(boolean listenForRemoves) {
+		this.listenForRemoves = listenForRemoves;
+	}
 }

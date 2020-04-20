@@ -18,13 +18,15 @@ import main.java.shared.Sender;
  */
 public class DownloadHandler implements Runnable {
 
-	private DatagramSocket downloadSocket;
-	private DatagramSocket metaSocket;
-	private File fileDirectory;
-	private InetAddress clientAddress;
+	private final DatagramSocket downloadSocket;
+	private final DatagramSocket metaSocket;
+	private final File fileDirectory;
+	private final InetAddress clientAddress;
 
-	public DownloadHandler(DatagramSocket downloadSocket, DatagramSocket metaSocket, File fileDirectory, 
-			InetAddress clientAddress) {
+	private boolean listenForDownloads = true;
+
+	public DownloadHandler(DatagramSocket downloadSocket, DatagramSocket metaSocket, File fileDirectory,
+						   InetAddress clientAddress) {
 		this.downloadSocket = downloadSocket;
 		this.metaSocket = metaSocket;
 		this.fileDirectory = fileDirectory;
@@ -37,30 +39,36 @@ public class DownloadHandler implements Runnable {
 	 * if the file does not exist on the server.
 	 */
 	public void run() {
-		while (true) {
+		while (listenForDownloads) {
 			try {
-				byte[] nameBytes = Receiver.receiveName(downloadSocket, clientAddress, 
+				byte[] nameBytes = Receiver.receiveName(downloadSocket, clientAddress,
 						Protocol.CLIENT_DOWNLOAD_PORT);
 				String fileName = DataActions.getStringFromBytes(nameBytes);
-				
+
 				File file = DataActions.getFileObject(fileDirectory, fileName);
-				
-				if (!DataActions.exists(file)) {
+
+				if (!file.exists()) {
 					String feedback = "File " + fileName + " doesn't exist on server. \n";
 					byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				} else {
 					byte[] fileContentBytes = DataActions.getFileContent(file);
-					Sender.sendSingleOrMultiplePackets(downloadSocket, clientAddress, 
+					Sender.sendSingleOrMultiplePackets(downloadSocket, clientAddress,
 							Protocol.CLIENT_DOWNLOAD_PORT, fileContentBytes);
 					String feedback = "Sent file " + fileName + "\n";
 					byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
-				}		
+				}
 			} catch (IOException e) {
+				setListenForDownloads(false);
 				System.out.println("IO exception at download handler: " + e.getMessage());
 				e.printStackTrace();
 			}
 		}
-	}	
+	}
+
+
+	public void setListenForDownloads(boolean listenForDownloads) {
+		this.listenForDownloads = listenForDownloads;
+	}
 }

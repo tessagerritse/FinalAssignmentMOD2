@@ -19,11 +19,11 @@ import main.java.shared.Sender;
  */
 public class UploadInitiator implements Runnable {
 	
-	private FileClientTUI view;
-	private DatagramSocket uploadSocket;
-	private InetAddress serverAddress;
-	private File fileDirectory;
-	private String fileName;
+	private final FileClientTUI view;
+	private final DatagramSocket uploadSocket;
+	private final InetAddress serverAddress;
+	private final File fileDirectory;
+	private final String fileName;
 	
 	public UploadInitiator(FileClientTUI view, DatagramSocket uploadSocket, InetAddress serverAddress,
 			File fileDirectory, String fileName) {	
@@ -43,7 +43,7 @@ public class UploadInitiator implements Runnable {
 		try {	
 			File file = DataActions.getFileObject(fileDirectory, fileName);
 			
-			if (!DataActions.exists(file)) {
+			if (!file.exists()) {
 				view.showMessage("File " + fileName + " doesn't exist in the directory. Please try again. \n");
 			} else {				
 				byte[] fileNameBytes = DataActions.getBytesFromString(fileName);	

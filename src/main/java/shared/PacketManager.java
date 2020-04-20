@@ -52,7 +52,7 @@ public class PacketManager {
 				
 				byte[] packetData = DataActions.getDataByteArray(contentBytes, dataPointer, dataLength);
 				packet[Protocol.LRC] = DataActions.calculateLRC(packetData);
-				packet = DataActions.addDataToPacket(packet, packetData);				
+				DataActions.addDataToPacket(packet, packetData);
 
 				listOfPackets.add(packet);
 
@@ -77,8 +77,7 @@ public class PacketManager {
 	}
 
 	public static byte unpackPacketLRC(DatagramPacket packet) {
-		byte LRC = DataActions.getData(packet)[Protocol.LRC];
-		return LRC;
+		return DataActions.getData(packet)[Protocol.LRC];
 	}
 
 	public static byte[] unpackPacketData(DatagramPacket packet) {

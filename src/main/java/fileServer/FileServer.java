@@ -17,15 +17,15 @@ import main.java.shared.Protocol;
  *
  */
 public class FileServer {
-	
-	private File fileDirectory;
-	
+
+	private final File fileDirectory;
+
 	private DatagramSocket metaSocket;
 	private DatagramSocket uploadSocket;
 	private DatagramSocket downloadSocket;
 	private DatagramSocket removeSocket;
 	private DatagramSocket listSocket;
-	
+
 	private InetAddress clientAddress;
 
 	public FileServer() {	
@@ -41,10 +41,10 @@ public class FileServer {
 			setupDirectory();
 			setupSockets();
 			System.out.println("The server is started and waiting for clients to connect. \n");
-				receiveConnectRequest();
-				setupHandlers();
-				sendConnectApproved();
-				System.out.println("Client with hostname " + clientAddress.getHostName() + " just connected.");
+			receiveConnectRequest();
+			setupHandlers();
+			sendConnectApproved();
+			System.out.println("Client with hostname " + clientAddress.getHostName() + " just connected.");
 		} catch (SocketException e) {
 			System.out.println("Socket exception at server-setup: " + e.getMessage());
 			e.printStackTrace();
@@ -65,23 +65,23 @@ public class FileServer {
 		UploadHandler uploadhandler = new UploadHandler(uploadSocket, metaSocket, fileDirectory, 
 				clientAddress);
 		new Thread(uploadhandler).start();
-		
+
 		DownloadHandler downloadhandler = new DownloadHandler(downloadSocket, metaSocket, fileDirectory, 
 				clientAddress);
 		new Thread(downloadhandler).start();
-		
+
 		RemoveHandler removehandler = new RemoveHandler(removeSocket, metaSocket, fileDirectory, 
 				clientAddress);
 		new Thread(removehandler).start();
-		
+
 		ListHandler listhandler = new ListHandler(listSocket, metaSocket, fileDirectory, clientAddress);
 		new Thread(listhandler).start();
 	}
-	
+
 	private void receiveConnectRequest() throws IOException {
 		DatagramPacket connectRequest = new DatagramPacket(new byte[1], 1);
 		metaSocket.receive(connectRequest);
-		
+
 		clientAddress = connectRequest.getAddress();
 	}
 
@@ -96,7 +96,11 @@ public class FileServer {
 	private void setupDirectory() {
 		if (!fileDirectory.exists()) {
 			fileDirectory.mkdir();
-	    }
+			System.out.println("The directory " + fileDirectory + " has just been created. "
+					+ "Put files in that directory if you want to be able to upload them to the server.");
+		} else {
+			System.out.println("Put files in " + fileDirectory + " if you want to be able to upload them to the server.");
+		}
 	} 
 
 }

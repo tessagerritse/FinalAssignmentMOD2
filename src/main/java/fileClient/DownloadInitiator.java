@@ -20,12 +20,12 @@ import main.java.shared.Sender;
  */
 public class DownloadInitiator implements Runnable {
 
-	private FileClientTUI view;
-	private DatagramSocket downloadSocket;
-	private InetAddress serverAddress;
-	private File fileDirectory;
-	private String fileName;
-	private MetaHandler metaHandler;
+	private final FileClientTUI view;
+	private final DatagramSocket downloadSocket;
+	private final InetAddress serverAddress;
+	private final File fileDirectory;
+	private final String fileName;
+	private final MetaHandler metaHandler;
 
 	public DownloadInitiator(FileClientTUI view, DatagramSocket downloadSocket, InetAddress serverAddress,
 			File fileDirectory, String fileName, MetaHandler metaHandler) {
@@ -45,7 +45,7 @@ public class DownloadInitiator implements Runnable {
 		try {
 			File file = DataActions.getFileObject(fileDirectory, fileName);
 
-			if (DataActions.exists(file)) {
+			if (file.exists()) {
 				view.showMessage("File " + fileName + " already exists and will thus be overwritten. \n");
 			}
 			

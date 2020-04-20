@@ -7,7 +7,7 @@ import main.java.shared.DataActions;
 import main.java.shared.Receiver;
 
 /**
- * Starts at setup of client and does nothin else than listening 
+ * Starts at setup of client and does nothing else than listening
  * for feedback from the server to display to the user.
  * 
  * @author tessa.gerritse
@@ -15,8 +15,8 @@ import main.java.shared.Receiver;
  */
 public class MetaHandler implements Runnable {
 
-	private FileClientTUI view;
-	private DatagramSocket metaSocket;
+	private final FileClientTUI view;
+	private final DatagramSocket metaSocket;
 	private boolean listen = true;
 	private boolean ableToDownload = true;
 	private boolean ableToList = true;

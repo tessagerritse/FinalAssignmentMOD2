@@ -21,10 +21,9 @@ public class Sender {
 	 * @param address the address to send the packet(s) to
 	 * @param port the port to send the packet(s) to
 	 * @param content the content to send in the packet(s)
-	 * @throws IOException when the socket cannot send for some reason
 	 */
 	public static void sendSingleOrMultiplePackets(DatagramSocket socket, InetAddress address, int port, 
-			byte[] content) throws IOException {
+			byte[] content) {
 		if (DataActions.fitsOnePacket(content.length)) {				
 			sendSinglePacket(socket, address, port, content);
 		} else {			
@@ -62,14 +61,12 @@ public class Sender {
 		}
 	}
 	
-	public static void sendCommand(DatagramSocket socket, InetAddress address, int port, byte[] command) 
-			throws IOException {
+	public static void sendCommand(DatagramSocket socket, InetAddress address, int port, byte[] command) {
 		DatagramPacket commandPacket = new DatagramPacket(command, command.length, address, port);
 		sendPacketWaitForAck(socket, commandPacket);
 	}
 	
-	public static void sendNamePacket(DatagramSocket socket, InetAddress address, int port, byte[] fileName) 
-			throws IOException {
+	public static void sendNamePacket(DatagramSocket socket, InetAddress address, int port, byte[] fileName) {
 		DatagramPacket namePacket = new DatagramPacket(fileName, fileName.length, address, port);
 		sendPacketWaitForAck(socket, namePacket);
 	}

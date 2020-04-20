@@ -21,8 +21,8 @@ import main.java.shared.Protocol;
  */
 public class FileClient {
 
-	private File fileDirectory;
-	private FileClientTUI view;
+	private final File fileDirectory;
+	private final FileClientTUI view;
 	private InetAddress serverAddress;
 
 	private DatagramSocket metaSocket;
@@ -66,7 +66,7 @@ public class FileClient {
 		}
 	}
 
-	private void startReceivingMeta() throws IOException {
+	private void startReceivingMeta() {
 		metaHandler = new MetaHandler(view, metaSocket);
 		new Thread(metaHandler).start();
 	}
@@ -96,6 +96,10 @@ public class FileClient {
 	private void setupDirectory() {
 		if (!fileDirectory.exists()) {
 			fileDirectory.mkdir();
+			view.showMessage("The directory " + fileDirectory + " has just been created. "
+					+ "Put files in that directory if you want to be able to upload them to the server.");
+		} else {
+			view.showMessage("Put files in " + fileDirectory + " if you want to be able to upload them to the server.");
 		}
 	}
 

@@ -8,7 +8,7 @@ package main.java.exceptions;
  */
 public class ExitProgram extends Exception {
 
-	private static final long serialVersionUID = 4487322440921926620L;
+	private static final long serialVersionUID = -1946224119760311922L;
 
 	public ExitProgram(String msg) {
 		super(msg);

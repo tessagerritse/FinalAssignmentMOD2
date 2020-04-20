@@ -17,10 +17,10 @@ import main.java.shared.Sender;
  */
 public class ListInitiator implements Runnable {
 
-	private FileClientTUI view;
-	private DatagramSocket listSocket;
-	private InetAddress serverAddress;
-	private MetaHandler metaHandler;
+	private final FileClientTUI view;
+	private final DatagramSocket listSocket;
+	private final InetAddress serverAddress;
+	private final MetaHandler metaHandler;
 
 	public ListInitiator(FileClientTUI view, DatagramSocket listSocket, InetAddress serverAddress, 
 			MetaHandler metaHandler) {
@@ -57,7 +57,7 @@ public class ListInitiator implements Runnable {
 			} else {				
 				view.showMessage("Did not receive a list of files, because the file directory on the server is empty.");
 			}
-			metaHandler.setListen(true);
+			metaHandler.setAbleToList(true);
 		} catch (IOException e) {
 			view.showMessage("IO exception at list initiator: " + e.getMessage());
 		} catch (ClassNotFoundException e) {

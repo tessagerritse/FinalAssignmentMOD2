@@ -18,12 +18,14 @@ import main.java.shared.Sender;
  */
 public class ListHandler implements Runnable {
 
-	private DatagramSocket listSocket;
-	private DatagramSocket metaSocket;
-	private File fileDirectory;
-	private InetAddress clientAddress;
+	private final DatagramSocket listSocket;
+	private final DatagramSocket metaSocket;
+	private final File fileDirectory;
+	private final InetAddress clientAddress;
 
-	public ListHandler(DatagramSocket listSocket, DatagramSocket metaSocket, File fileDirectory, 
+	private boolean listenForLists = true;
+
+	public ListHandler(DatagramSocket listSocket, DatagramSocket metaSocket, File fileDirectory,
 			InetAddress clientAddress) {
 		this.listSocket = listSocket;
 		this.metaSocket = metaSocket;
@@ -37,12 +39,12 @@ public class ListHandler implements Runnable {
 	 * or feedback if the local directory is empty.
 	 */
 	public void run() {
-		while (true) {
+		while (listenForLists) {
 			try {
 				Receiver.receiveCommand(listSocket, clientAddress, Protocol.CLIENT_LIST_PORT);
-				String[] listOfFiles = DataActions.getListOfFiles(fileDirectory);			
-				
-				if (listOfFiles.length == 0) {
+				String[] listOfFiles = fileDirectory.list();
+
+				if ((listOfFiles == null)) {
 					String feedback = "The file directory on the server is empty. \n";
 					byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
@@ -58,9 +60,12 @@ public class ListHandler implements Runnable {
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				}
 			} catch (IOException e) {
+				setListenForLists(false);
 				System.out.println("IO exception at list handler: " + e.getMessage());
 			}
 		}
 	}
-
+	public void setListenForLists(boolean listenForLists) {
+		this.listenForLists = listenForLists;
+	}
 }

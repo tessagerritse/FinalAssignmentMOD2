@@ -21,16 +21,7 @@ import java.net.DatagramPacket;
 public class DataActions {
 
 	public static File getFileObject(File fileDirectory, String fileName) {
-		File file = new File(fileDirectory + "/" + fileName);
-		return file;
-	}
-
-	public static boolean exists(File file) {
-		return file.exists();
-	}
-	
-	public static String[] getListOfFiles(File fileDirectory) {
-		return fileDirectory.list();
+		return new File(fileDirectory + "/" + fileName);
 	}
 	
 	public static byte[] getFileContent(File directory) throws IOException {
@@ -75,14 +66,13 @@ public class DataActions {
 		objectOutputStream.writeObject(completeList);
 		objectOutputStream.flush();
 		objectOutputStream.close();
-		byte[] completeListBytes = byteArrayOutputStream.toByteArray();
-		return completeListBytes;
+		return byteArrayOutputStream.toByteArray();
 	}	
 
 	/**
 	 * Gets the length of the actual data in a packet. 
 	 * Any empty parts of the packets will be trimmed.
-	 * @param packet
+	 * @param packet the packet you want to get the actual data length from
 	 * @return data length (int)
 	 */
 	public static int getDataLength(DatagramPacket packet) {
@@ -91,7 +81,7 @@ public class DataActions {
 
 	/**
 	 * Get the data from the packet. This data possibly includes header-bytes
-	 * @param packet
+	 * @param packet the packet you want to get the actual data from
 	 * @return data array (byte)
 	 */
 	public static byte[] getData(DatagramPacket packet) {
@@ -131,13 +121,11 @@ public class DataActions {
 	
 	/**
 	 * Puts data in a packet.
-	 * @param packet 
+	 * @param packet  is the packet to add the data to
 	 * @param packetData is the data to put in the packet
-	 * @return
 	 */
-	public static byte[] addDataToPacket(byte[] packet, byte[] packetData) {
+	public static void addDataToPacket(byte[] packet, byte[] packetData) {
 		System.arraycopy(packetData, 0, packet, Protocol.HEADER, packetData.length);
-		return packet;
 	}
 	
 	/**
@@ -147,8 +135,8 @@ public class DataActions {
 	 */
 	public static byte calculateLRC(byte[] contentBytes) {
 		byte LRC = 0;
-		for (int i = 0; i < contentBytes.length; i++) {
-			LRC ^= contentBytes[i];
+		for (byte contentByte : contentBytes) {
+			LRC ^= contentByte;
 		}
 		return LRC;
 	}

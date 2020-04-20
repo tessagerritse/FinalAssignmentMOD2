@@ -19,12 +19,12 @@ import main.java.shared.Protocol;
  */
 public class FileClientTUI {
 	
-	private FileClient fileClient;
-	private BufferedReader consoleIn;
-	private PrintWriter consoleOut;
+	private final FileClient fileClient;
+	private final BufferedReader consoleIn;
+	private final PrintWriter consoleOut;
 
-	private List<String> validCommands = new ArrayList<>();
-	private List<String> fileNecessary = new ArrayList<>();
+	private final List<String> validCommands = new ArrayList<>();
+	private final List<String> fileNecessary = new ArrayList<>();
 
 	public FileClientTUI(FileClient fileClient) {
 		this.fileClient = fileClient;
@@ -74,12 +74,12 @@ public class FileClientTUI {
 		showMessage(String.format("%-20s %s", "q", "quit the program \n"));
 	}
 
-	private void handleUserInput() throws ExitProgram, IOException {
+	private void handleUserInput() throws ExitProgram {
 		String userInput = askStringAnswer("What is your command? \n");
 		
 		String[] parts = userInput.split("\\s+");
 		String command = parts[0];
-		String fileName = (parts.length > 1) ? fileName = parts[1] : "";
+		String fileName = (parts.length > 1) ? parts[1] : "";
 		
 		if (!validCommands.contains(command)) {
 			showMessage("That is not a valid command. Please try again \n");
