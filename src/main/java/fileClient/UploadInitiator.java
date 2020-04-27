@@ -7,6 +7,8 @@ import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
 
+import sender.MultiplePacketSender;
+import sender.SinglePacketSender;
 import shared.Utils;
 import shared.Protocol;
 import shared.Sender;
@@ -51,8 +53,13 @@ public class UploadInitiator implements Runnable {
 				Sender.sendNamePacket(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, fileNameBytes);
 
 				byte[] fileContentBytes = Utils.getFileContent(file);
-				Sender.sendSingleOrMultiplePackets(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, 
-						fileContentBytes);
+				if(fileContentBytes.length <= Protocol.DATA_SIZE) {
+					(new SinglePacketSender()).send(uploadSocket, serverAddress, Protocol.UPLOAD_PORT,
+							fileContentBytes);
+				} else {
+					(new MultiplePacketSender()).send(uploadSocket, serverAddress, Protocol.UPLOAD_PORT,
+							fileContentBytes);
+				}
 				
 				Instant end = Instant.now();
 				Duration timeElapsed = Duration.between(start, end); 

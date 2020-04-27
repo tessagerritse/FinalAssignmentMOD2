@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import sender.MultiplePacketSender;
+import sender.SinglePacketSender;
 import shared.Utils;
 import shared.Protocol;
 import shared.Receiver;
@@ -53,8 +55,14 @@ public class ListHandler implements Runnable {
 					String[] completeList = Utils.combine2StringArrays(guidingMessage, listOfFiles);
 					
 					byte[] completeListBytes = Utils.getByteArrayFromStringArray(completeList);
-					Sender.sendSingleOrMultiplePackets(listSocket, clientAddress, Protocol.CLIENT_LIST_PORT, 
-							completeListBytes);
+					if (completeListBytes.length <= Protocol.DATA_SIZE) {
+						(new SinglePacketSender()).send(listSocket, clientAddress, Protocol.CLIENT_LIST_PORT,
+								completeListBytes);
+					} else {
+						(new MultiplePacketSender()).send(listSocket, clientAddress, Protocol.CLIENT_LIST_PORT,
+								completeListBytes);
+					}
+
 					String feedback = "Sent a list of files on server. \n";
 					byte[] feedbackBytes = feedback.getBytes();
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import sender.MultiplePacketSender;
+import sender.SinglePacketSender;
 import shared.Utils;
 import shared.Protocol;
 import shared.Receiver;
@@ -53,8 +55,13 @@ public class DownloadHandler implements Runnable {
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				} else {
 					byte[] fileContentBytes = Utils.getFileContent(file);
-					Sender.sendSingleOrMultiplePackets(downloadSocket, clientAddress,
-							Protocol.CLIENT_DOWNLOAD_PORT, fileContentBytes);
+					if (fileContentBytes.length <= Protocol.DATA_SIZE) {
+						(new SinglePacketSender()).send(downloadSocket, clientAddress,
+								Protocol.CLIENT_DOWNLOAD_PORT, fileContentBytes);
+					} else {
+						(new MultiplePacketSender()).send(downloadSocket, clientAddress,
+								Protocol.CLIENT_DOWNLOAD_PORT, fileContentBytes);
+					}
 					String feedback = "Sent file " + fileName + "\n";
 					byte[] feedbackBytes = feedback.getBytes();
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);

@@ -3,7 +3,6 @@ package fileClient;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import shared.Utils;
 import shared.Protocol;
 import shared.Sender;
 
