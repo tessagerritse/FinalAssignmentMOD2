@@ -63,25 +63,6 @@ public class Utils {
 		objectOutputStream.flush();
 		objectOutputStream.close();
 		return byteArrayOutputStream.toByteArray();
-	}	
-
-	/**
-	 * Gets the length of the actual data in a packet. 
-	 * Any empty parts of the packets will be trimmed.
-	 * @param packet the packet you want to get the actual data length from
-	 * @return data length (int)
-	 */
-	public static int getDataLength(DatagramPacket packet) {
-		return packet.getLength();
-	}
-
-	/**
-	 * Get the data from the packet. This data possibly includes header-bytes
-	 * @param packet the packet you want to get the actual data from
-	 * @return data array (byte)
-	 */
-	public static byte[] getData(DatagramPacket packet) {
-		return packet.getData();
 	}
 	
 	public static boolean fitsOnePacket(int contentLength) {

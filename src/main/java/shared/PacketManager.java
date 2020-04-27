@@ -65,24 +65,24 @@ public class PacketManager {
 	}
 
 	public static byte[] unpackNameOrFeedbackPacket(DatagramPacket packet) {
-		byte[] contentBytes = new byte[Utils.getDataLength(packet)];
-		byte[] packetData = Utils.getData(packet);
+		byte[] contentBytes = new byte[packet.getLength()];
+		byte[] packetData = packet.getData();
 		System.arraycopy(packetData, 0, contentBytes, 0, contentBytes.length);		
 		return contentBytes;
 	}
 
 	public static int unpackPacketInfo(DatagramPacket packet) {
-		byte infoByte = Utils.getData(packet)[Protocol.INFO];
+		byte infoByte = packet.getData()[Protocol.INFO];
 		return Utils.getIntFromByte(infoByte);
 	}
 
 	public static byte unpackPacketLRC(DatagramPacket packet) {
-		return Utils.getData(packet)[Protocol.LRC];
+		return packet.getData()[Protocol.LRC];
 	}
 
 	public static byte[] unpackPacketData(DatagramPacket packet) {
-		byte[] data = new byte[Utils.getDataLength(packet) - Protocol.HEADER];
-		byte[] packetBytes = Utils.getData(packet);
+		byte[] data = new byte[packet.getLength() - Protocol.HEADER];
+		byte[] packetBytes = packet.getData();
 		System.arraycopy(packetBytes, Protocol.HEADER, data, 0, data.length);
 		return data;
 	}
