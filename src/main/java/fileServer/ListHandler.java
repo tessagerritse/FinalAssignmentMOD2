@@ -1,11 +1,11 @@
-package main.java.fileServer;
+package fileServer;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import shared.DataActions;
+import shared.Utils;
 import shared.Protocol;
 import shared.Receiver;
 import shared.Sender;
@@ -46,17 +46,17 @@ public class ListHandler implements Runnable {
 
 				if ((listOfFiles.length == 0)) {
 					String feedback = "The file directory on the server is empty. \n";
-					byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
+					byte[] feedbackBytes = Utils.getBytesFromString(feedback);
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				} else {
 					String[] guidingMessage = {"There are " + listOfFiles.length + " files on the server: "};
-					String[] completeList = DataActions.combine2StringArrays(guidingMessage, listOfFiles);
+					String[] completeList = Utils.combine2StringArrays(guidingMessage, listOfFiles);
 					
-					byte[] completeListBytes = DataActions.getByteArrayFromStringArray(completeList);
+					byte[] completeListBytes = Utils.getByteArrayFromStringArray(completeList);
 					Sender.sendSingleOrMultiplePackets(listSocket, clientAddress, Protocol.CLIENT_LIST_PORT, 
 							completeListBytes);
 					String feedback = "Sent a list of files on server. \n";
-					byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
+					byte[] feedbackBytes = Utils.getBytesFromString(feedback);
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				}
 			} catch (IOException e) {

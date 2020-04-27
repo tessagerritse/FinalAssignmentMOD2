@@ -1,4 +1,4 @@
-package main.java.fileClient;
+package fileClient;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import main.java.exceptions.ExitProgram;
-import main.java.shared.Protocol;
+import exceptions.ExitProgram;
+import shared.Protocol;
 
 /**
  * Takes care of the user-input and provides feedback to the user if his input cannot be handled.

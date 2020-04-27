@@ -1,12 +1,11 @@
-package main.java.fileClient;
+package fileClient;
 
-import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import main.java.shared.DataActions;
-import main.java.shared.Protocol;
-import main.java.shared.Sender;
+import shared.Utils;
+import shared.Protocol;
+import shared.Sender;
 
 /**
  * Sends a remove request of a certain file when user commands.
@@ -34,7 +33,7 @@ public class RemoveInitiator implements Runnable {
      * and displays feedback
      */
     public void run() {
-        byte[] nameBytes = DataActions.getBytesFromString(fileName);
+        byte[] nameBytes = Utils.getBytesFromString(fileName);
         Sender.sendNamePacket(removeSocket, serverAddress, Protocol.REMOVE_PORT, nameBytes);
 		view.showMessage("Sent request to server to remove " + fileName + ". \n");
     }

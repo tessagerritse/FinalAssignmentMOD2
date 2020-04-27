@@ -1,4 +1,4 @@
-package main.java.fileClient;
+package fileClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,10 +7,10 @@ import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
 
-import main.java.shared.DataActions;
-import main.java.shared.Protocol;
-import main.java.shared.Receiver;
-import main.java.shared.Sender;
+import shared.Utils;
+import shared.Protocol;
+import shared.Receiver;
+import shared.Sender;
 
 /**
  * Downloads a file from the server when user commands.
@@ -43,13 +43,13 @@ public class DownloadInitiator implements Runnable {
 	 */
 	public void run() {
 		try {
-			File file = DataActions.getFileObject(fileDirectory, fileName);
+			File file = Utils.getFileObject(fileDirectory, fileName);
 
 			if (file.exists()) {
 				view.showMessage("File " + fileName + " already exists and will thus be overwritten. \n");
 			}
 			
-			byte[] nameBytes = DataActions.getBytesFromString(fileName);
+			byte[] nameBytes = Utils.getBytesFromString(fileName);
 			Instant start = Instant.now();
 			Sender.sendNamePacket(downloadSocket, serverAddress, Protocol.DOWNLOAD_PORT, nameBytes);
 			
@@ -62,7 +62,7 @@ public class DownloadInitiator implements Runnable {
 			if (metaHandler.ableToDownload()) {				
 				byte[] fileContentBytes = Receiver.receiveMultiplePackets(downloadSocket, serverAddress, 
 						Protocol.DOWNLOAD_PORT);
-				DataActions.writeFileContentToDirectory(file, fileContentBytes);
+				Utils.writeFileContentToDirectory(file, fileContentBytes);
 
 				Instant end = Instant.now();
 				Duration timeElapsed = Duration.between(start, end); 

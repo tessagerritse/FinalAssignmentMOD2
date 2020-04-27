@@ -18,7 +18,7 @@ import java.net.DatagramPacket;
  * @author tessa.gerritse
  *
  */
-public class DataActions {
+public class Utils {
 
 	public static File getFileObject(File fileDirectory, String fileName) {
 		return new File(fileDirectory + "/" + fileName);

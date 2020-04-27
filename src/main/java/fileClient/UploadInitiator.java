@@ -1,4 +1,4 @@
-package main.java.fileClient;
+package fileClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,9 +7,9 @@ import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
 
-import main.java.shared.DataActions;
-import main.java.shared.Protocol;
-import main.java.shared.Sender;
+import shared.Utils;
+import shared.Protocol;
+import shared.Sender;
 
 /**
  * Uploads a file to the server when user commands.
@@ -41,16 +41,16 @@ public class UploadInitiator implements Runnable {
 	 */
 	public void run() {
 		try {	
-			File file = DataActions.getFileObject(fileDirectory, fileName);
+			File file = Utils.getFileObject(fileDirectory, fileName);
 			
 			if (!file.exists()) {
 				view.showMessage("File " + fileName + " doesn't exist in the directory. Please try again. \n");
 			} else {				
-				byte[] fileNameBytes = DataActions.getBytesFromString(fileName);	
+				byte[] fileNameBytes = Utils.getBytesFromString(fileName);
 				Instant start = Instant.now();
 				Sender.sendNamePacket(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, fileNameBytes);
 
-				byte[] fileContentBytes = DataActions.getFileContent(file);	
+				byte[] fileContentBytes = Utils.getFileContent(file);
 				Sender.sendSingleOrMultiplePackets(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, 
 						fileContentBytes);
 				

@@ -1,13 +1,13 @@
-package main.java.fileClient;
+package fileClient;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import main.java.shared.DataActions;
-import main.java.shared.Protocol;
-import main.java.shared.Receiver;
-import main.java.shared.Sender;
+import shared.Utils;
+import shared.Protocol;
+import shared.Receiver;
+import shared.Sender;
 
 /**
  * Gets a list of files from the server when user commands.
@@ -37,7 +37,7 @@ public class ListInitiator implements Runnable {
 	 */
 	public void run() {
 		try {
-			byte[] listCommand = DataActions.getBytesFromString(Protocol.LIST);			
+			byte[] listCommand = Utils.getBytesFromString(Protocol.LIST);
 			Sender.sendCommand(listSocket, serverAddress, Protocol.LIST_PORT, listCommand);
 			
 			try {
@@ -49,7 +49,7 @@ public class ListInitiator implements Runnable {
 			if (metaHandler.ableToList()) {				
 				byte[] listOfFilesBytes = Receiver.receiveMultiplePackets(listSocket, serverAddress, 
 						Protocol.LIST_PORT);							
-				String[] listOfFiles = DataActions.getStringArrayFromByteArray(listOfFilesBytes);
+				String[] listOfFiles = Utils.getStringArrayFromByteArray(listOfFilesBytes);
 
 				for (String file : listOfFiles) {
 					view.showMessage(file);

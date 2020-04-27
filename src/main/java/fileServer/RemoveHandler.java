@@ -1,14 +1,14 @@
-package main.java.fileServer;
+package fileServer;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import main.java.shared.DataActions;
-import main.java.shared.Protocol;
-import main.java.shared.Receiver;
-import main.java.shared.Sender;
+import shared.Utils;
+import shared.Protocol;
+import shared.Receiver;
+import shared.Sender;
 
 /**
  * Removes a file from the server when user commands to do so.
@@ -43,13 +43,13 @@ public class RemoveHandler implements Runnable {
 			try {
 				byte[] nameBytes = Receiver.receiveName(removeSocket, clientAddress, 
 						Protocol.CLIENT_REMOVE_PORT);
-				String fileName = DataActions.getStringFromBytes(nameBytes);
-				File file = DataActions.getFileObject(fileDirectory, fileName);
+				String fileName = Utils.getStringFromBytes(nameBytes);
+				File file = Utils.getFileObject(fileDirectory, fileName);
 
 				String feedback;
 				if (!file.exists()) {
 					feedback = "File " + fileName + " is not one of the files on server. \n";
-					byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
+					byte[] feedbackBytes = Utils.getBytesFromString(feedback);
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				} else {
 					if(file.delete()) { 
@@ -57,7 +57,7 @@ public class RemoveHandler implements Runnable {
 			        } else { 
 			        	feedback = "Failed to delete " + fileName + ". Reason unknown."; 
 			        } 
-					byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
+					byte[] feedbackBytes = Utils.getBytesFromString(feedback);
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				}
 			} catch (IOException e) {

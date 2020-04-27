@@ -1,14 +1,14 @@
-package main.java.fileServer;
+package fileServer;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import main.java.shared.DataActions;
-import main.java.shared.Protocol;
-import main.java.shared.Receiver;
-import main.java.shared.Sender;
+import shared.Utils;
+import shared.Protocol;
+import shared.Receiver;
+import shared.Sender;
 
 /**
  * Receives a file from a client and saves it on the server.
@@ -45,8 +45,8 @@ public class UploadHandler implements Runnable {
 						Protocol.CLIENT_UPLOAD_PORT);						
 				byte[] fileContentBytes = Receiver.receiveMultiplePackets(uploadSocket, clientAddress, 
 						Protocol.CLIENT_UPLOAD_PORT);				
-				String fileName = DataActions.getStringFromBytes(fileNameBytes);					
-				File file = DataActions.getFileObject(fileDirectory, fileName);
+				String fileName = Utils.getStringFromBytes(fileNameBytes);
+				File file = Utils.getFileObject(fileDirectory, fileName);
 				
 				String feedback;
 				if (!file.exists()) {
@@ -55,9 +55,9 @@ public class UploadHandler implements Runnable {
 					feedback = "File " + fileName + " was already in use and is thus overwritten. \n";
 				}
 
-				DataActions.writeFileContentToDirectory(file, fileContentBytes);
+				Utils.writeFileContentToDirectory(file, fileContentBytes);
 				
-				byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
+				byte[] feedbackBytes = Utils.getBytesFromString(feedback);
 				Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);				
 			} catch (IOException e) {
 				setListenForUploads(false);

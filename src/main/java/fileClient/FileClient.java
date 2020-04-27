@@ -1,4 +1,4 @@
-package main.java.fileClient;
+package fileClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,8 +8,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import main.java.exceptions.ExitProgram;
-import main.java.shared.Protocol;
+import exceptions.ExitProgram;
+import shared.Protocol;
 
 /**
  * Regulates the initiation of processes on command of the user. 
