@@ -1,8 +1,5 @@
 package shared;
 
-import sender.MultiplePacketSender;
-import sender.SinglePacketSender;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -13,8 +10,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
 
 /**
  * A class of various methods to use for file- and data management.

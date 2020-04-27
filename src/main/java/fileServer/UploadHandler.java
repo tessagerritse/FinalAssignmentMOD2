@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import sender.FeedbackSender;
 import shared.Utils;
 import shared.Protocol;
 import shared.Receiver;
-import shared.Sender;
 
 /**
  * Receives a file from a client and saves it on the server.
@@ -58,7 +58,7 @@ public class UploadHandler implements Runnable {
 				Utils.writeFileContentToDirectory(file, fileContentBytes);
 				
 				byte[] feedbackBytes = feedback.getBytes();
-				Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);				
+				(new FeedbackSender()).send(metaSocket, clientAddress, Protocol.CLIENT_META_PORT, feedbackBytes);
 			} catch (IOException e) {
 				setListenForUploads(false);
 				System.out.println("IO exception at upload handler: " + e.getMessage());

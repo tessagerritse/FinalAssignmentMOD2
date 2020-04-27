@@ -23,11 +23,9 @@ public abstract class AbstractSender {
         }
     }
 
-    public void sendAck(DatagramSocket socket, InetAddress address, int port) throws IOException {
-        byte[] ack = new byte[Protocol.ACK_PACKET_SIZE];
-        DatagramPacket packet = new DatagramPacket(ack, ack.length, address, port);
+    public void sendPacketWithoutAck(DatagramSocket socket, DatagramPacket packet) throws IOException {
         socket.send(packet);
     }
 
-    public abstract void send(DatagramSocket socket, InetAddress address, int port, byte[] content);
+    public abstract void send(DatagramSocket socket, InetAddress address, int port, byte[] content) throws IOException;
 }

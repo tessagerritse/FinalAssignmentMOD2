@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import sender.FeedbackSender;
 import sender.MultiplePacketSender;
 import sender.SinglePacketSender;
 import shared.Utils;
 import shared.Protocol;
 import shared.Receiver;
-import shared.Sender;
 
 /**
  * Sends a file to the client when the user requests a certain file-download.
@@ -52,7 +52,7 @@ public class DownloadHandler implements Runnable {
 				if (!file.exists()) {
 					String feedback = "File " + fileName + " doesn't exist on server. \n";
 					byte[] feedbackBytes = feedback.getBytes();
-					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
+					(new FeedbackSender()).send(metaSocket, clientAddress, Protocol.CLIENT_META_PORT, feedbackBytes);
 				} else {
 					byte[] fileContentBytes = Utils.getFileContent(file);
 					if (fileContentBytes.length <= Protocol.DATA_SIZE) {
@@ -64,7 +64,7 @@ public class DownloadHandler implements Runnable {
 					}
 					String feedback = "Sent file " + fileName + "\n";
 					byte[] feedbackBytes = feedback.getBytes();
-					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
+					(new FeedbackSender()).send(metaSocket, clientAddress, Protocol.CLIENT_META_PORT, feedbackBytes);
 				}
 			} catch (IOException e) {
 				setListenForDownloads(false);

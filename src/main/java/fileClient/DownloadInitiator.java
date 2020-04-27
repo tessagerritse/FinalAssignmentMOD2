@@ -7,10 +7,10 @@ import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
 
+import sender.HeaderlessPacketSender;
 import shared.Utils;
 import shared.Protocol;
 import shared.Receiver;
-import shared.Sender;
 
 /**
  * Downloads a file from the server when user commands.
@@ -51,7 +51,7 @@ public class DownloadInitiator implements Runnable {
 			
 			byte[] nameBytes = fileName.getBytes();
 			Instant start = Instant.now();
-			Sender.sendNamePacket(downloadSocket, serverAddress, Protocol.DOWNLOAD_PORT, nameBytes);
+			(new HeaderlessPacketSender()).send(downloadSocket, serverAddress, Protocol.DOWNLOAD_PORT, nameBytes);
 			
 			try {
 				Thread.sleep(8000);

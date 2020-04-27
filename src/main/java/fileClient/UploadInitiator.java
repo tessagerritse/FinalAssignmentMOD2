@@ -7,11 +7,11 @@ import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
 
+import sender.HeaderlessPacketSender;
 import sender.MultiplePacketSender;
 import sender.SinglePacketSender;
 import shared.Utils;
 import shared.Protocol;
-import shared.Sender;
 
 /**
  * Uploads a file to the server when user commands.
@@ -50,7 +50,7 @@ public class UploadInitiator implements Runnable {
 			} else {				
 				byte[] fileNameBytes = fileName.getBytes();
 				Instant start = Instant.now();
-				Sender.sendNamePacket(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, fileNameBytes);
+				(new HeaderlessPacketSender()).send(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, fileNameBytes);
 
 				byte[] fileContentBytes = Utils.getFileContent(file);
 				if(fileContentBytes.length <= Protocol.DATA_SIZE) {

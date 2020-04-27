@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import sender.HeaderlessPacketSender;
 import shared.Utils;
 import shared.Protocol;
 import shared.Receiver;
-import shared.Sender;
 
 /**
  * Gets a list of files from the server when user commands.
@@ -38,7 +38,7 @@ public class ListInitiator implements Runnable {
 	public void run() {
 		try {
 			byte[] listCommand = Protocol.LIST.getBytes();
-			Sender.sendCommand(listSocket, serverAddress, Protocol.LIST_PORT, listCommand);
+			(new HeaderlessPacketSender()).send(listSocket, serverAddress, Protocol.LIST_PORT, listCommand);
 			
 			try {
 				Thread.sleep(2000);

@@ -3,8 +3,8 @@ package fileClient;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import sender.HeaderlessPacketSender;
 import shared.Protocol;
-import shared.Sender;
 
 /**
  * Sends a remove request of a certain file when user commands.
@@ -33,7 +33,7 @@ public class RemoveInitiator implements Runnable {
      */
     public void run() {
         byte[] nameBytes = fileName.getBytes();
-        Sender.sendNamePacket(removeSocket, serverAddress, Protocol.REMOVE_PORT, nameBytes);
+        (new HeaderlessPacketSender()).send(removeSocket, serverAddress, Protocol.REMOVE_PORT, nameBytes);
 		view.showMessage("Sent request to server to remove " + fileName + ". \n");
     }
 

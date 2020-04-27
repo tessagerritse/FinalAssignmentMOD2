@@ -1,5 +1,7 @@
 package shared;
 
+import sender.AckSender;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -23,7 +25,7 @@ public class Receiver {
 		byte[] data = PacketManager.unpackPacketData(packet);	
 
 		if (LRC == Utils.calculateLRC(data)) {
-			Sender.sendAck(socket, address, port);
+			(new AckSender()).send(socket, address, port, null);
 		} 
 		
 		return packet;
@@ -58,7 +60,7 @@ public class Receiver {
 		byte[] namePacket = new byte[Protocol.NAME_PACKET_SIZE];
 		DatagramPacket packet = new DatagramPacket(namePacket, namePacket.length);
 		socket.receive(packet);
-		Sender.sendAck(socket, address, port);
+		(new AckSender()).send(socket, address, port, null);
 		return PacketManager.unpackNameOrFeedbackPacket(packet);
 	}
 
@@ -84,6 +86,6 @@ public class Receiver {
 		byte[] listCommand = new byte[Protocol.COMMAND_PACKET_SIZE];
 		DatagramPacket listCommandPacket = new DatagramPacket(listCommand, listCommand.length);
 		socket.receive(listCommandPacket);
-		Sender.sendAck(socket, address, port);
+		(new AckSender()).send(socket, address, port, null);
 	}
 }

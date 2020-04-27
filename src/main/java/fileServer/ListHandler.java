@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import sender.FeedbackSender;
 import sender.MultiplePacketSender;
 import sender.SinglePacketSender;
 import shared.Utils;
 import shared.Protocol;
 import shared.Receiver;
-import shared.Sender;
 
 /**
  * Sends a list of files on the server to the client when the user requests it.
@@ -49,7 +49,7 @@ public class ListHandler implements Runnable {
 				if ((listOfFiles.length == 0)) {
 					String feedback = "The file directory on the server is empty. \n";
 					byte[] feedbackBytes = feedback.getBytes();
-					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
+					(new FeedbackSender()).send(metaSocket, clientAddress, Protocol.CLIENT_META_PORT, feedbackBytes);
 				} else {
 					String[] guidingMessage = {"There are " + listOfFiles.length + " files on the server: "};
 					String[] completeList = Utils.combine2StringArrays(guidingMessage, listOfFiles);
@@ -65,7 +65,7 @@ public class ListHandler implements Runnable {
 
 					String feedback = "Sent a list of files on server. \n";
 					byte[] feedbackBytes = feedback.getBytes();
-					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
+					(new FeedbackSender()).send(metaSocket, clientAddress, Protocol.CLIENT_META_PORT, feedbackBytes);
 				}
 			} catch (IOException e) {
 				setListenForLists(false);

@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import sender.FeedbackSender;
 import shared.Utils;
 import shared.Protocol;
 import shared.Receiver;
-import shared.Sender;
 
 /**
  * Removes a file from the server when user commands to do so.
@@ -50,7 +50,7 @@ public class RemoveHandler implements Runnable {
 				if (!file.exists()) {
 					feedback = "File " + fileName + " is not one of the files on server. \n";
 					byte[] feedbackBytes = feedback.getBytes();
-					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
+					(new FeedbackSender()).send(metaSocket, clientAddress, Protocol.CLIENT_META_PORT, feedbackBytes);
 				} else {
 					if(file.delete()) { 
 						feedback = "File " + fileName + " deleted successfully"; 
@@ -58,7 +58,7 @@ public class RemoveHandler implements Runnable {
 			        	feedback = "Failed to delete " + fileName + ". Reason unknown."; 
 			        } 
 					byte[] feedbackBytes = feedback.getBytes();
-					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
+					(new FeedbackSender()).send(metaSocket, clientAddress, Protocol.CLIENT_META_PORT, feedbackBytes);
 				}
 			} catch (IOException e) {
 				setListenForRemoves(false);
