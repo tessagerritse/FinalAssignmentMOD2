@@ -1,4 +1,4 @@
-package main.java.shared;
+package shared;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -18,7 +18,7 @@ import java.net.DatagramPacket;
  * @author tessa.gerritse
  *
  */
-public class DataActions {
+public class Utils {
 
 	public static File getFileObject(File fileDirectory, String fileName) {
 		return new File(fileDirectory + "/" + fileName);
@@ -37,10 +37,6 @@ public class DataActions {
 		outputStream.write(fileContentBytes);
 		outputStream.flush();
 		outputStream.close();
-	}
-
-	public static byte[] getBytesFromString(String string) {
-		return string.getBytes();
 	}
 
 	public static String getStringFromBytes(byte[] array) {
@@ -67,25 +63,6 @@ public class DataActions {
 		objectOutputStream.flush();
 		objectOutputStream.close();
 		return byteArrayOutputStream.toByteArray();
-	}	
-
-	/**
-	 * Gets the length of the actual data in a packet. 
-	 * Any empty parts of the packets will be trimmed.
-	 * @param packet the packet you want to get the actual data length from
-	 * @return data length (int)
-	 */
-	public static int getDataLength(DatagramPacket packet) {
-		return packet.getLength();
-	}
-
-	/**
-	 * Get the data from the packet. This data possibly includes header-bytes
-	 * @param packet the packet you want to get the actual data from
-	 * @return data array (byte)
-	 */
-	public static byte[] getData(DatagramPacket packet) {
-		return packet.getData();
 	}
 	
 	public static boolean fitsOnePacket(int contentLength) {

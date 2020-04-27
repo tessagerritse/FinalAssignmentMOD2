@@ -1,10 +1,10 @@
-package main.java.fileClient;
+package fileClient;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
 
-import main.java.shared.DataActions;
-import main.java.shared.Receiver;
+import shared.Utils;
+import shared.Receiver;
 
 /**
  * Starts at setup of client and does nothing else than listening
@@ -38,7 +38,7 @@ public class MetaHandler implements Runnable {
 		while (listen) {
 			try {
 				byte[] feedbackBytes = Receiver.receiveFeedback(metaSocket);
-				String feedback = DataActions.getStringFromBytes(feedbackBytes);
+				String feedback = Utils.getStringFromBytes(feedbackBytes);
 				
 				if (feedback.contains("exist")) {	
 					ableToDownload = false;

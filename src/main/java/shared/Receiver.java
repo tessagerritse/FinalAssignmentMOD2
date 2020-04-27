@@ -1,4 +1,4 @@
-package main.java.shared;
+package shared;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -22,7 +22,7 @@ public class Receiver {
 		byte LRC = PacketManager.unpackPacketLRC(packet);
 		byte[] data = PacketManager.unpackPacketData(packet);	
 
-		if (LRC == DataActions.calculateLRC(data)) {
+		if (LRC == Utils.calculateLRC(data)) {
 			Sender.sendAck(socket, address, port);
 		} 
 		
@@ -42,7 +42,7 @@ public class Receiver {
 			if (fileContentBytes == null) {
 				fileContentBytes = dataToAdd;
 			} else {		
-				fileContentBytes = DataActions.combine2ByteArrays(fileContentBytes, dataToAdd);
+				fileContentBytes = Utils.combine2ByteArrays(fileContentBytes, dataToAdd);
 			}
 
 			int info = PacketManager.unpackPacketInfo(packet);			

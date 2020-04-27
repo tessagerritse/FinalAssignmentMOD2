@@ -1,4 +1,4 @@
-package main.java.fileServer;
+package fileServer;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-import main.java.shared.Protocol;
+import shared.Protocol;
 
 /**
  * Listens for clients that want to connect and for user commands on several ports.

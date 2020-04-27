@@ -1,14 +1,14 @@
-package main.java.fileServer;
+package fileServer;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import main.java.shared.DataActions;
-import main.java.shared.Protocol;
-import main.java.shared.Receiver;
-import main.java.shared.Sender;
+import shared.Utils;
+import shared.Protocol;
+import shared.Receiver;
+import shared.Sender;
 
 /**
  * Sends a file to the client when the user requests a certain file-download.
@@ -43,20 +43,20 @@ public class DownloadHandler implements Runnable {
 			try {
 				byte[] nameBytes = Receiver.receiveName(downloadSocket, clientAddress,
 						Protocol.CLIENT_DOWNLOAD_PORT);
-				String fileName = DataActions.getStringFromBytes(nameBytes);
+				String fileName = Utils.getStringFromBytes(nameBytes);
 
-				File file = DataActions.getFileObject(fileDirectory, fileName);
+				File file = Utils.getFileObject(fileDirectory, fileName);
 
 				if (!file.exists()) {
 					String feedback = "File " + fileName + " doesn't exist on server. \n";
-					byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
+					byte[] feedbackBytes = feedback.getBytes();
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				} else {
-					byte[] fileContentBytes = DataActions.getFileContent(file);
+					byte[] fileContentBytes = Utils.getFileContent(file);
 					Sender.sendSingleOrMultiplePackets(downloadSocket, clientAddress,
 							Protocol.CLIENT_DOWNLOAD_PORT, fileContentBytes);
 					String feedback = "Sent file " + fileName + "\n";
-					byte[] feedbackBytes = DataActions.getBytesFromString(feedback);
+					byte[] feedbackBytes = feedback.getBytes();
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				}
 			} catch (IOException e) {

@@ -1,4 +1,4 @@
-package main.java.shared;
+package shared;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -24,7 +24,7 @@ public class Sender {
 	 */
 	public static void sendSingleOrMultiplePackets(DatagramSocket socket, InetAddress address, int port, 
 			byte[] content) {
-		if (DataActions.fitsOnePacket(content.length)) {				
+		if (Utils.fitsOnePacket(content.length)) {
 			sendSinglePacket(socket, address, port, content);
 		} else {			
 			sendMultiplePackets(socket, address, port, content);
