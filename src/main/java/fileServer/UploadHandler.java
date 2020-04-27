@@ -57,7 +57,7 @@ public class UploadHandler implements Runnable {
 
 				Utils.writeFileContentToDirectory(file, fileContentBytes);
 				
-				byte[] feedbackBytes = Utils.getBytesFromString(feedback);
+				byte[] feedbackBytes = feedback.getBytes();
 				Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);				
 			} catch (IOException e) {
 				setListenForUploads(false);

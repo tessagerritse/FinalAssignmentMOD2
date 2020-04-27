@@ -49,7 +49,7 @@ public class DownloadInitiator implements Runnable {
 				view.showMessage("File " + fileName + " already exists and will thus be overwritten. \n");
 			}
 			
-			byte[] nameBytes = Utils.getBytesFromString(fileName);
+			byte[] nameBytes = fileName.getBytes();
 			Instant start = Instant.now();
 			Sender.sendNamePacket(downloadSocket, serverAddress, Protocol.DOWNLOAD_PORT, nameBytes);
 			

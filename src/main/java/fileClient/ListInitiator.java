@@ -37,7 +37,7 @@ public class ListInitiator implements Runnable {
 	 */
 	public void run() {
 		try {
-			byte[] listCommand = Utils.getBytesFromString(Protocol.LIST);
+			byte[] listCommand = Protocol.LIST.getBytes();
 			Sender.sendCommand(listSocket, serverAddress, Protocol.LIST_PORT, listCommand);
 			
 			try {

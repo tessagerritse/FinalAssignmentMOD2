@@ -33,7 +33,7 @@ public class RemoveInitiator implements Runnable {
      * and displays feedback
      */
     public void run() {
-        byte[] nameBytes = Utils.getBytesFromString(fileName);
+        byte[] nameBytes = fileName.getBytes();
         Sender.sendNamePacket(removeSocket, serverAddress, Protocol.REMOVE_PORT, nameBytes);
 		view.showMessage("Sent request to server to remove " + fileName + ". \n");
     }

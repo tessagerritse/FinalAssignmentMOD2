@@ -46,7 +46,7 @@ public class UploadInitiator implements Runnable {
 			if (!file.exists()) {
 				view.showMessage("File " + fileName + " doesn't exist in the directory. Please try again. \n");
 			} else {				
-				byte[] fileNameBytes = Utils.getBytesFromString(fileName);
+				byte[] fileNameBytes = fileName.getBytes();
 				Instant start = Instant.now();
 				Sender.sendNamePacket(uploadSocket, serverAddress, Protocol.UPLOAD_PORT, fileNameBytes);
 

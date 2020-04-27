@@ -49,14 +49,14 @@ public class DownloadHandler implements Runnable {
 
 				if (!file.exists()) {
 					String feedback = "File " + fileName + " doesn't exist on server. \n";
-					byte[] feedbackBytes = Utils.getBytesFromString(feedback);
+					byte[] feedbackBytes = feedback.getBytes();
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				} else {
 					byte[] fileContentBytes = Utils.getFileContent(file);
 					Sender.sendSingleOrMultiplePackets(downloadSocket, clientAddress,
 							Protocol.CLIENT_DOWNLOAD_PORT, fileContentBytes);
 					String feedback = "Sent file " + fileName + "\n";
-					byte[] feedbackBytes = Utils.getBytesFromString(feedback);
+					byte[] feedbackBytes = feedback.getBytes();
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				}
 			} catch (IOException e) {

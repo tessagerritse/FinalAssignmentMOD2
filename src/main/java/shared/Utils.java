@@ -39,10 +39,6 @@ public class Utils {
 		outputStream.close();
 	}
 
-	public static byte[] getBytesFromString(String string) {
-		return string.getBytes();
-	}
-
 	public static String getStringFromBytes(byte[] array) {
 		return new String(array).trim();
 	}

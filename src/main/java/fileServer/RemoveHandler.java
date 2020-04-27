@@ -49,7 +49,7 @@ public class RemoveHandler implements Runnable {
 				String feedback;
 				if (!file.exists()) {
 					feedback = "File " + fileName + " is not one of the files on server. \n";
-					byte[] feedbackBytes = Utils.getBytesFromString(feedback);
+					byte[] feedbackBytes = feedback.getBytes();
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				} else {
 					if(file.delete()) { 
@@ -57,7 +57,7 @@ public class RemoveHandler implements Runnable {
 			        } else { 
 			        	feedback = "Failed to delete " + fileName + ". Reason unknown."; 
 			        } 
-					byte[] feedbackBytes = Utils.getBytesFromString(feedback);
+					byte[] feedbackBytes = feedback.getBytes();
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				}
 			} catch (IOException e) {

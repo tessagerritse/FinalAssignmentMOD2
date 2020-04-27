@@ -46,7 +46,7 @@ public class ListHandler implements Runnable {
 
 				if ((listOfFiles.length == 0)) {
 					String feedback = "The file directory on the server is empty. \n";
-					byte[] feedbackBytes = Utils.getBytesFromString(feedback);
+					byte[] feedbackBytes = feedback.getBytes();
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				} else {
 					String[] guidingMessage = {"There are " + listOfFiles.length + " files on the server: "};
@@ -56,7 +56,7 @@ public class ListHandler implements Runnable {
 					Sender.sendSingleOrMultiplePackets(listSocket, clientAddress, Protocol.CLIENT_LIST_PORT, 
 							completeListBytes);
 					String feedback = "Sent a list of files on server. \n";
-					byte[] feedbackBytes = Utils.getBytesFromString(feedback);
+					byte[] feedbackBytes = feedback.getBytes();
 					Sender.sendFeedback(metaSocket, clientAddress, feedbackBytes);
 				}
 			} catch (IOException e) {
